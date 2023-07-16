@@ -1,0 +1,120 @@
+<?php
+/**
+ * Products list template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Phoenix\Controllers\ProductsController;
+use Kytschi\Tengu\Helpers\NumberHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$results = (new ProductsController())->get();
+
+if (!empty($page->banner_image)) {
+    ?>
+    <div class="page-background-image">
+        <img src="<?= $page->banner_image->url; ?>" alt="<?= $page->banner_image->label; ?>">
+    </div>
+    <?php
+}
+?>
+<div class="container">
+    <div id="page-content" class="row mt-3 mb-5">
+        <div class="col-12">
+            <div class="page-title">
+                <h2><?= $page->name; ?></h2>
+            </div>
+            <section class="card">
+                <div class="card-body">
+                    <div class="row">
+                    <?php
+                    if ($results->count()) {
+                        foreach ($results as $result) {
+                        ?>
+                        <div class="portfolio col-12">
+                            <div class="portfolio-header">
+                                <?= $result->name; ?>
+                            </div>
+                            <div class="portfolio-body">
+                                <div class="row">
+                                    <div class="portfolio-cover-image col-4">
+                                        <?php
+                                        if (!empty($result->cover_image)) {
+                                            ?>
+                                            <div class="col-12 p-0">
+                                                <img src="<?= $result->cover_image->url; ?>" alt="<?= $result->cover_image->label; ?>"/>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
+                                        <div class="portfolio-footer">
+                                            <a href="<?= $result->url; ?>" class="btn btn-primary">Find out more</a>
+                                            <?php
+                                            if ($result->stock) {
+                                                ?>
+                                                <a
+                                                    href="<?= UrlHelper::from('/basket/add/' . $result->id); ?>"
+                                                    class="btn btn-primary"
+                                                    title="Add to the basket"
+                                                    data-toggle="tooltip"
+                                                    data-trigger="hover"
+                                                    data-dismiss="click"
+                                                    data-placement="top">
+                                                    <svg class="svg-white" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                        <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6h1.717L5.07 1.243a.5.5 0 0 1 .686-.172zM3.394 15l-1.48-6h-.97l1.525 6.426a.75.75 0 0 0 .729.574h9.606a.75.75 0 0 0 .73-.574L15.056 9h-.972l-1.479 6h-9.21z"/>
+                                                    </svg>
+                                                </a>
+                                                <?php
+                                            } else {
+                                                ?>
+                                                <strong>Out of stock</strong>
+                                                <?php
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
+                                    <div class="portfolio-summary col-8">
+                                        <div class="col-12 p-0">
+                                            <?= $result->summary; ?>
+                                        </div>
+                                        <?php
+                                        if ($result->tags) {
+                                            ?>
+                                            <div class="col-12 mt-3 p-0">
+                                                <?php
+                                                foreach ($result->tags as $tag) {
+                                                    ?>
+                                                    <a href="/search?search=<?= $tag->tag; ?>" class="badge badge-secondary p-2 mr-2 mb-2"><?= $tag->tag; ?></a>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                        }
+                    } else {
+                        ?>
+                        <div class="portfolio col-12">
+                            <p>No portfolio has been built yet</p>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

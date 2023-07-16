@@ -1,0 +1,252 @@
+<?php
+/**
+ * Shipping template.
+ *
+ * @copyright   2023 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = ($this->di->getConfig())->urls->sales . '/dispatch';
+$requires_shipping = false;
+foreach ($data->items as $item) {
+    if ($item->product->requires_shipping) {
+        $requires_shipping = true;
+        break;
+    }
+}
+?>
+<form id="shipping-<?= $data->id; ?>" method="post" action="<?= UrlHelper::backend($url . '/shipping'); ?>" class="shipping-form hide">
+    <div class="card">
+        <div class="card-body">
+            <span class="h5 float-left">Setup order shipment</span>
+            <div class="float-right">
+                <div class="checkbox switcher">
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="requires_shipping"
+                            value="1"
+                            <?= $requires_shipping ? 'checked="checked"' : ''; ?>
+                            class="hide">
+                        <span style="width:200px">
+                            <small class="switcher-on">
+                                include
+                            </small>
+                            <small class="switcher-off">
+                                exclude
+                            </small>
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="requires_shipping" <?= !$requires_shipping ? ' class="hide"' : ''; ?>>
+        <div class="card">
+            <div class="card-header">
+                Company
+                <span class="required">*</span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                <?php
+                $options = null;
+                foreach ($shipping_companies as $company) {
+                    if ($company->default) {
+                        $options = $company->options;
+                    }
+                    ?>
+                    <div class="col mt-3">
+                        <div class="radio switcher">
+                            <?php
+                            if ($company->logo) {
+                                ?>
+                                <label><?= $company->logo; ?></label>
+                                <?php
+                            } else {
+                                ?>
+                                <label><?=  $company->name; ?></label>
+                                <?php
+                            }
+                            ?>
+                            <div class="checkbox switcher mt-2">
+                                <label>
+                                    <input 
+                                        type="radio"
+                                        class="shipping-company"
+                                        name="shipping_company_code[]" 
+                                        value="<?= $company->code; ?>"
+                                        <?= $this->tengu->settings->sales->default_shipping == $company->code ? 'checked="checked"' : ''; ?>>
+                                    <span>
+                                        <small class="switcher-on">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                            </svg>
+                                        </small>
+                                        <small class="switcher-off">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                            </svg>
+                                        </small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                    }
+                ?>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header m-0">
+                <div class="float-left">
+                    Shipping option
+                    <span class="required">*</span>
+                </div>
+                <div class="float-right">
+                    <div class="checkbox switcher">
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="collection"
+                                value="1"
+                                checked="checked"
+                                class="hide">
+                            <span style="width:200px">
+                                <small class="switcher-on">
+                                    collection
+                                </small>
+                                <small class="switcher-off">
+                                    drop off
+                                </small>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="shipping-options row">
+                    <?php
+                    foreach ($options as $key => $option) {
+                        ?>
+                        <div class="col mt-3">
+                            <div class="radio switcher">
+                                <label><?= $option->name; ?></label>
+                                <div class="checkbox switcher mt-2">
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            class="shipping-option"
+                                            name="shipping_option[]"
+                                            value="<?= $option->code; ?>" 
+                                            <?= !$key ? 'checked="checked"' : ''; ?>>
+                                        <span>
+                                            <small class="switcher-on">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                </svg>
+                                            </small>
+                                            <small class="switcher-off">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                </svg>
+                                            </small>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                Package details
+                <span class="required">*</span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="weight">
+                                Weight (kg)
+                                <span class="required">*</span>
+                            </label>
+                            <input class="form-control onscreen-keyboard-input" name="weight" type="text" value="" required>
+                            <small class="shipping-weight required"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="width">
+                                Width (cm)
+                                <span class="required">*</span>
+                            </label>
+                            <input class="form-control onscreen-keyboard-input" name="width" type="text" value="" required>
+                            <small class="shipping-width required"></small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="height">
+                                Height (cm)
+                                <span class="required">*</span>
+                            </label>
+                            <input class="form-control onscreen-keyboard-input" name="height" type="text" value="" required>
+                            <small class="shipping-height required"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="length">
+                                Length (cm)
+                                <span class="required">*</span>
+                            </label>
+                            <input class="form-control onscreen-keyboard-input" name="length" type="text" value="" required>
+                            <small class="shipping-length required"></small>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="amount">
+                                Number of parcels
+                                <span class="required">*</span>
+                            </label>
+                            <input class="form-control onscreen-keyboard-input" name="parcel_count" type="text" value="1" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input name="id" type="hidden" value="<?= $data->id; ?>">
+        <div class="order-items d-none"></div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <button
+                data-id="<?= $data->id; ?>"
+                type="button"
+                class="float-left btn btn-secondary mr-4 order-shipping-cancel"
+                style="width:120px;height:80px">Cancel</button>
+            <button
+                data-id="<?= $data->id; ?>"
+                type="button"
+                class="float-left btn btn-warning mr-4 order-shipping-clear"
+                style="width:120px;height:80px">Clear</button>
+            <button 
+                data-form="shipping-<?= $data->id; ?>"
+                type="submit" 
+                class="btn btn-success btn-save float-right" 
+                style="width:120px;height:80px">Save</button>
+        </div>
+    </div>
+</form>

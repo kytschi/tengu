@@ -1,0 +1,77 @@
+<?php
+/**
+ * Survey type options template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+
+if (empty($data)) {
+    $data = null;
+}
+if (empty($selected)) {
+    $selected = null;
+}
+?>
+<div id="options" class="form-group mb-4<?= $selected != 'select' ? ' hide' : ''; ?>">
+    <label>
+        Options
+        <span class="required">*</span>
+    </label>
+    <textarea
+        name="options"
+        rows="6"
+        class="form-control"><?= FormController::getFormData('step.options', $data); ?></textarea>
+</div>
+<div id="range" class="form-group mb-4<?= $selected != 'slider' ? ' hide' : ''; ?>">
+    <label>
+        Range
+        <span class="required">*</span>
+    </label>
+    <div class="float-left w-100 mb-4">
+        <input
+            type="text"
+            name="range_min"
+            class="form-control float-left"
+            value="<?= FormController::getFormData('step.range_min', $data); ?>"
+            style="width:120px">
+        <span class="float-left ml-4 mr-4">to</span>
+        <input
+            type="text"
+            name="range_max"
+            class="form-control float-left"
+            value="<?= FormController::getFormData('step.range_max', $data); ?>"
+            style="width:120px">
+        <span class="float-left ml-4 mr-4">in steps of</span>
+        <input
+            type="text"
+            name="range_steps"
+            class="form-control float-left"
+            value="<?= FormController::getFormData('step.range_steps', $data); ?>"
+            style="width:120px">
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    $("#type").change(function(event) {
+        $("#options").hide();
+
+        switch ($('#type').val())
+        {
+            case "select":
+                $("#options").show();
+                break;
+            case "slider":
+                $("#range").show();
+                break;
+        }
+    });
+});
+</script>

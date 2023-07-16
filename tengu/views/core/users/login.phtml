@@ -1,0 +1,73 @@
+<?php
+/**
+ * Login template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = '/login';
+if (!empty($_GET['from'])) {
+	$url .= '?from=' . $_GET['from'];
+}
+?>
+<div class="d-flex justify-content-center pt-5">
+    <div class="col-10 col-lg-6">
+        <?= $this->partial("errors/form"); ?>
+        <form class="card p-2" method="post" novalidate="novalidate" action="<?= UrlHelper::backend($url); ?>">
+            <div class="card-header">
+                <span class="card-title">Welcome, please login</span>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>
+                        Email
+                        <span class="required">*</span>
+                    </label>
+                    <input
+						type="text"
+						class="form-control mt-2"
+						name="email"
+						placeholder="Please enter your email"
+						autocomplete="off"
+						tabindex="1"
+						required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        Password
+                        <span class="required">*</span>
+                    </label>
+                    <input
+						type="password"
+						class="form-control mt-2"
+						name="password"
+						placeholder="Please enter your password"
+						autocomplete="off"
+						tabindex="2"
+						required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        Please complete the captcha
+                        <span class="required">*</span>
+                    </label>
+                    <div class="captcha">
+                        <?= $this->tengu->captcha(); ?>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">login</button>
+            </div>
+            <input name="_TSC" type="hidden" value="<?= FormController::generateTSC(); ?>">
+        </form>
+    </div>
+</div>

@@ -1,0 +1,88 @@
+<?php
+/**
+ * Form messages template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+
+$output = false;
+$status = '';
+if (!empty($data)) {
+    if (!empty($data->status)) {
+        $status = $data->status;
+    }
+}
+
+echo $this->partial("errors/form");
+
+if ($message = FormController::getFormSaved()) {
+    $output = true;
+    ?>
+    <div class="alert alert-success d-flex align-items-center">
+        <div class="d-flex flex-column">
+            <h4 class="mb-1">Yay!</h4>
+            <p><?= is_bool($message) ? 'Entry successfully saved' : $message;?></p>
+        </div>
+    </div>
+    <?php
+}
+
+if ($message = FormController::getFormUpdated()) {
+    $output = true;
+    ?>
+    <div class="alert alert-success d-flex align-items-center">
+        <div class="d-flex flex-column">
+            <h4 class="mb-1">Yay!</h4>
+            <p><?= is_bool($message) ? 'Entry successfully updated' : $message;?></p>
+        </div>
+    </div>
+    <?php
+}
+
+if ($message = FormController::getFormDeleted()) {
+    $output = true;
+    ?>
+    <div class="alert alert-warning d-flex align-items-center">
+        <div class="d-flex flex-column">
+            <h4 class="mb-1">Off to the trash</h4>
+            <p><?= is_bool($message) ? 'Entry successfully deleted' : $message;?></p>
+        </div>
+    </div>
+    <?php
+}
+
+if ($message = FormController::getFormWarning()) {
+    $output = true;
+    ?>
+    <div class="alert alert-warning d-flex align-items-center">
+        <div class="d-flex flex-column">
+            <h4 class="mb-1">Warning</h4>
+            <p><?= $message;?></p>
+        </div>
+    </div>
+    <?php
+}
+
+if ($status == 'deleted') {
+    $output = true;
+    ?>
+    <div class="alert alert-danger d-flex align-items-center">
+        <div class="d-flex flex-column">
+            <h4 class="mb-1">I'm in a deleted state</h4>
+            <p>Don't worry I can be recovered, just click the recover button above</p>
+        </div>
+    </div>
+    <?php
+}
+
+if ($output) {
+    echo '<div class="row"><div class="col-12 mb-3"></div></div>';
+}
+?>

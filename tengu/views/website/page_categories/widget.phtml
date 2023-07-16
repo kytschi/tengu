@@ -1,0 +1,127 @@
+<?php
+/**
+ * Category widget template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Helpers\UrlHelper;
+?>
+<div class="card">
+    <div class="card-header mb-4">
+        <span class="card-title">Categories</span>
+    </div>
+    <div class="card-body p-0 pb-3">
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <tr>
+                        <td class="border-0">
+                            <select id="widget-categories" class="form-control">
+                                <?php
+                                if ($categories->count()) {
+                                    foreach ($categories as $category) {
+                                        ?>
+                                        <option value="<?= $category->id; ?>"><?= $category->name; ?></option>
+                                        <?php
+                                    }
+                                } else {
+                                    ?>
+                                    <option value="0" disabled>No categories</option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                        </td>
+                        <td width="60px" class="border-0">
+                            <button id="widget-category-add" type="button" class="btn btn-blank p-0 m-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8.5 6a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z"/>
+                                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
+                                </svg><br/>
+                                add
+                            </button>
+                        </td>
+                    <tr>
+                </table>
+            </div>
+            <div class="col-12">
+                <table id="widget-categories-table" class="table table-sorter">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if ($data) {
+                            if ($data->count()) {
+                                foreach ($data as $result) {
+                                    $edit_url = $url . '/edit/' . $result->id;
+                                    if (!empty($back_url)) {
+                                        $edit_url .= '?back-url=' . urlencode($back_url);
+                                    }
+                                    ?>
+                                    <tr id="category-<?= $result->id; ?>">
+                                        <td class="widget-category-name">
+                                            <?= $result->name; ?>
+                                        </td>
+                                        <td class="widget-category-button">
+                                            <button
+                                                id="btn-category-<?= $result->id; ?>"
+                                                class="btn btn-blank float-right btn-widget-category m-0 p-0"
+                                                type="button">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                </svg>
+                                            </button>
+                                            <a
+                                                href="<?= UrlHelper::backend($edit_url); ?>"
+                                                class="btn btn-blank float-right m-0 p-0 mr-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+                                                </svg>
+                                            </a>
+                                            <input type="hidden" name="category_id[]" value="<?= $result->id; ?>"/>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                            } else {
+                                ?>
+                                <tr>
+                                    <td colspan="2">No categories</td>
+                                </tr>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </tbody>
+                    <tfoot class="d-none">
+                        <tr>
+                            <td class="widget-category-name"></td>
+                            <td class="widget-category-button">
+                                <button
+                                    class="btn btn-blank float-right btn-widget-category"
+                                    type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg>
+                                </button>
+                                <input type="hidden" name="category_id[]" value=""/>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="<?= $this->tengu->theme->getAsset('js/core/categories.js'); ?>"></script>

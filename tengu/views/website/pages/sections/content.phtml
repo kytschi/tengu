@@ -1,0 +1,122 @@
+<?php
+/**
+ * Page content template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+
+$spinnable = false;
+if (!empty($data)) {
+    if (isset($data->spinnable)) {
+        $spinnable = $data->spinnable;
+    }
+
+    echo '<script type="text/javascript">let resource_id = "' . $data->id . '";</script>';
+} else {
+    $data = null;
+}
+
+if (!isset($full)) {
+    $full = true;
+}
+
+if ($spinnable) {
+    echo '<script type="text/javascript">$(function () {$("#summernote").summernote("disable");});</script>';
+}
+?>
+<link href="<?= $this->tengu->theme->getCSS('plugins/summernote/summernote-bs4.min.css'); ?>" rel="stylesheet">
+<script src="<?= $this->tengu->theme->getAsset('plugins/summernote/summernote-bs4.min.js'); ?>"></script>
+
+<?php
+if ($full) {
+    ?>
+<div class="card h-100">
+    <div class="card-header">
+        <span class="card-title">Content</span>
+    </div>
+    <div class="card-body p-0 h-100">
+    <?php
+}
+?>
+        <textarea
+            id="summernote"
+            name="content"
+            class="summernote form-control p-0"<?= $spinnable ? ' disabled' : '';?>><?= FormController::getFormData('content', $data); ?></textarea>
+        <?php
+        if ($spinnable) {
+            ?>
+            <small>You can not edit the content while spinning is enabled</small>
+            <?php
+        }
+if ($full) {
+        ?>
+    </div>
+</div>
+    <?php
+}
+?>
+
+<script type="text/javascript">
+$(function () {
+    $(".summernote").summernote({
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link', 'picture', 'video', 'table', 'hr']],
+            ['view', ['codeview', 'undo', 'redo']]
+        ],
+        callbacks: {
+            onImageUpload: function (image) {
+                summernoteImageUpload(image[0]);
+            }
+        }
+    });
+});
+
+function summernoteImageUpload(image) {
+    var data = new FormData();
+    data.append("image", image);
+
+    if (typeof(resource_id) == "undefined") {
+        console.log("Failed to upload the image, missing resource Id");
+        throwError("Failed to upload the image");
+        return;
+    }
+
+    data.append("resource_id", resource_id);
+
+    $.ajax({
+        url: tengu_url + "/files/add/image",
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: data,
+        type: "post",
+        success: function (response) {
+            if (typeof(response) == "undefined") {
+                throwError("Failed to process image, invalid respose");
+            }
+
+            if (typeof(response.data) == "undefined") {
+                throwError("Failed to process image, invalid respose data");
+            }
+
+            var image = $("<img>").attr("src", response.data.url).attr("alt", response.data.name);
+            $('#summernote').summernote("insertNode", image[0]);
+        },
+        error: function (response) {
+            throwError(response);
+        }
+    });
+}
+</script>

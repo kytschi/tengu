@@ -1,0 +1,194 @@
+<?php
+/**
+ * Page index template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = ($this->di->getConfig())->urls->cms . '/pages';
+
+$filter_status = $this->tengu->getFilters('status');
+
+echo $this->partial("common/form/messages");
+?>
+<div class="row mb-3">
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=active'); ?>" class="card bg-primary">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10.854 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 8.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
+                    <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    <strong><?= $stats['active']; ?></strong> <?= $stats['active'] == 1 ? 'is' : 'are'; ?> live
+                </div>
+                <div class="text-white">
+                    Awesome
+				</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=pending'); ?>" class="card bg-info">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5zm2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2h-7z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    <strong><?= $stats['pending']; ?></strong> pending review
+                </div>
+                <div class="text-white">
+                    Chop chop
+				</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=rejected'); ?>" class="card bg-dark">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3.5 3.5c-.614-.884-.074-1.962.858-2.5L8 7.226 11.642 1c.932.538 1.472 1.616.858 2.5L8.81 8.61l1.556 2.661a2.5 2.5 0 1 1-.794.637L8 9.73l-1.572 2.177a2.5 2.5 0 1 1-.794-.637L7.19 8.61 3.5 3.5zm2.5 10a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0zm7 0a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    <strong><?= $stats['rejected']; ?></strong> rejected
+                </div>
+                <div class="text-white">
+                    Couldn't cut it
+				</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=deleted'); ?>" class="card bg-danger">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    <strong><?= $stats['deleted']; ?></strong> deleted
+                </div>
+                <div class="text-white">
+                    For the scrap heap
+				</div>
+            </div>
+        </a>
+    </div>
+</div>
+<div class="row mb-3">
+	<div class="col-12">
+        <div class="card p-0">
+			<div class="card-body">
+				<?php
+				    $this->partial('common/lists/search', ['url' => $url]);
+				?>
+				<a href="<?= UrlHelper::backend($url . '/create'); ?>" class="btn btn-primary float-right">
+		            Build
+		        </a>
+                <a href="<?= UrlHelper::backend($url . '/categories'); ?>" class="btn btn-default float-right mr-3">
+		            Categories
+		        </a>
+		        <div class="float-right dropdown mr-3">
+		            <a
+                        href="#"
+                        class="btn btn-default form-control-solid dropdown-toggle"
+                        data-toggle="dropdown"
+                        role="button"
+                        aria-expanded="false">
+		                Filter
+		            </a>
+		            <div class="dropdown-menu p-4">
+		                <div class="pb-3">Filter Options</div>
+		                <form method="get" action="<?= UrlHelper::backend($url); ?>">
+                            <?php
+                                $this->partial('common/lists/sorting', ['url' => $url]);
+                            ?>
+		                    <label class="form-label fw-bold">Status:</label>
+		                    <select
+		                        name="filters[status]"
+		                        class="form-control form-control-solid"
+		                        data-placeholder="Please select an option"
+		                        tabindex="-1"
+		                        aria-hidden="true">
+		                        <option value="">No filter</option>
+		                        <option value="active"<?= $filter_status == 'active' ? ' selected="selected"' : ''; ?>>Active</option>
+		                        <option value="pending"<?= $filter_status == 'pending' ? ' selected="selected"' : ''; ?>>Pending</option>
+		                        <option value="deleted"<?= $filter_status == 'deleted' ? ' selected="selected"' : ''; ?>>Deleted</option>
+		                        <option value="rejected"<?= $filter_status == 'rejected' ? ' selected="selected"' : ''; ?>>Rejected</option>
+		                    </select>
+		                    <div class="d-flex justify-content-end mt-4">
+		                        <a href="<?= UrlHelper::backend($url); ?>" class="btn btn-default btn-sm p-2 pl-3 pr-3 mr-2">Reset</a>
+		                        <button type="submit" class="btn btn-sm btn-primary p-2 pl-3 pr-3" >Apply</button>
+		                    </div>
+		                </form>
+		            </div>
+		        </div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row mb-3">
+<?php
+if ($data->total_items) {
+    ?>
+    <div class="col-12">
+        <div id="tiles">
+            <?php
+            foreach ($data->getItems() as $row) {
+                $card_url = ($this->di->getConfig())->urls->cms;
+                switch ($row->type) {
+                    case 'blog-post':
+                        $card_url .= '/blog-posts';
+                        break;
+                    case 'portfolio':
+                        $card_url .= '/portfolio';
+                        break;
+                    default:
+                        $card_url .= '/pages';
+                        break;
+                }
+                echo $this->partial(
+                    'common/lists/card',
+                    [
+                        'data' => $row,
+                        'url' => $card_url,
+                        'show_url' => false
+                    ]
+                );
+            }
+            ?>
+        </div>
+    </div>
+    <?php
+}  else {
+    ?>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body p-3 pt-0">
+                <strong class="h5">No results</strong>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+?>
+</div>
+<?php
+    echo $this->partial(
+        'common/lists/pagination',
+        [
+            'data' => $data,
+            'url' => UrlHelper::backend($url)
+        ]
+    );
+?>
+<script src="<?= $this->tengu->theme->getAsset('js/core/list.js'); ?>"></script>

@@ -1,0 +1,285 @@
+<?php
+/**
+ * Search stats index template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\StringHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = ($this->di->getConfig())->urls->cms . '/search-stats';
+$keywords_url = ($this->di->getConfig())->urls->mms . '/keywords';
+
+$filter_status = $this->tengu->getFilters('status');
+$filter_sort = $this->tengu->getFilters('order_by', 'query');
+
+echo $this->partial("common/form/messages");
+?>
+<div class="row mb-3">
+    <?php
+    if (!empty($stats[0])) {
+        ?>
+        <div class="col-3">
+            <a href="<?= UrlHelper::backend($url . '?search=' . $stats[0]['query']); ?>" class="card bg-success">
+                <div class="card-body">
+                    <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                    </svg>
+                    <div class="h3 text-white mt-3 mb-1">
+                        <strong><?= $stats[0]['query']; ?></strong> <small><?= $stats[0]['total']; ?> times</small>
+                    </div>
+                    <div class="text-white">
+                        1st most searched
+                    </div>
+                </div>
+            </a>
+        </div>
+        <?php
+    }
+    if (!empty($stats[1])) {
+        ?>
+        <div class="col-3">
+            <a href="<?= UrlHelper::backend($url . '?search=' . $stats[1]['query']); ?>" class="card bg-primary">
+                <div class="card-body">
+                    <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                    </svg>
+                    <div class="h3 text-white mt-3 mb-1">
+                        <strong><?= $stats[1]['query']; ?></strong> <small><?= $stats[1]['total']; ?> times</small>
+                    </div>
+                    <div class="text-white">
+                        2nd most searched
+                    </div>
+                </div>
+            </a>
+        </div>
+        <?php
+    }
+    if (!empty($stats[2])) {
+        ?>
+        <div class="col-3">
+            <a href="<?= UrlHelper::backend($url . '?search=' . $stats[3]['query']); ?>" class="card bg-info">
+                <div class="card-body">
+                    <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                    </svg>
+                    <div class="h3 text-white mt-3 mb-1">
+                        <strong><?= $stats[3]['query']; ?></strong> <small><?= $stats[3]['total']; ?> times</small>
+                    </div>
+                    <div class="text-white">
+                        3rd most searched
+                    </div>
+                </div>
+            </a>
+        </div>
+        <?php
+    }
+    ?>
+</div>
+<div class="row mb-3">
+	<div class="col-12">
+		<div class="card p-0">
+			<div class="card-body">
+				<?php
+				    $this->partial('common/lists/search', ['url' => $url]);
+				?>
+		        <div class="float-right dropdown mr-3">
+		            <a
+                        href="#"
+                        class="btn btn-default form-control-solid dropdown-toggle"
+                        data-toggle="dropdown"
+                        role="button"
+                        aria-expanded="false">
+		                Filter
+		            </a>
+		            <div class="dropdown-menu p-4">
+		                <div class="pb-3">Filter Options</div>
+		                <form method="get" action="<?= UrlHelper::backend($url); ?>">
+                            <label class="form-label fw-bold">Sort:</label>
+                            <select
+                                name="filters[order_by]"
+                                class="form-control form-control-solid"
+                                tabindex="-1"
+                                aria-hidden="true">
+                                <option
+                                    value="keyword|ASC"
+                                    <?= ($filter_sort == 'keyword|ASC') ? ' selected="selected"' :''; ?>>
+                                    A-Z
+                                </option>
+                                <option
+                                    value="keyword|DESC"
+                                    <?= ($filter_sort == 'keyword|DESC') ? ' selected="selected"' :''; ?>>
+                                    Z-A
+                                </option>
+                                <option
+                                    value="created_at|DESC"
+                                    <?= ($filter_sort == 'created_at|DESC') ? ' selected="selected"' :''; ?>>
+                                    Latest stats
+                                </option>
+                                <option
+                                    value="created_at|ASC"
+                                    <?= ($filter_sort == 'created_at|ASC') ? ' selected="selected"' :''; ?>>
+                                    Oldest stats
+                                </option>
+                            </select>
+		                    <div class="d-flex justify-content-end mt-4">
+		                        <a href="<?= UrlHelper::backend($url); ?>" class="btn btn-default btn-sm p-2 pl-3 pr-3 mr-2">Reset</a>
+		                        <button type="submit" class="btn btn-sm btn-primary p-2 pl-3 pr-3" >Apply</button>
+		                    </div>
+		                </form>
+		            </div>
+		        </div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <?php
+                if ($data->total_items) {
+                    ?>
+                    <form id="form-list" method="post" action="<?= UrlHelper::backend($url . '/active'); ?>" class="card-body py-3">
+                        <table class="table tablesorter">
+                            <thead>
+                                <tr>
+                                    <th>Query</th>
+                                    <th>Referer</th>
+                                    <th>Type</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                foreach ($data->getItems() as $row) {
+                                    ?>
+                                    <tr>
+                                        <td>
+                                            <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                                <?= $row->query; ?>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                                <?= $row->referer; ?>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                                <?= $row->type; ?>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a
+                                                href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>"
+                                                class="btn btn-blank float-right"
+                                                title="View the stat"
+                                                data-toggle="tooltip"
+                                                data-trigger="hover"
+                                                data-dismiss="click"
+                                                data-placement="top">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+                                                </svg>
+                                            </a>
+                                            <a
+                                                    href="<?= UrlHelper::backend($keywords_url  . '/add?keyword=' . urlencode($row->query)); ?>"
+                                                    target="_blank"
+                                                    title="Save as keyword"
+                                                    class="btn btn-blank float-right"
+                                                    data-toggle="tooltip"
+                                                    data-trigger="hover"
+                                                    data-dismiss="click"
+                                                    data-placement="top">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M8 5.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 .5-.5z"/>
+                                                        <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
+                                                        <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
+                                                    </svg>
+                                                </a>
+                                            <?php
+                                            if (!$row->deleted_at) {
+                                                ?>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-blank float-right"
+                                                    data-original-title="Are you sure?"
+                                                    data-trigger="focus"
+                                                    data-html="true"
+                                                    data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/delete/' . $row->id); ?>?from=<?= urlencode($url); ?>">Yes</a>'
+                                                    data-toggle="popover">
+                                                    <span
+                                                        title="Delete the stat"
+                                                        data-toggle="tooltip"
+                                                        data-trigger="hover"
+                                                        data-dismiss="click"
+                                                        data-placement="top">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                                <?php
+                                            } else {
+                                                ?>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-blank float-right"
+                                                    data-original-title="Are you sure?"
+                                                    data-trigger="focus"
+                                                    data-html="true"
+                                                    data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/recover/' . $row->id); ?>?from=<?= urlencode($url); ?>">Yes</a>'
+                                                    data-toggle="popover">
+                                                    <span
+                                                        title="Recover the stat"
+                                                        data-toggle="tooltip"
+                                                        data-trigger="hover"
+                                                        data-dismiss="click"
+                                                        data-placement="top">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                            <path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"/>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                                <?php
+                                            }
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </form>
+                    <?php
+                } else {
+                    ?>
+                    <strong class="h5">No results</strong>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+    echo $this->partial(
+        'common/lists/pagination',
+        [
+            'data' => $data,
+            'url' => UrlHelper::backend($url)
+        ]
+    );
+?>
+<script src="<?= $this->tengu->theme->getAsset('js/core/list.js'); ?>"></script>

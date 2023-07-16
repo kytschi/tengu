@@ -1,0 +1,81 @@
+<?php
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\NumberHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+?>
+<div id="dividend">
+    <div id="dividend-title">
+        <h1><?= $this->tengu->settings->finance->registered_company_name; ?></h1>
+        <h2><?= str_replace("\r\n", ', ', $this->tengu->settings->finance->registered_company_address); ?></h2>
+        <h3>Reginstered number: <?= $this->tengu->settings->finance->registered_company_number; ?></h3>
+    </div>
+    <div class="col-12">
+        <p>
+            <?= $data->shareholder->full_name; ?><br/>
+            <?= nl2br($data->shareholder->address); ?>
+        </p>
+    </div>
+    <div class="col-12">
+        <h4>Dividend voucher number: <?= $data->number; ?></h4>
+    </div>
+    <div class="col-12">
+        <p>
+            <?= $this->tengu->settings->finance->registered_company_name; ?> has declared the final dividend for the year ending
+            <?= DateHelper::prettyFull($data->tax_year->tax_year_end, false); ?> on its Oridinary shares as follows:
+        </p>
+    </div>
+    <div class="col-6">
+        <table id="dividend-info" class="table" cellpadding="0" cellspacing="0">
+            <tr>
+                <th width="200px">Payment due</th>
+                <td><?= DateHelper::prettyFull($data->issued_on, false); ?></td>
+            </tr>
+            <tr>
+                <th>Shareholders as at</th>
+                <td><?= DateHelper::prettyFull($data->issued_on, false); ?></td>
+            </tr>
+            <tr>
+                <th>Shareholder</th>
+                <td><?= $data->shareholder->full_name; ?></td>
+            </tr>
+            <tr>
+                <th>Holding</th>
+                <td><?= ($data->shareholder->shareholder / 100) * $this->tengu->settings->finance->shares; ?></td>
+            </tr>
+            <tr>
+                <th>Dividend payable</th>
+                <td><?= NumberHelper::toCurrency($data->amount); ?></td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-12">
+        <table class="table" cellpadding="0" cellspacing="0">
+            <tr>
+                <td class="dividends-image">
+                    <?php
+                    if ($this->tengu->settings->finance->secretary_signature) {
+                        ?>
+                        <img style="height: 100px" src="<?= UrlHelper::backend($this->tengu->settings->finance->secretary_signature->output_url); ?>" alt="secretary signature">
+                        <?php
+                    }
+                    ?>
+                </td>
+                <td width="50px">&nbsp;</td>
+                <td class="dividends-image align-bottom">
+                    <?= $this->tengu->settings->finance->secretary->full_name; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <br/>
+                    Signature of Director/Secretary
+                </td>
+                <td width="50px">&nbsp;</td>
+                <td>
+                    <br/>
+                    Name of Director/Secretary
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,292 @@
+<?php
+/**
+ * Groups index template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = '/queue';
+
+$filter_status = $this->tengu->getFilters('status');
+
+echo $this->partial("common/form/messages");
+?>
+<div class="row mb-3">
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=running'); ?>" class="card bg-primary">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    Awesome
+                </div>
+                <div class="text-white">
+					<strong><?= $stats['running']; ?></strong> job<?= $stats['running'] == 1 ? '' : 's'; ?> are running
+				</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=pending'); ?>" class="card bg-warning">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
+                    <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"/>
+                    <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    Pending
+                </div>
+                <div class="text-white">
+					<strong><?= $stats['pending']; ?></strong> job<?= $stats['pending'] == 1 ? '' : 's'; ?> are awaiting
+				</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=complete'); ?>" class="card bg-success">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    Done
+                </div>
+                <div class="text-white">
+					<strong><?= $stats['complete']; ?></strong> job<?= $stats['complete'] == 1 ? '' : 's'; ?> are complete
+				</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=deleted'); ?>" class="card bg-danger">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    Failed
+                </div>
+                <div class="text-white">
+					<strong><?= $stats['failed']; ?></strong> job<?= $stats['failed'] == 1 ? ' has' : 's have'; ?> failed
+				</div>
+            </div>
+        </a>
+    </div>
+</div>
+<?php
+if ($stats['complete']) {
+    ?>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card p-0">
+                <div class="card-body">
+                    <button
+                        class="btn btn-blank float-right"
+                        type="button"
+                        data-original-title="Are you sure?"
+                        data-html="true"
+                        data-trigger="focus"
+                        data-toggle="popover"
+                        data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/clear'); ?>">Yes</a>'>
+                        <div
+                            data-toggle="tooltip"
+                            data-dismiss="hover"
+                            data-placement="top"
+                            title="Clear the queue">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" class="pb-2">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                            </svg><br/>
+                            clear
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+?>
+<div class="row mb-3">
+	<div class="col-12">
+		<div class="card p-0">
+			<div class="card-body">
+				<?php
+				    $this->partial('common/lists/search', ['url' => $url]);
+				?>
+		        <div class="float-right dropdown">
+		            <a 
+                        href="#"
+                        class="btn btn-default form-control-solid dropdown-toggle"
+                        data-toggle="dropdown"
+                        role="button"
+                        aria-expanded="false">
+		                Filter
+		            </a>
+		            <div class="dropdown-menu p-4">
+		                <div class="pb-3">Filter Options</div>
+		                <form method="get" action="<?= UrlHelper::backend($url); ?>">
+		                    <label class="form-label fw-bold">Status:</label>
+		                    <select
+		                        name="filters[status]"
+		                        class="form-control form-control-solid"
+		                        data-placeholder="Please select an option"
+		                        tabindex="-1"
+		                        aria-hidden="true">
+		                        <option value="">No filter</option>
+		                        <option value="pending"<?= $filter_status == 'pending' ? ' selected="selected"' : ''; ?>>Pending</option>
+		                        <option value="running"<?= $filter_status == 'running' ? ' selected="selected"' : ''; ?>>Running</option>
+		                        <option value="complete"<?= $filter_status == 'complete' ? ' selected="selected"' : ''; ?>>Complete</option>
+                                <option value="failed"<?= $filter_status == 'failed' ? ' selected="selected"' : ''; ?>>Failed</option>
+		                    </select>
+		                    <div class="d-flex justify-content-end mt-4">
+		                        <a href="<?= UrlHelper::backend($url); ?>" class="btn btn-default btn-sm p-2 pl-3 pr-3 mr-2">Reset</a>
+		                        <button type="submit" class="btn btn-sm btn-primary p-2 pl-3 pr-3" >Apply</button>
+		                    </div>
+		                </form>
+		            </div>
+		        </div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body p-3">
+                <?php
+                if ($data->total_items) {
+                    ?>
+                    <table class="table tablesorter">
+                        <thead>
+                            <tr>
+                                <th>Priority</th>
+                                <th>Resource</th>
+                                <th>Job type</th>
+                                <th>Status</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            foreach ($data->getItems() as $row) {
+                                switch ($row->status) {
+                                    case 'complete':
+                                        $bg_colour = 'badge-success';
+                                        break;
+                                    case 'pending':
+                                        $bg_colour = 'badge-warning';
+                                        break;
+                                    case 'running':
+                                        $bg_colour = 'badge-primary';
+                                        break;
+                                    case 'failed':
+                                        $bg_colour = 'badge-danger';
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                ?>
+                                <tr>
+                                    <td>
+                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                            <?= $row->priority_string; ?>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                            <?= $row->resource; ?>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                            <?= $row->job_name; ?>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                            <span class="badge <?= $bg_colour; ?>"><?= ucwords($row->status); ?></span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a
+                                            href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>"
+                                            class="btn btn-blank float-right p-0"
+                                            title="View the job"
+                                            data-toggle="tooltip"
+                                            data-trigger="hover"
+                                            data-dismiss="click"
+                                            data-placement="top">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">
+                                                <path d="M6 9a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3A.5.5 0 0 1 6 9zM3.854 4.146a.5.5 0 1 0-.708.708L4.793 6.5 3.146 8.146a.5.5 0 1 0 .708.708l2-2a.5.5 0 0 0 0-.708l-2-2z"/>
+                                                <path d="M2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h12z"/>
+                                            </svg>
+                                        </a>
+                                        <?php
+                                        if (!$row->deleted_at && !$row->completed_at) {
+                                            ?>
+                                            <button
+                                                type="button"
+                                                class="btn btn-blank float-right p-0 mr-2"
+                                                data-original-title="Are you sure?"
+                                                data-trigger="focus"
+                                                data-html="true"
+                                                data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/delete/' . $row->id); ?>?from=<?= urlencode($url); ?>">Yes</a>'
+                                                data-toggle="popover">
+                                                <span
+                                                    title="Delete the job"
+                                                    data-toggle="tooltip"
+                                                    data-trigger="hover"
+                                                    data-dismiss="click"
+                                                    data-placement="top">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">
+                                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                            <?php
+                                        }
+                                        ?>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    <?php
+                } else {
+                    ?>
+                    <strong class="h5">No results</strong>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+    echo $this->partial(
+        'common/lists/pagination',
+        [
+            'data' => $data,
+            'url' => UrlHelper::backend($url)
+        ]
+    );
+?>
+<script src="<?= $this->tengu->theme->getAsset('js/core/list.js'); ?>"></script>

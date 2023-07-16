@@ -1,0 +1,31 @@
+<section class="card shadow">
+    <div class="card-header">
+        <h2>Ooops, something has gone wrong!</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12 mb-4">
+                <button class="btn btn-primary" onclick="window.history.back();">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                    </svg>
+                    Back
+                </button>
+            </div>
+            <div class="col-12">
+                <p><?= (!empty($message) ? $message : 'An error has occurred while saving'); ?></p>
+                <?php
+                if (($_ENV['APP_DEBUG'] || $_ENV['APP_DEBUG'] == 'true') && !empty($data)) {
+                    if (is_array($data) || is_object($data)) {
+                        ?>
+                        <pre><?php var_dump($data); ?></pre>
+                        <?php
+                    } else {
+                        echo $data;
+                    }
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</section>

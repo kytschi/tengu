@@ -1,0 +1,40 @@
+<?php
+if (!empty($page->banner_image)) {
+    ?>
+    <div class="page-background-image">
+        <img src="<?= $page->banner_image->url; ?>" alt="<?= $page->banner_image->label; ?>">
+    </div>
+    <?php
+}
+?>
+<div class="container">
+    <div id="page-content" class="row mt-3 mb-5">
+        <div class="col-12">
+            <div class="page-title">
+                <h2><?= $page->name; ?></h2>
+            </div>
+            <section class="card">
+                <div class="card-body">
+                    <?php
+                    if (!empty($page->tags->count())) {
+                        ?>
+                        <div class="col-12 mb-3 p-0">
+                            <?php
+                            foreach ($page->tags as $tag) {
+                                ?>
+                                <a href="/search?search=<?= $tag->tag; ?>" class="badge badge-secondary p-2 mr-2 mb-2"><?= $tag->tag; ?></a>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                    <div class="col-12 p-0">
+                        <?= $page->content; ?>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

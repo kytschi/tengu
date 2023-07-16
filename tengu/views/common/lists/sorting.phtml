@@ -1,0 +1,46 @@
+<?php
+/**
+ * List sorting template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+if (empty($name)) {
+    $name = 'name';
+}
+$filters = $this->tengu->getFilters();
+$filter_sort = !empty($filters['order_by']) ? $filters['order_by'] : $name;
+?>
+<label class="form-label fw-bold">Sort:</label>
+<select
+    id="filters_order_by"
+    name="filters[order_by]"
+    class="form-control form-control-solid"
+    tabindex="-1"
+    aria-hidden="true">
+    <option
+        value="<?= $name; ?>|ASC"
+        <?= ($filter_sort == $name . '|ASC') ? ' selected="selected"' :''; ?>>
+        A-Z
+    </option>
+    <option
+        value="<?= $name; ?>|DESC"
+        <?= ($filter_sort == $name . '|DESC') ? ' selected="selected"' :''; ?>>
+        Z-A
+    </option>
+    <option
+        value="created_at|DESC"
+        <?= ($filter_sort == 'created_at|DESC') ? ' selected="selected"' :''; ?>>
+        Newest
+    </option>
+    <option
+        value="created_at|ASC"
+        <?= ($filter_sort == 'created_at|ASC') ? ' selected="selected"' :''; ?>>
+        Oldest
+    </option>
+</select>

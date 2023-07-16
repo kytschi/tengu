@@ -1,0 +1,247 @@
+<?php
+/**
+ * Settings index template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = ($this->di->getConfig())->urls->fms . '/settings';
+
+echo $this->partial("common/form/messages");
+?>
+<form id="form-edit" method="post" action="<?= UrlHelper::backend($url . '/update'); ?>" enctype="multipart/form-data">
+    <div class="row mb-3">
+		<div class="col-12">
+			<div class="card p-0">
+				<div class="card-body">
+					<button
+						id="btn-save"
+						class="btn btn-blank float-right"
+						type="button"
+						title="Save my page"
+						data-toggle="tooltip"
+						data-trigger="hover"
+						data-dismiss="click"
+						data-placement="top">
+						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v4.5h2a.5.5 0 0 1 .354.854l-2.5 2.5a.5.5 0 0 1-.708 0l-2.5-2.5A.5.5 0 0 1 5.5 6.5h2V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                        </svg><br/>
+						save
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div class="row">
+        <div class="col-12 mb-3">
+			Required fields <span class="required">*</span>
+		</div>
+        <div class="col-12">
+            <div class="card mb-5">
+                <div class="card-body p-0 pt-4">
+                    <div class="d-flex flex-wrap flex-sm-nowrap pl-3 pr-3">
+                        <div class="flex-grow-1 mb-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="paye_tax_ref_number">
+                                            PAYE tax reference number
+                                        </label>
+                                        <input
+                                            name="paye_tax_ref_number"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="paye_tax_ref_number"
+                                            value="<?= FormController::getFormData('paye_tax_ref_number', $data); ?>">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="shares">
+                                            Shares issued
+                                        </label>
+                                        <input
+                                            name="shares"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="shares"
+                                            value="<?= FormController::getFormData('shares', $data); ?>">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="currency">
+                                            Default currency
+                                            <span class="required">*</span>
+                                        </label>
+                                        <select
+                                            name="currency"
+                                            class="form-control">
+                                            <?php
+                                            $selected = FormController::getFormData('currency', $data);
+                                                ?>
+                                                <option value="">No currency</option>
+                                                <?php
+                                            foreach ($currencies as $key => $currency) {
+                                                ?>
+                                                <option
+                                                    value="<?= $key; ?>"
+                                                    <?= $selected == $key ? ' selected' : ''; ?>><?= $currency . ' (' . $key .')'; ?></option>
+                                                <?php
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="nav p-0 m-0">
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('overview-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#overview-tab">
+                                Overview
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('activity-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#activity-tab">
+                                Activity
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-content mt-5">
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('overview-tab', 'overview-tab'); ?>"
+                    id="overview-tab"
+                    role="tabpanel"
+                    aria-labelledby="overview-tab">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header m-0">
+                                    <span class="card-title">Company</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group mb-4">
+                                        <label for="registered_company_name">
+                                            Registered company name
+                                            <span class="required">*</span>
+                                        </label>
+                                        <input
+                                            name="registered_company_name"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="registered_company_name"
+                                            value="<?= FormController::getFormData('registered_company_name', $data); ?>"
+                                            required>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="registered_company_number">
+                                            Registered company number
+                                        </label>
+                                        <input
+                                            name="registered_company_number"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="registered_company_number"
+                                            value="<?= FormController::getFormData('registered_company_number', $data); ?>">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="registered_company_address">
+                                            Registered company address
+                                            <span class="required">*</span>
+                                        </label>
+                                        <textarea
+                                            name="registered_company_address"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            rows="6"
+                                            aria-describedby="registered_company_address"
+                                            required><?= FormController::getFormData('registered_company_address', $data); ?></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header m-0">
+                                    <span class="card-title">Secretary</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group mb-4">
+                                        <label for="secretary_id">
+                                            Secretary
+                                        </label>
+                                        <?php
+                                            $selected = FormController::getFormData('secretary_id', $data);
+                                            ?>
+                                        <select
+                                            name="secretary_id"
+                                            class="form-control mt-2">
+                                            <option value=""<?= !$selected ? ' selected' : ''; ?>>None</option>
+                                            <?php
+                                            foreach ($users as $user) {
+                                                ?>
+                                                <option 
+                                                    value="<?= $user->id; ?>"
+                                                    <?= $selected == $user->id ? ' selected' : ''; ?>><?= $user->full_name; ?></option>
+                                                <?php
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="upload_secretary_signature">Upload secretary signature</label>
+                                        <input
+                                            id="upload_secretary_signature"
+                                            name="upload_secretary_signature"
+                                            type="file"
+                                            accept="image/jpeg, image/png, capture=camera"
+                                            class="form-control mt-2">
+                                        <?php
+                                        if ($data->secretary_signature) {
+                                            ?>
+                                            <p>
+                                                <img src="<?= UrlHelper::backend($data->secretary_signature->output_url); ?>" alt="secretary signature">
+                                            </p>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('activity-tab', 'overview-tab'); ?>"
+                    id="activity-tab"
+                    role="tabpanel"
+                    aria-labelledby="activity-tab">
+                    <div class="row">
+                        <div class="col-6">
+                            <?= $this->partial("common/logs", ['data' => $data->logs]); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="<?= $this->tengu->theme->getAsset('js/core/edit.js'); ?>"></script>

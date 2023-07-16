@@ -1,0 +1,355 @@
+<?php
+/**
+ * Words widget template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$keywords_url = ($this->di->getConfig())->urls->mms . '/keywords';
+$words_url = ($this->di->getConfig())->urls->mms . '/words';
+
+$filter_status = '';
+if (!empty($_GET['filter_words'])) {
+    $filter_status = $_GET['filter_words'];
+}
+
+if (!empty($tab)) {
+    $tab = 'tab=' . $tab;
+} else {
+    $tab = null;
+}
+
+switch ($filter_status) {
+    case 'mt10':
+        $filter_count = 10;
+        break;
+    case 'mt20':
+        $filter_count = 20;
+        break;
+    case 'mt30':
+        $filter_count = 30;
+        break;
+    case 'mt40':
+        $filter_count = 40;
+        break;
+    case 'mt50':
+        $filter_count = 50;
+        break;
+    case 'mt60':
+        $filter_count = 60;
+        break;
+    default:
+        $filter_count = 0;
+        break;
+}
+?>
+
+<style>
+#word-cloud select {
+    border: 1px solid var(--border-grey) !important;
+}
+
+#word-cloud ul {
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    line-height: 2.5rem;
+}
+
+#word-cloud ul span {
+    display: block;
+    padding: 0.5rem 0.5rem;
+    text-decoration: none;
+    position: relative;
+    cursor: pointer;
+}
+
+.word-cloud.badge {
+    border-radius: 40px !important;
+}
+</style>
+<script type="text/javascript">
+    $(function () {
+        $("#btn-delete-all-words").click(function() {
+            $(this).popover({
+                trigger: "manual",
+                html: true,
+                title: "Are you sure?",
+                template: $("#delete-all-words-popover").html(),
+                content: $("#delete-all-words-popover .popover-body").html()
+            }).popover("show");
+
+            $(".delete-all-words").bind("click", function () {
+                $("#btn-delete-all-words").popover("hide");
+                $("#processing").modal("show");
+
+                $("body").append("<form id='form-delete-all-words' method='post' action='<?= UrlHelper::backend(($this->di->getConfig())->urls->mms . '/words/delete-all?from=' . urlencode(UrlHelper::append($url, $tab))); ?>'></form>");
+                $(".delete-words-checkbox:checked").each(function(index, item) {
+                    $("#form-delete-all-words").append(item);
+                });
+                $("#form-delete-all-words").submit();
+            });
+        });
+
+        $("#delete-words-select-all").change((event) => {
+            if ($(event.target).is(':checked')) {
+                $("input[name^=delete_words]").prop("checked", true);
+            } else {
+                $("input[name^=delete_words]").prop("checked", false);
+            }
+        });
+    });
+</script>
+                        
+<div id="word-cloud" class="card">
+    <div class="card-header mb-2">
+        
+        <table class="table table-borderless p-0 m-0">
+            <tr>
+                <td class="text-left p-0 m-0"
+                    data-toggle="collapse"
+                    data-target="#available-words-widget"
+                    aria-expanded="true"
+                    aria-controls="available-words-widget">
+                    Keywords
+                </td>
+                <td class="p-0 m-0">
+                    <div class="float-right">
+                        <select
+                            name="filter_words"
+                            class="form-control form-control-solid"
+                            style="width: 200px;"
+                            title="Filter the word cloud by popularity"
+                            data-url="<?= $url; ?>"
+                            data-old="<?= $filter_status; ?>"
+                            placeholder="Filter"
+                            tabindex="-1"
+                            aria-hidden="true">
+                            <option value="">No filter</option>
+                            <option value="mt60"<?= $filter_status == 'mt60' ? ' selected="selected"' : ''; ?>>Extremely popular</option>
+                            <option value="mt50"<?= $filter_status == 'mt50' ? ' selected="selected"' : ''; ?>>Very popular</option>
+                            <option value="mt40"<?= $filter_status == 'mt40' ? ' selected="selected"' : ''; ?>>Popular</option>
+                            <option value="mt30"<?= $filter_status == 'mt30' ? ' selected="selected"' : ''; ?>>Somewhat</option>
+                            <option value="mt20"<?= $filter_status == 'mt20' ? ' selected="selected"' : ''; ?>>Pretty popular</option>
+                            <option value="mt10"<?= $filter_status == 'mt10' ? ' selected="selected"' : ''; ?>>Not very popular</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div
+        id="available-words-widget"
+        class="collapse show card-body p-3 pt-0">
+        <?php
+        if ($words->count()) {
+            ?>
+            <table class="table tablesorter">
+                <thead>
+                    <tr>
+                        <th width="150px">
+                            <div id="delete-all-words-popover" class="d-none">
+                                <div class="popover" role="tooltip">
+                                    <div class="arrow"></div>
+                                    <h3 class="popover-header">Are you sure?</h3>
+                                    <div class="popover-body">
+                                        <span class="btn btn-secondary">No</span>&nbsp;<span class="btn btn-danger delete-all-words">Yes</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-check float-left">
+                                <div class="checkbox switcher">
+                                    <label>
+                                        <input id="delete-words-select-all" type="checkbox" name="all" value="">
+                                        <span>
+                                            <small class="switcher-on">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                </svg>
+                                            </small>
+                                            <small class="switcher-off">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                </svg>
+                                            </small>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </th>
+                        <th>Keyword</th>
+                        <th>Popularity</th>
+                        <th width="230px">
+                            <button
+                                id="btn-delete-all-words"
+                                type="button"
+                                class="btn btn-blank p-0 float-right mt-2">
+                                <span
+                                    title="Delete all the selected words"
+                                    data-toggle="tooltip"
+                                    data-trigger="hover"
+                                    data-dismiss="click"
+                                    data-placement="top">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg>
+                                </span>
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($words as $key => $word) {
+                        if ($filter_count && ($word->word_count > $filter_count || $word->word_count <= ($filter_count - 10))) {
+                            continue;
+                        }
+
+                        if ($word->word_count <= 10) {
+                            $bg_colour = 'badge-danger';
+                        } elseif ($word->word_count <= 20) {
+                            $bg_colour = 'badge-warning';
+                        } elseif ($word->word_count <= 30) {
+                            $bg_colour = 'badge-info';
+                        } elseif ($word->word_count <= 40) {
+                            $bg_colour = 'badge-primary';
+                        } else {
+                            $bg_colour = 'badge-success';
+                        }
+                        ?>
+                        <tr>
+                            <td>
+                                <div class="form-group form-check">
+                                    <div class="checkbox switcher">
+                                        <label>
+                                            <input
+                                                class="delete-words-checkbox"
+                                                type="checkbox"
+                                                name="delete_words[<?= $word->id; ?>]"
+                                                value="<?= $word->word; ?>">
+                                            <span>
+                                                <small class="switcher-on">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                    </svg>
+                                                </small>
+                                                <small class="switcher-off">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                    </svg>
+                                                </small>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><?= $word->word; ?></td>
+                            <td>
+                                <span class="badge <?= $bg_colour; ?>"><?= $word->popularity ?></span><br/>
+                                <small>appears in the pages <?= $word->word_count; ?> time<?= $word->word_count == 1 ? '' : 's'; ?></small>
+                            </td>
+                            <td>
+                                <span
+                                    class="btn btn-blank float-right word-cloud p-0"
+                                    data-word="<?= $word->word; ?>">
+                                    <span
+                                        title="Add to the search"
+                                        data-toggle="tooltip"
+                                        data-trigger="hover"
+                                        data-dismiss="click"
+                                        data-placement="top">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                        </svg>
+                                    </span>
+                                </span>
+                                <?php
+                                if (!$word->deleted_at) {
+                                    ?>
+                                    <button
+                                        type="button"
+                                        class="btn btn-blank float-right p-0 mr-2"
+                                        data-original-title="Are you sure?"
+                                        data-trigger="focus"
+                                        data-html="true"
+                                        data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($words_url . '/delete/' . $word->id); ?>?from=<?= urlencode(UrlHelper::append($url, $tab)); ?>">Yes</a>'
+                                        data-toggle="popover">
+                                        <span
+                                            title="Delete the word"
+                                            data-toggle="tooltip"
+                                            data-trigger="hover"
+                                            data-dismiss="click"
+                                            data-placement="top">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <button
+                                        type="button"
+                                        class="btn btn-blank float-right p-0 mr-2"
+                                        data-original-title="Are you sure?"
+                                        data-trigger="focus"
+                                        data-html="true"
+                                        data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($words_url . '/recover/' . $word->id); ?>?from=<?= urlencode(UrlHelper::append($url, 'tab=' . $tab)); ?>">Yes</a>'
+                                        data-toggle="popover">
+                                        <span
+                                            title="Recover the campaign"
+                                            data-toggle="tooltip"
+                                            data-trigger="hover"
+                                            data-dismiss="click"
+                                            data-placement="top">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                <path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"/>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <?php
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                </tbody>
+            </table>
+            <?php
+        } else {
+            ?>
+            <p class="pt-3"><strong class="h5">No words</strong></p>
+            <?php
+        }
+        ?>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("select[name=filter_words]").change((event) => {
+            let url = window.location.href;
+            url = url.replace("&filter_words=" + $("select[name=filter_words]").data("old"), "");
+
+            if (url.includes("?")) {
+                url += "&filter_words=" + $("select[name=filter_words] option:selected").val();
+            } else {
+                url += "?tab=pages-tab&filter_words=" + $("select[name=filter_words] option:selected").val();
+            }
+            window.location.href = url;
+        });
+    });
+</script>

@@ -1,0 +1,502 @@
+<?php
+/**
+ * Self assessment UK employment 2022 template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\NumberHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$payments = 0;
+if ($data->employee->payments->count()) {
+    $payments = $data->employee->paymentsTaxYearAmount($data->tax_year);
+}
+
+$expenses = 0;
+if ($data->employee->expenses->count()) {
+    $expenses = $data->employee->expensesTaxYearAmount($data->tax_year);
+}
+?>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body p-0">
+                <ul class="nav p-0 m-0">
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('employment-person-tab', 'employment-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#employment-person-tab">
+                            Person details
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('employment-payments-tab', 'employment-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#employment-payments-tab">
+                            Payments
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('employment-benefits-tab', 'employment-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#employment-benefits-tab">
+                            Benefits
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('employment-expenses-tab', 'employment-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#employment-expenses-tab">
+                            Expenses
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('employment-preview-tab', 'employment-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#employment-preview-tab">
+                            Preview
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content col-12">
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('employment-person-tab', 'employment-person-tab'); ?>"
+            id="employment-person-tab"
+            role="tabpanel"
+            aria-labelledby="employment-person-tab">
+            <div class="row m-0">
+                <div class="col-12 p-0">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="your_name">
+                                            <strong>Your name</strong>
+                                        </label>
+                                        <input
+                                            name="your_name"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="your_name"
+                                            value="<?= $data->employee->full_name; ?>"
+                                            readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="utr">
+                                            <strong>UTR</strong>
+                                        </label>
+                                        <input
+                                            name="utr"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="utr"
+                                            value="<?= $data->employee->utr; ?>"
+                                            readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('employment-payments-tab', 'employment-person-tab'); ?>"
+            id="employment-payments-tab"
+            role="tabpanel"
+            aria-labelledby="employment-payments-tab">
+            <div class="row m-0">
+                <div class="col-12 p-0">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="payment_amount">
+                                            <strong>Pay from this employment - the total from your P45 or P60</strong>
+                                        </label>
+                                        <input
+                                            name="payment_amount"
+                                            type="text"
+                                            class="form-control mt-2 mb-2"
+                                            aria-describedby="payment_amount"
+                                            value="<?= NumberHelper::toCurrency($payments); ?>"
+                                            readonly="readonly">
+                                        <small>Before tax was taken off</small>
+                                    </div>
+                                    <div class="form-group mb-5">
+                                        <label for="payment_tax_off_amount">
+                                            <strong>UK tax taken off pay</strong>
+                                        </label>
+                                        <input
+                                            name="payment_tax_off_amount"
+                                            type="text"
+                                            class="form-control mt-2 mb-2"
+                                            aria-describedby="payment_tax_off_amount"
+                                            value="<?= NumberHelper::toCurrency(0); ?>"
+                                            readonly="readonly">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="payment_tips_amount">
+                                            <strong>Tips and other payments not on your P60</strong>
+                                        </label>
+                                        <input
+                                            name="payment_tips_amount"
+                                            type="text"
+                                            class="form-control mt-2 mb-2"
+                                            aria-describedby="payment_tips_amount"
+                                            value="<?= NumberHelper::toCurrency(0); ?>"
+                                            readonly="readonly">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="paye_tax_ref">
+                                            <strong>PAYE tax reference of your employer</strong>
+                                        </label>
+                                        <input
+                                            name="paye_tax_ref"
+                                            type="text"
+                                            class="form-control mt-2 mb-2"
+                                            aria-describedby="paye_tax_ref"
+                                            value="<?= $this->tengu->settings->finance->paye_tax_ref_number; ?>"
+                                            readonly="readonly">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="employer_name">
+                                            <strong>Your employer's name</strong>
+                                        </label>
+                                        <input
+                                            name="employer_name"
+                                            type="text"
+                                            class="form-control mt-2 mb-2"
+                                            aria-describedby="employer_name"
+                                            value="<?= $this->tengu->settings->finance->registered_company_name; ?>"
+                                            readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group form-check mb-5">
+                                        <label for="director">
+                                            <strong>If you were a company director</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="director"
+                                                    type="checkbox"
+                                                    name="director"
+                                                    value="1"
+                                                    <?= $data->employee->type == 'director' ? ' checked="checked"' : ''; ?>
+                                                    readonly="readonly">
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="director_ceased_date">
+                                            <strong>If you ceased being a director before 6 April 2022</strong>
+                                        </label>
+                                        <input
+                                            name="director_ceased_date"
+                                            type="text"
+                                            class="form-control mt-2 mb-2 datepicker"
+                                            aria-describedby="director_ceased_date"
+                                            value="<?= DateHelper::pretty(FormController::getFormData('director_ceased_date', $return), false, false, ''); ?>">
+                                        <small>Put the date the directorship ceased in the box</small>
+                                    </div>
+                                    <div class="form-group form-check mb-4">
+                                        <label for="company_closed">
+                                            <strong>And, if the company was a close company</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="company_closed"
+                                                    type="checkbox"
+                                                    name="company_closed"
+                                                    value="1"
+                                                    <?= FormController::getFormData('company_closed', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-check mb-4">
+                                        <label for="off_payroll">
+                                            <strong>If this employment income is from inside off-payroll working engagements</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="off_payroll"
+                                                    type="checkbox"
+                                                    name="off_payroll"
+                                                    value="1"
+                                                    <?= FormController::getFormData('off_payroll', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('employment-benefits-tab', 'employment-person-tab'); ?>"
+            id="employment-benefits-tab"
+            role="tabpanel"
+            aria-labelledby="employment-benefits-tab">
+            <div class="row m-0">
+                <div class="col-12 p-0">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 pb-4">
+                                    <h5>Use your form P11D (or equivalent information)</h5>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="company_cars">
+                                            Company cars and vans
+                                        </label>
+                                        <input
+                                            name="company_cars"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="company_cars"
+                                            value="<?= FormController::getFormData('company_cars', $return); ?>">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="fuel_for_company_cars">
+                                            Fuel for company cars and vans
+                                        </label>
+                                        <input
+                                            name="fuel_for_company_cars"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="fuel_for_company_cars"
+                                            value="<?= FormController::getFormData('fuel_for_company_cars', $return); ?>">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="private_medical_insurance">
+                                            Private medical and dental insurance
+                                        </label>
+                                        <input
+                                            name="private_medical_insurance"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="private_medical_insurance"
+                                            value="<?= FormController::getFormData('private_medical_insurance', $return); ?>">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="vouchers_amount">
+                                            Vouchers, credit cards and excess mileage allowance
+                                        </label>
+                                        <input
+                                            name="vouchers_amount"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="vouchers_amount"
+                                            value="<?= FormController::getFormData('vouchers_amount', $return); ?>">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="goods_amount">
+                                            Goods and other assets provided by your employer
+                                        </label>
+                                        <input
+                                            name="goods_amount"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="goods_amount"
+                                            value="<?= FormController::getFormData('goods_amount', $return); ?>">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="accommodation_amount">
+                                            Accommodation provided by your employer
+                                        </label>
+                                        <input
+                                            name="accommodation_amount"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="accommodation_amount"
+                                            value="<?= FormController::getFormData('accommodation_amount', $return); ?>">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="other_benefits">
+                                            Other benefits (including interest-free and low interest loans)
+                                        </label>
+                                        <input
+                                            name="other_benefits"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="other_benefits"
+                                            value="<?= FormController::getFormData('other_benefits', $return); ?>">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="expenses_payments">
+                                            Expenses payments received and balancing charges
+                                        </label>
+                                        <input
+                                            name="expenses_payments"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="expenses_payments"
+                                            value="<?= NumberHelper::toCurrency($expenses); ?>"
+                                            readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('employment-expenses-tab', 'employment-person-tab'); ?>"
+            id="employment-expenses-tab"
+            role="tabpanel"
+            aria-labelledby="employment-expenses-tab">
+            <div class="row m-0">
+                <div class="col-12 p-0">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="business_travel_amount">
+                                            Business travel and subsistence expenses
+                                        </label>
+                                        <input
+                                            name="business_travel_amount"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="business_travel_amount"
+                                            value="<?= FormController::getFormData('business_travel_amount', $return); ?>">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="fixed_deductions_amount">
+                                            Fixed deductions for expenses
+                                        </label>
+                                        <input
+                                            name="fixed_deductions_amount"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="fixed_deductions_amount"
+                                            value="<?= FormController::getFormData('fixed_deductions_amount', $return); ?>">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="professional_fees">
+                                            Professional fees and subscriptions
+                                        </label>
+                                        <input
+                                            name="professional_fees"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="professional_fees"
+                                            value="<?= FormController::getFormData('professional_fees', $return); ?>">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="other_expenses_amount">
+                                            Other expenses and capital allowances
+                                        </label>
+                                        <input
+                                            name="other_expenses_amount"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="other_expenses_amount"
+                                            value="<?= FormController::getFormData('other_expenses_amount', $return); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('employment-preview-tab', 'employment-person-tab'); ?>"
+            id="employment-preview-tab"
+            role="tabpanel"
+            aria-labelledby="employment-preview-tab">
+            <div class="row m-0">
+                <div class="col-12 p-0">
+                    <div class="card p-0">
+                        <div class="card-body">
+                            <?php
+                            if (!empty($return->file)) {
+                                switch ($return->file->mime_type) {
+                                    case 'application/pdf':
+                                        ?>
+                                        <div 
+                                            class="pdf-render"
+                                            data-url="<?= UrlHelper::backend($return->file->output_url); ?>"></div>
+                                        <?php
+                                        break;
+                                    default:
+                                    ?>
+                                    <?php
+                                }
+                            } else {
+                                ?>
+                                <div class="h4 p-4">Nothing to preview</div>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

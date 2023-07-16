@@ -1,0 +1,17 @@
+.board-col {
+    padding: 0;
+    margin-right: 10px;
+}
+
+.board-col:last-child {
+    margin-right: 0px;
+}
+
+.board-col .card {
+    border: 1px solid var(--border-grey) !important;
+    padding: 0 !important;
+}
+
+.board-col .card-body {
+    padding: 10px !important;
+}

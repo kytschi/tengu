@@ -1,0 +1,63 @@
+:root {
+	--bg-black: #181C32;
+	--bg-black-darker: #0a0c0d;
+
+	--bg-blue: #009bf3;
+	--bg-blue-darker: #2569c3;
+    --bg-blue-lighter: #A6C5F7;
+	--bg-blue-lighterer: #f0f5fe;
+
+	--bg-dark-blue: #1E1E2D;
+	--bg-darker-blue: #12121c;
+	--bg-dark-grey: #2E2E2E;
+
+	--bg-grey: #edf2f9;
+	--bg-grey-darker: #bbbdc5;
+	--bg-grey-lighter: #F9FBFD;
+	--bg-grey-lighterish: #F4F6FA;
+
+	--bg-green: #50CD89;
+
+	--bg-purple: #7239EA;
+	--bg-purple-darker: #5014D0;
+	--bg-purple-lighter: #e1d6fc;
+
+	--bg-pink: #7239ea;
+
+	--bg-red: #F1416C;
+	--bg-red-darker: #D9214E;
+	--bg-red-lighter: #fff5f8;
+
+    --bg-white: #fff;
+	--bg-offwhite: #F9FBFD;
+
+	--bg-yellow: #FFC808;
+	--bg-yellow-darker: #F1BC00;
+	--bg-yellow-lighter: #fff8dd;
+
+	--border-blue: #2c7be5;
+	--border-dark-blue: #2362b7;
+    --border-blue-lighter: #A6C5F7;
+	
+	--border-grey: #E5E5E5;
+	--border-grey-lighter: #eff2f5;
+
+	--border-red: #f1416c;
+
+	--font-blue: #009ef7;
+	--font-blue-darker: #0081c1;
+
+	--font-purple: #7239ea;
+
+	--font-red: #f1416c;
+
+	--font-green: #00d97e;
+
+	--font-grey: #6e84a3;
+	--font-grey-lighter: #c1c1c1;
+
+	--font-white: #fff;
+	--font-yellow: #ddaa00;
+
+	--tag-bg: #e5e5e5;
+}

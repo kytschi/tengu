@@ -1,0 +1,130 @@
+<?php
+/**
+ * Template widget template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+?>
+<div class="row">
+<?php
+if ($templates) {
+    $selected = FormController::getFormData('template_id', $data);
+    ?>
+    <div class="col-12 mb-4">
+        <div id="tiles">
+            <?php
+            foreach ($templates as $template) {
+                $selected = FormController::getFormData('template_id', $data);
+                if (empty($selected) && $template->default) {
+                    $selected = $template->id;
+                }
+                if (!$template->deleted_at) {
+                    $bg_colour = 'primary';
+                    $status = 'available';
+                } else {
+                    $bg_colour = 'danger';
+                    $status = 'deleted';
+                }
+                ?>
+                <div class="tile-item">
+                    <div class="card p-2" style="margin-bottom: 6px !important;">
+                        <div class="card-header">
+                            <div class="radio switcher">
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="template_id"
+                                        value="<?= $template->id; ?>"
+                                        <?= $selected == $template->id ? ' checked="checked"' : '';?>>
+                                    <span>
+                                        <small class="switcher-on">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                            </svg>
+                                        </small>
+                                        <small class="switcher-off">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                            </svg>
+                                        </small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="card-body pb-0">
+                            <div class="h3">
+                                <?= $template->name; ?>
+                            </div>
+                            <div class="template-preview-img border">
+                                <img src="/dump/<?= $template->id; ?>-snap.jpg" onerror="onImageError(this)">
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span
+                                class="text-<?= $bg_colour;?> mr-4"
+                                title="Template is marked as <?= $status; ?>"
+                                data-toggle="tooltip"
+                                data-trigger="hover"
+                                data-dismiss="click"
+                                data-placement="top">
+                                <?php
+                                if ($status == 'available') {
+                                    ?>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                                    </svg>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                    </svg>
+                                    <?php
+                                }
+                                ?>
+                            </span>
+                            <span
+                                class="mr-4"
+                                title="Last used"
+                                data-toggle="tooltip"
+                                data-trigger="hover"
+                                data-dismiss="click"
+                                data-placement="top">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                                </svg>&nbsp;&nbsp;<?= DateHelper::prettyFull($template->updated_at, false); ?>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            <?php
+            }
+            ?>
+        </div>
+    </div>
+    <?php
+} else {
+?>
+<div class="col-6">
+    <div class="card mb-4 p-2">
+        <div class="card-body">
+            <p class="h6 pb-0 m-0">No templates defined</p>
+        </div>
+    </div>
+</div>
+<?php
+}
+?>
+</div>

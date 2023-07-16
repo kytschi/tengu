@@ -1,0 +1,91 @@
+<?php
+$search = !empty($_GET['search']) ? $_GET['search'] : '';
+
+if (!empty($page->banner_image)) {
+    ?>
+    <div class="page-background-image">
+        <img src="<?= $page->banner_image->url; ?>" alt="<?= $page->banner_image->label; ?>">
+    </div>
+    <?php
+}
+?>
+<div class="container">
+    <div id="page-content" class="row mt-3 mb-5">
+        <div class="col-12">
+            <div class="page-title">
+                <h2><?= $page->name; ?></h2>
+            </div>
+            <section class="card">
+                <div class="card-body">
+                    <form id="search" action="/search" method="get" class="w-100">
+                        <div class="input-group">
+                            <input
+                                name="search"
+                                type="text"
+                                class="form-control"
+                                value="<?= $search; ?>"
+                                placeholder="Place your search query here"
+                                aria-label="Place your search query here"
+                                aria-describedby="search">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary pl-3 pr-3" type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <?php
+                    if (!empty($results)) {
+                        ?>                
+                        <div class="col-12 p-0">
+                        <?php
+                        if (!$results->total_items) {
+                            ?>
+                            Sorry but nothing was found for that search query
+                            <?php
+                        } else {
+                            foreach ($results->getItems() as $result) {
+                            ?>
+                            <div class="search-result col-12 p-0 mb-4">
+                                <div class="search-result-header"><?= $result->name; ?></div>
+                                <div class="col-12 p-0 mb-3">
+                                    <div class="row m-0">
+                                    <?php
+                                        $image = false;
+                                        if (!empty($result->cover_image)) {
+                                            $image = true;
+                                            ?>
+                                            <div class="search-result-cover-image col-4 p-0">
+                                                <img src="<?= $result->cover_image->url; ?>" alt="<?= $result->cover_image->label; ?>"/>
+                                            </div>
+                                            <?php
+                                        }
+                                        if ($result->summary) {
+                                            ?>
+                                            <div class="search-result-summary <?= $image ? 'col-8 pl-3' : 'col-12'; ?> p-0">
+                                                <?= $result->summary; ?>
+                                            </div>
+                                            <?php
+                                        }
+                                    ?>
+                                    </div>
+                                </div>
+                                <div class="col-12 p-0 search-result-footer">
+                                    <a href="<?= $result->url; ?>" class="btn btn-primary">Find out more</a>
+                                </div>
+                            </div>
+                            <?php
+                            }
+                        }
+                        ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

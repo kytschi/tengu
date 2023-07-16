@@ -1,0 +1,42 @@
+<?php
+/**
+ * Tags template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+
+if (!isset($meta)) {
+    $meta = false;
+}
+
+if (empty($data)) {
+    $tags_string = FormController::getFormData('tags');
+    $data = preg_split('/\|*\|/i', $tags_string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+}
+
+?>
+<div class="card">
+    <div class="card-header mb-3">
+        <span class="card-title">Tags</span>
+    </div>
+    <div class="card-body p-0">
+        <input
+            class="tags mb-2"
+            name="tags"
+            value="<?= !empty($data) ? (new FormController())->tagsToString($data) : ''; ?>"/>
+        <?php
+        if ($meta) {
+            ?>
+            <small>Tags will also be used as meta keywords on the front end</small>
+            <?php
+        }
+        ?>
+    </div>
+</div>

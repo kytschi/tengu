@@ -1,0 +1,83 @@
+<?php
+/**
+ * Note template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.2
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+?>
+<hr/>
+<table class="note table table-borderless">
+    <tr>
+        <td class="align-top p-0" width="70px">
+            <span class="note-image">
+                <img src="<?= !empty($note->created->profile_image) ? $note->created->profile_image->url : $this->tengu->theme->getAsset('imgs/avatars/blank.png'); ?>" alt="<?= $note->created->full_name; ?>"/>
+            </span>
+        </td>
+        <td class="<?= $note->deleted_at ? ' text-strikethrough' : '';?> p-0">
+            <p class="note-by"><?= !empty($note->created) ? $note->created->full_name : 'Unknown'; ?></p>
+            <p><?= $note->content; ?></p>
+            <p class="note-date">
+                <?= !empty($note->created_at) ? DateHelper::prettyFull($note->created_at) : 'Unknown'; ?>,
+                <?php
+                if (empty($note->deleted_at)) {
+                    ?>
+                    <button
+                        class="note-button btn btn-blank p-0 m-0 ml-1"
+                        type="button"
+                        data-original-title="Are you sure?"
+                        data-html="true"
+                        data-trigger="focus"
+                        data-toggle="popover"
+                        data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend('/notes/delete/' . $note->id . '?from=' . urlencode($url)); ?>">Yes</a>'>
+                        <span
+                            data-toggle="tooltip"
+                            data-dismiss="hover"
+                            data-placement="top"
+                            title="Mark the note as deleted">
+                            delete
+                        </span>
+                    </button>
+                    <?php
+                } else {
+                    ?>
+                    <button
+                        class="note-button btn btn-blank p-0 m-0 ml-1"
+                        type="button"
+                        data-original-title="Are you sure?"
+                        data-html="true"
+                        data-trigger="focus"
+                        data-toggle="popover"
+                        data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend('/notes/recover/' . $note->id . '?from=' . urlencode($url)); ?>">Yes</a>'>
+                        <span
+                            data-toggle="tooltip"
+                            data-dismiss="hover"
+                            data-placement="top"
+                            title="Recover the note">
+                            recover
+                        </span>
+                    </button>
+                    <?php
+                }
+                ?>
+            </p>
+            <?php
+            if ($note->deleted_at) {
+                ?>
+                <p class="badge badge-danger m-0 p-2" style="text-transform: none">
+                    Deleted, <?= !empty($note->deleted) ? $note->deleted->full_name : 'Unknown'; ?>,
+                    <?= !empty($note->deleted_at) ? DateHelper::prettyFull($note->deleted_at) : 'Unknown'; ?>
+                </p>
+                <?php
+            }
+            ?>
+        </td>
+    </tr>
+</table>

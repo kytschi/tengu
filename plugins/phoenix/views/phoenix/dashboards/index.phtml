@@ -1,0 +1,133 @@
+<?php
+/**
+ * Dashboard template.
+ *
+ * @copyright   2023 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = ($this->di->getConfig())->urls->sales . '/dashboard';
+$filter_year = $this->tengu->getFilters('year');
+
+?>
+<script src="<?= $this->tengu->theme->getAsset('js/plugins/chartjs.min.js'); ?>"></script>
+<div class="row">
+	<div class="col-12 mb-3">
+		<div class="card p-0">
+			<div class="card-body">
+		        <div class="float-right dropdown mr-3">
+		            <a
+                        href="#"
+                        class="btn btn-default form-control-solid dropdown-toggle"
+                        data-toggle="dropdown"
+                        role="button"
+                        aria-expanded="false">
+		                Filter
+		            </a>
+		            <div class="dropdown-menu p-4">
+		                <div class="pb-3">Filter Options</div>
+		                <form method="get" action="<?= UrlHelper::backend($url); ?>">
+                            <label class="form-label fw-bold">Year starting:</label>
+		                    <select
+		                        name="filters[year]"
+		                        class="form-control form-control-solid"
+		                        data-placeholder="Please select an option"
+		                        tabindex="-1"
+		                        aria-hidden="true">
+		                        <option value="">No filter</option>
+                                <?php
+                                foreach ($years as $year) {
+                                    ?>
+                                    <option value="<?= $year; ?>"<?= $filter_year == $year ? ' selected="selected"' : ''; ?>>
+                                        <?= $year; ?>
+                                    </option>
+                                    <?php
+                                }
+                                ?>
+		                    </select>
+		                    <div class="d-flex justify-content-end mt-4">
+		                        <a href="<?= UrlHelper::backend($url); ?>" class="btn btn-default btn-sm p-2 pl-3 pr-3 mr-2">Reset</a>
+		                        <button type="submit" class="btn btn-sm btn-primary p-2 pl-3 pr-3" >Apply</button>
+		                    </div>
+		                </form>
+		            </div>
+		        </div>				
+			</div>
+		</div>
+	</div>
+	<?php
+if ($this->tengu->isAdmin()) {
+	?>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+				<span class="card-title">Orders this year</span>
+            </div>
+            <div class="card-body">
+				<?php
+				if (count($orders)) {
+					?>
+					<canvas id="visitors" width="600" height="200"></canvas>
+					<script type="text/javascript">
+					var ctx = document.getElementById('visitors').getContext('2d');
+					var chart = new Chart(ctx, {
+						type: 'line',
+						data: {
+							labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+							datasets: [
+								<?php
+								$colours = [
+									'dispatched' => '#00c129',
+									'dispatch' => '#1D8CF8',
+									'active' => '#E14ECA',
+								];
+
+								foreach ($orders as $label => $data) {
+									$values = '';
+									foreach ($data as $value) {
+										$values .= $value . ',';
+									}
+									?>
+									{
+										label: '<?= ucwords($label); ?>',
+										data: [<?= rtrim($values, ','); ?>],
+										fill: false,
+										backgroundColor: '<?= $colours[$label]; ?>',
+										borderColor: '<?= $colours[$label]; ?>',
+										tension: 0.1
+									},
+									<?php
+								}
+								?>
+							]
+						},
+						options: {
+							scales: {
+								y: {
+									beginAtZero: true
+								}
+							}
+						}
+					});
+					</script>
+					<?php
+				} else {
+					?>
+					<strong class="h5">No vistors</strong>
+					<?php
+				}
+				?>
+            </div>
+        </div>
+    </div>
+	<?php
+}
+?>
+</div>

@@ -1,0 +1,34 @@
+<?php
+/**
+ * Create my board template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = '/pms';
+echo $this->partial("common/form_messages");
+?>
+<form id="form-edit" method="post" action="<?= UrlHelper::backend($url . '/my-board/save'); ?>">
+    <div class="row mb-3">
+        <div class="col-12">
+            <button
+                id="btn-save"
+                class="btn btn-primary float-right"
+                type="button"
+                title="Save the user"
+                data-toggle="tooltip"
+                data-trigger="hover"
+                data-dismiss="click"
+                data-placement="top">
+                Create
+            </button>
+		</div>
+	</div>
+</form>

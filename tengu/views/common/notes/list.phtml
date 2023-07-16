@@ -1,0 +1,99 @@
+<?php
+/**
+ * Notes template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.2
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+if (!isset($form)) {
+    $form = 'form-edit';
+}
+?>
+<script type="text/javascript">
+    $(function () {
+        $("#btn-add-note").click(function(event) {
+            $("#processing").modal("show");
+
+            let form = "form-edit";
+            if ($(event.currentTarget).data("form")) {
+                form = $(event.currentTarget).data("form");
+            }
+
+            event.preventDefault();
+            form_submitable = true;
+            $('#processing').on('shown.bs.modal', function () {
+                $("#" + form).submit();
+            });
+        });
+    });
+</script>
+<div class="row">
+    <div class="col-12 mb-2">
+        <button
+            id="btn-add-note"
+            class="btn btn-blank float-right m-0 pr-0"
+            type="button"
+            title="Add my note"
+            data-form="<?= $form; ?>"
+            data-toggle="tooltip"
+            data-trigger="hover"
+            data-dismiss="click"
+            data-placement="top">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"/>
+                <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4z"/>
+            </svg><br/>
+            add
+        </button>
+        <button
+            type="button"
+            title="Are you sure?"
+            data-html="true"
+            data-trigger="focus"
+            data-toggle="popover"
+            data-content='<span class="btn btn-secondary">No</span>&nbsp;<a href="<?= UrlHelper::backend($url); ?>" class="btn btn-danger">Yes</a>'
+            class="btn btn-blank float-right m-0 pr-0">
+            <div
+                title="Start over with a fresh note"
+                data-toggle="tooltip"
+                data-trigger="hover"
+                data-dismiss="click"
+                data-placement="top">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
+                </svg><br/>
+                reset
+            </div>
+        </button>
+    </div>
+    <div class="col-12">
+        <textarea
+            autocomplete="off"
+            class="form-control form-control-bordered w-100"
+            name="add_note"
+            rows="5"></textarea>
+    </div>
+    <div class="col-12 pt-4">
+        <?php
+        foreach ($notes as $note) {
+            echo $this->partial(
+                'common/notes/note',
+                [
+                    'note' => $note,
+                    'url' => $url
+                ]
+            );
+        }
+        ?>
+    </div>
+</div>

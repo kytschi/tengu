@@ -1,0 +1,62 @@
+<?php
+/**
+ * Form errors template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+
+if ($err = FormController::getValidationError()) {
+    $output = true;
+    ?>
+    <div class="alert alert-danger d-flex align-items-center">
+        <div class="d-flex flex-column">
+            <h4 class="text-white mb-1">Dang it!</h4>
+            <p><?= $err->getMessage(); ?></p>
+            <?php
+            if ($err_data = $err->getData()) {
+                ?>
+                <ul>
+                <?php
+                foreach ($err_data as $item) {
+                    ?>
+                    <li><?= $item;?></li>
+                    <?php
+                }
+                ?>
+                </ul>
+                <?php
+            }
+            ?>
+        </div>
+    </div>
+    <?php
+    echo '<script type="text/javascript">$(function (){form_changed = true;});</script>';
+}
+
+if ($errs = FormController::getFormErrors()) {
+    $output = true;
+    ?>
+    <div class="alert alert-danger d-flex align-items-center">
+        <div class="d-flex flex-column">
+            <h4 class="text-white mb-1">Dang it!</h4>
+            <?php
+            foreach ($errs as $err) {
+                ?>
+                <p><?= $err; ?></p>
+                <?php
+            }
+            ?>
+        </div>
+    </div>
+    <?php
+}
+
+FormController::clearValidationError();
+?>

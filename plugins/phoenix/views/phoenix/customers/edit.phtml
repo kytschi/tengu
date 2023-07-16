@@ -1,0 +1,472 @@
+<?php
+/**
+ * Customers edit template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Phoenix\Controllers\OrdersController;
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\NumberHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = ($this->di->getConfig())->urls->sales . '/customers';
+$order_url = ($this->di->getConfig())->urls->sales . '/orders';
+
+echo $this->partial("common/form/messages");
+?>
+<form id="form-edit" method="post" action="<?= UrlHelper::backend($url . '/update/' . $data->id); ?>">
+    <div class="row mb-3">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body">
+					<a
+						href="<?= UrlHelper::backend($url); ?>"
+						class="btn btn-blank mr-2 text-center"
+						title="Go back to the users list"
+						data-toggle="tooltip"
+						data-trigger="hover"
+						data-dismiss="click"
+						data-placement="bottom">
+						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+							<path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.74 8.74 0 0 0-1.921-.306 7.404 7.404 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254a.503.503 0 0 0-.042-.028.147.147 0 0 1 0-.252.499.499 0 0 0 .042-.028l3.984-2.933zM7.8 10.386c.068 0 .143.003.223.006.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96v-.667z"/>
+						</svg><br/>
+						back
+					</a>
+					<button
+						id="btn-save"
+						class="btn btn-blank float-right"
+						type="button"
+						title="Save the user"
+						data-toggle="tooltip"
+						data-trigger="hover"
+						data-dismiss="click"
+						data-placement="top">
+						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v4.5h2a.5.5 0 0 1 .354.854l-2.5 2.5a.5.5 0 0 1-.708 0l-2.5-2.5A.5.5 0 0 1 5.5 6.5h2V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                        </svg><br/>
+						save
+					</button>
+					<a
+						href="<?= UrlHelper::backend($url . '/add'); ?>"
+						class="btn btn-blank float-right"
+						title="Add a new user"
+						data-toggle="tooltip"
+						data-trigger="hover"
+						data-dismiss="click"
+						data-placement="top">
+						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+							<path d="M8.5 6a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z"/>
+							<path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
+						</svg><br/>
+						new
+					</a>
+					<?php
+					if ($data->status == 'deleted') {
+						?>
+						<button
+							class="btn btn-blank float-right"
+							type="button"
+							data-original-title="Are you sure?"
+							data-html="true"
+							data-trigger="focus"
+							data-toggle="popover"
+							data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/recover/' . $data->id); ?>">Yes</a>'>
+							<div
+								data-toggle="tooltip"
+								data-dismiss="hover"
+								data-placement="top"
+								title="Recover the user from the trash">
+								<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+									<path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"/>
+								</svg><br/>
+								recover
+							</div>
+						</button>
+						<?php
+					} else {
+					?>
+						<button
+							class="btn btn-blank float-right"
+							type="button"
+							data-original-title="Are you sure?"
+							data-html="true"
+							data-trigger="focus"
+							data-toggle="popover"
+							data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/delete/' . $data->id); ?>">Yes</a>'>
+							<div
+								data-toggle="tooltip"
+								data-dismiss="hover"
+								data-placement="top"
+								title="Throw the user into the trash">
+								<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+									<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+									<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+								</svg><br/>
+								delete
+							</div>
+						</button>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div class="row">
+        <div class="col-12 mb-3">
+			Required fields <span class="required">*</span>
+		</div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body p-0 pt-4 pb-0">
+                    <div class="d-flex flex-wrap flex-sm-nowrap pl-3 pr-3">
+                        <div class="mr-4 mb-4">
+                            <div class="preview-img">
+								<div class="position-relative border">
+                                    <img 
+                                        src="<?= $this->tengu->theme->getAsset('imgs/edit-item.png'); ?>" 
+                                        alt="Edit the entry">
+								</div>
+                                <?php
+                                switch ($data->status) {
+                                    case 'active':
+                                        $label = "I'm live!";
+                                        $bg_colour = 'bg-success';
+                                        break;
+                                    case 'inactive':
+                                        $label = "I'm inactive";
+                                        $bg_colour = 'bg-warning';
+                                        break;
+                                    case 'deleted':
+                                        $label = "I'm in a deleted state";
+                                        $bg_colour = 'bg-danger';
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                ?>
+                                <div title="<?= $label; ?>" class="circle border border-white <?= $bg_colour; ?>"></div>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 mb-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="first_name">
+                                            First name
+                                            <span class="required">*</span>
+                                        </label>
+                                        <input
+                                            id="first_name"
+                                            name="first_name"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="first_name"
+                                            value="<?= FormController::getFormData('first_name', $data); ?>"
+                                            required>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="email">
+                                            Email
+                                            <span class="required">*</span>
+                                        </label>
+                                        <input
+                                            id="email"
+                                            name="email"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="email"
+                                            value="<?= FormController::getFormData('email_address', $data); ?>"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="last_name">
+                                            Last name
+                                            <span class="required">*</span>
+                                        </label>
+                                        <input
+                                            id="last_name"
+                                            name="last_name"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="last_name"
+                                            value="<?= FormController::getFormData('last_name', $data); ?>"
+                                            required>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="phone">
+                                            Phone
+                                        </label>
+                                        <input
+                                            id="phone"
+                                            name="phone"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="phone"
+                                            value="<?= FormController::getFormData('phone', $data); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="nav p-0 m-0">
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('overview-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#overview-tab">
+                                Overview
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('orders-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#orders-tab">
+                                Orders
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('security-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#security-tab">
+                                Security
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-content">
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('overview-tab', 'overview-tab'); ?>"
+                    id="overview-tab"
+                    role="tabpanel"
+                    aria-labelledby="overview-tab">
+                    <div class="row">
+                        <div class="col-12">
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('orders-tab', 'overview-tab'); ?>"
+                    id="orders-tab"
+                    role="tabpanel"
+                    aria-labelledby="orders-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th width="140">Quantity</th>
+                                                <th width="140">Amount</th>
+                                                <th width="120">Status</th>
+                                                <th width="200">Owner</th>
+                                                <th width="220">&nbsp;</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            foreach ($data->orders as $row) {
+                                                $bg_colour = OrdersController::statusColour($row->status);
+                                                ?>
+                                                <tr>
+                                                    <td>
+                                                        <a href="<?= UrlHelper::backend($order_url . '/edit/' . $row->id); ?>">
+                                                            <?= $row->number; ?>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="<?= UrlHelper::backend($order_url . '/edit/' . $row->id); ?>">
+                                                            <?= $row->quantity; ?>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="<?= UrlHelper::backend($order_url . '/edit/' . $row->id); ?>">
+                                                            <?= NumberHelper::toCurrency($row->total); ?>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="<?= UrlHelper::backend($order_url . '/edit/' . $row->id); ?>">
+                                                            <span class="badge <?= $bg_colour; ?>"><?= ucwords($row->status); ?></span>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="<?= UrlHelper::backend($order_url . '/edit/' . $row->id); ?>">
+                                                            <?= $row->updated->full_name; ?>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a
+                                                            href="<?= UrlHelper::backend($order_url . '/edit/' . $row->id); ?>"
+                                                            class="btn btn-blank float-right"
+                                                            title="View the order"
+                                                            data-toggle="tooltip"
+                                                            data-trigger="hover"
+                                                            data-dismiss="click"
+                                                            data-placement="top">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+                                                            </svg>
+                                                        </a>
+                                                        <?php
+                                                        if (!$row->deleted_at) {
+                                                            ?>
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-blank float-right"
+                                                                data-original-title="Are you sure?"
+                                                                data-trigger="focus"
+                                                                data-html="true"
+                                                                data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($order_url . '/delete/' . $row->id, 'here'); ?>">Yes</a>'
+                                                                data-toggle="popover">
+                                                                <span
+                                                                    title="Delete the order"
+                                                                    data-toggle="tooltip"
+                                                                    data-trigger="hover"
+                                                                    data-dismiss="click"
+                                                                    data-placement="top">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                                    </svg>
+                                                                </span>
+                                                            </button>
+                                                            <?php
+                                                        } else {
+                                                            ?>
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-blank float-right"
+                                                                data-original-title="Are you sure?"
+                                                                data-trigger="focus"
+                                                                data-html="true"
+                                                                data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($order_url . '/recover/' . $row->id, 'here'); ?>">Yes</a>'
+                                                                data-toggle="popover">
+                                                                <span
+                                                                    title="Recover the order"
+                                                                    data-toggle="tooltip"
+                                                                    data-trigger="hover"
+                                                                    data-dismiss="click"
+                                                                    data-placement="top">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                                        <path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"/>
+                                                                    </svg>
+                                                                </span>
+                                                            </button>
+                                                            <?php
+                                                        }
+                                                        
+                                                        if ($row->status == 'inactive') {
+                                                            ?>
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-blank float-right"
+                                                                data-original-title="Are you sure?"
+                                                                data-trigger="focus"
+                                                                data-html="true"
+                                                                data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($order_url . '/resume/' . $row->id); ?>">Yes</a>'
+                                                                data-toggle="popover">
+                                                                <span
+                                                                    title="Resume the order"
+                                                                    data-toggle="tooltip"
+                                                                    data-trigger="hover"
+                                                                    data-dismiss="click"
+                                                                    data-placement="top">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                                        <path d="M4 10a1 1 0 0 1 2 0v2a1 1 0 0 1-2 0v-2zm3 0a1 1 0 0 1 2 0v2a1 1 0 0 1-2 0v-2zm3 0a1 1 0 1 1 2 0v2a1 1 0 0 1-2 0v-2z"/>
+                                                                        <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-.623l-1.844 6.456a.75.75 0 0 1-.722.544H3.69a.75.75 0 0 1-.722-.544L1.123 8H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6h1.717L5.07 1.243a.5.5 0 0 1 .686-.172zM2.163 8l1.714 6h8.246l1.714-6H2.163z"/>
+                                                                    </svg>
+                                                                </span>
+                                                            </button>
+                                                            <?php
+                                                        } 
+                                                        ?>
+                                                    </td>
+                                                </tr>
+                                                <?php
+                                                if (!empty($data->tags)) {
+                                                    ?>
+                                                    <tr>
+                                                        <td colspan="6">
+                                                            <?php
+                                                            foreach ($row->tags as $tag) {
+                                                                ?>
+                                                                <span class="float-left badge badge-primary mr-2 mt-2"><?= $tag->tag; ?></span>
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                        </td>
+                                                    </tr>
+                                                    <?php
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('security-tab', 'overview-tab'); ?>"
+                    id="security-tab"
+                    role="tabpanel"
+                    aria-labelledby="security-tab">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header mb-2">
+                                    <span class="card-title">Security</span>
+                                </div>
+                                <div class="card-body p-3 pt-0">
+                                    <div class="form-group mb-4">
+                                        <label for="password">
+                                            Password
+                                        </label>
+                                        <input
+                                            id="password"
+                                            name="password"
+                                            type="password"
+                                            class="form-control mt-2"
+                                            aria-describedby="password"
+                                            value="">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="password_check">
+                                            Password check
+                                        </label>
+                                        <input
+                                            id="password_check"
+                                            name="password_check"
+                                            type="password"
+                                            class="form-control mt-2"
+                                            aria-describedby="password_check"
+                                            value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="<?= $this->tengu->theme->getAsset('js/core/edit.js'); ?>"></script>

@@ -1,0 +1,600 @@
+<?php
+/**
+ * Receipt edit template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\NumberHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = ($this->di->getConfig())->urls->fms . '/dividends';
+$statements_url = UrlHelper::backend(($this->di->getConfig())->urls->fms . '/statements');
+echo $this->partial("common/form/messages");
+?>
+<script src="<?= $this->tengu->theme->getAsset('js/core/edit.js'); ?>"></script>
+<div class="row mb-3">
+    <div class="col-3">
+        <div class="card bg-<?= $data->status == 'pending' ? 'danger' : 'success'; ?>">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9H5.5zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518l.087.02z"/>
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    <strong><?= NumberHelper::toCurrency($data->amount); ?></strong>
+                </div>
+                <div class="text-white">
+                    <strong><?= strtoupper($data->status); ?></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    if ($data->tax_year) {
+        ?>
+        <div class="col-3">
+            <div class="card bg-info">
+                <div class="card-body">
+                    <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                    </svg>
+                    <div class="h4 text-white mt-3 mb-1" style="height: 30px">
+                        <?php
+                            echo DateHelper::pretty($data->tax_year->tax_year_start, false) . ' to ' . DateHelper::pretty($data->tax_year->tax_year_end, false) ;
+                        ?>
+                    </div>
+                    <div class="text-white">
+                        Tax year (<?= $data->tax_year->code; ?>)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+    ?>
+</div>
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card p-0">
+            <div class="card-body">
+                <a
+                    href="<?= UrlHelper::generate(UrlHelper::backend($url)); ?>"
+                    class="btn btn-blank mr-2 text-center"
+                    title="Go back to the dividends list"
+                    data-toggle="tooltip"
+                    data-trigger="hover"
+                    data-dismiss="click"
+                    data-placement="bottom">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                        <path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.74 8.74 0 0 0-1.921-.306 7.404 7.404 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254a.503.503 0 0 0-.042-.028.147.147 0 0 1 0-.252.499.499 0 0 0 .042-.028l3.984-2.933zM7.8 10.386c.068 0 .143.003.223.006.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96v-.667z"/>
+                    </svg><br/>
+                    back
+                </a>
+                <button
+                    id="btn-save"
+                    class="btn btn-blank float-right"
+                    type="button"
+                    title="Save the dividend"
+                    data-toggle="tooltip"
+                    data-trigger="hover"
+                    data-dismiss="click"
+                    data-placement="top">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v4.5h2a.5.5 0 0 1 .354.854l-2.5 2.5a.5.5 0 0 1-.708 0l-2.5-2.5A.5.5 0 0 1 5.5 6.5h2V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                    </svg><br/>
+                    save
+                </button>
+                <a
+                    href="<?= UrlHelper::backend($url . '/create'); ?>"
+                    class="btn btn-blank float-right"
+                    title="Issue a new dividend"
+                    data-toggle="tooltip"
+                    data-trigger="hover"
+                    data-dismiss="click"
+                    data-placement="top">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.5 6a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z"/>
+                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
+                    </svg><br/>
+                    new
+                </a>
+                <?php
+                if (!empty($data->file)) {
+                    ?>
+                    <a
+                        href="<?= UrlHelper::backend($data->file->download_url); ?>"
+                        class="btn btn-blank float-right"
+                        title="Download the attached file"
+                        target="_blank"
+                        data-toggle="tooltip"
+                        data-trigger="hover"
+                        data-dismiss="click"
+                        data-placement="top">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg><br/>
+                        download
+                    </a>
+                    <?php
+                }
+                if ($data->status == 'deleted') {
+                    ?>
+                    <button
+                        class="btn btn-blank float-right"
+                        type="button"
+                        data-original-title="Are you sure?"
+                        data-html="true"
+                        data-trigger="focus"
+                        data-toggle="popover"
+                        data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/recover/' . $data->id); ?>">Yes</a>'>
+                        <div
+                            data-toggle="tooltip"
+                            data-dismiss="hover"
+                            data-placement="top"
+                            title="Recover the dividend from the trash">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                <path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"/>
+                            </svg><br/>
+                            recover
+                        </div>
+                    </button>
+                    <?php
+                } else {
+                ?>
+                    <button
+                        class="btn btn-blank float-right"
+                        type="button"
+                        data-original-title="Are you sure?"
+                        data-html="true"
+                        data-trigger="focus"
+                        data-toggle="popover"
+                        data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/delete/' . $data->id); ?>">Yes</a>'>
+                        <div
+                            data-toggle="tooltip"
+                            data-dismiss="hover"
+                            data-placement="top"
+                            title="Throw the dividend into the trash">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                            </svg><br/>
+                            delete
+                        </div>
+                    </button>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+<form
+    id="form-edit"
+    method="post"
+    action="<?= UrlHelper::backend($url . '/update/' . $data->id); ?>">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body p-0 pt-4">
+                    <div class="d-flex flex-wrap flex-sm-nowrap pl-3 pr-3">
+                        <div class="mr-4 mb-4">
+                            <?php
+                            switch ($data->status) {
+                                case 'paid':
+                                    $label = 'I have been paid';
+                                    $bg_colour = 'success';
+                                    break;
+                                default:
+                                    $label = 'I am still outstanding';
+                                    $bg_colour = 'danger';
+                                    break;
+                            }
+                            ?>
+                            <div
+                                class="preview-img"
+                                title="<?= $label; ?>"
+                                data-toggle="tooltip"
+                                data-trigger="hover"
+                                data-dismiss="click"
+                                data-placement="bottom">
+                                <div class="position-relative border">
+                                    <img src="<?= $this->tengu->theme->getAsset('imgs/new-item.png'); ?>">
+                                </div>
+                                <div class="circle border border-white <?= $bg_colour; ?>"></div>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 mb-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="amount">
+                                            Amount (<?= NumberHelper::currencySymbol(); ?>)
+                                        </label>
+                                        <input
+                                            id="amount"
+                                            name="amount"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="amount"
+                                            value="<?= FormController::getFormData('amount', $data); ?>"
+                                            <?php
+                                            if ($data->statement_item) {
+                                                ?>
+                                                data-toggle="tooltip"
+                                                data-trigger="hover"
+                                                data-dismiss="click"
+                                                data-placement="left"
+                                                readonly="readonly"
+                                                title="I am controlled by the statement item"
+                                                <?php
+                                            }
+                                            ?>>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="issued_on">
+                                            Issued on
+                                        </label>
+                                        <input
+                                            id="issued_on"
+                                            name="issued_on"
+                                            type="text"
+                                            class="form-control mt-2 datepicker"
+                                            aria-describedby="issued_on"
+                                            value="<?= DateHelper::pretty(FormController::getFormData('issued_on', $data), false); ?>">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="shareholder_id">
+                                            Shareholder
+                                        </label>
+                                        <?php
+                                            $selected = FormController::getFormData('shareholder_id', $data);
+                                            ?>
+                                        <select
+                                            name="shareholder_id"
+                                            class="form-control mt-2">
+                                            <option value=""<?= !$selected ? ' selected' : ''; ?>>None</option>
+                                            <?php
+                                            foreach ($users as $user) {
+                                                ?>
+                                                <option 
+                                                    value="<?= $user->id; ?>"
+                                                    <?= $selected == $user->id ? ' selected' : ''; ?>><?= $user->full_name; ?></option>
+                                                <?php
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="paid_on">
+                                            Paid on
+                                        </label>
+                                        <input
+                                            id="paid_on"
+                                            name="paid_on"
+                                            type="text"
+                                            class="form-control mt-2 datepicker"
+                                            aria-describedby="paid_on"
+                                            value="<?= DateHelper::pretty(FormController::getFormData('paid_on', $data), false); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="nav p-0 m-0">
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('overview-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#overview-tab">
+                                Overview
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('preview-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#preview-tab">
+                                Preview
+                                <?php
+                                if (!empty($data->statement_item)) {
+                                    ?>
+                                    <span class="badge-svg badge-primary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-paperclip" viewBox="0 0 16 16">
+                                            <path d="M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0V3z"/>
+                                        </svg>
+                                    </span>
+                                    <?php
+                                }
+                                ?>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('statement-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#statement-tab">
+                                Statement
+                                <?php
+                                if (!empty($data->statement_item)) {
+                                    ?>
+                                    <span class="badge-svg badge-primary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-paperclip" viewBox="0 0 16 16">
+                                            <path d="M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0V3z"/>
+                                        </svg>
+                                    </span>
+                                    <?php
+                                }
+                                ?>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('notes-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#notes-tab">
+                                Notes
+                                <?php
+								if ($note_count = $data->notes->count()) {
+									?>
+									<span class="badge badge-primary"><?= $note_count; ?></span>
+									&nbsp;
+									<?php
+								}
+								?>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-content mt-5">
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('overview-tab', 'overview-tab'); ?>"
+                    id="overview-tab"
+                    role="tabpanel"
+                    aria-labelledby="overview-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <?= $this->partial("common/tags", ['data' => $data->tags]); ?>
+                        </div>
+                        <div class="col-6">
+                            <?= $this->partial("common/logs", ['data' => $data->logs]); ?>
+                        </div>
+                        <?php
+                        if (!empty($data->file)) {
+                            ?>
+                            <div class="col-6">
+                                <?= $this->partial(
+                                    'common/logs',
+                                    [
+                                        'data' => $data->file->download_history,
+                                        'label' => 'Download history'
+                                    ]
+                                ); ?>
+                            </div>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('preview-tab', 'overview-tab'); ?>"
+                    id="preview-tab"
+                    role="tabpanel"
+                    aria-labelledby="preview-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body p-4">
+                                    <?php
+                                    if (!empty($data->file)) {
+                                        switch ($data->file->mime_type) {
+                                            case 'application/pdf':
+                                                ?>
+                                                <div class="pdf-render"
+                                                    data-url="<?= UrlHelper::backend($data->file->output_url); ?>"></div>
+                                                <?php
+                                                break;
+                                            default:
+                                            ?>
+                                            <?php
+                                        }
+                                    } else {
+                                        ?>
+                                        <span class="h4">Nothing to preview</span>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('statement-tab', 'overview-tab'); ?>"
+                    id="statement-tab"
+                    role="tabpanel"
+                    aria-labelledby="statement-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body p-4">
+                                    <?php
+                                    if ($data->statement_item) {
+                                        ?>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th width="160px">Processed at</th>
+                                                    <th>Description</th>
+                                                    <th width="200px">In (<?= NumberHelper::currencySymbol(); ?>)</th>
+                                                    <th width="200px">Out (<?= NumberHelper::currencySymbol(); ?>)</th>
+                                                    <th width="200px">Balance (<?= NumberHelper::currencySymbol(); ?>)</th>
+                                                    <th class="text-center" width="120px">Taxable</th>
+                                                    <th class="text-center" width="80px">Receipt</th>
+                                                    <th class="text-center" width="80px">Invoice</th>
+                                                    <th width="160px">&nbsp;</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class='row-header' colspan="8">
+                                                        <strong><?= $data->statement_item->name; ?></strong>
+                                                    </td>
+                                                    <td class='row-header' width="160px">
+                                                        <a
+                                                            href="<?= UrlHelper::from($statements_url . '/edit/' . $data->statement_item->statement_id); ?>"
+                                                            class="btn btn-blank float-right"
+                                                            title="Edit the statement"
+                                                            data-toggle="tooltip"
+                                                            data-trigger="hover"
+                                                            data-dismiss="click"
+                                                            data-placement="top">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+                                                            </svg>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="align-top">
+                                                        <span class="badge badge-warning">
+                                                            <?= DateHelper::pretty($data->statement_item->processed_at, false); ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="align-top">
+                                                        <p>
+                                                            <?= nl2br($data->statement_item->description); ?>
+                                                        </p>
+                                                        <?php
+                                                        if (!empty($data->statement_item->tags)) {
+                                                            foreach ($data->statement_item->tags as $tag) {
+                                                                ?>
+                                                                <span class="float-left badge badge-primary mr-2 mt-2"><?= $tag->tag; ?></span>
+                                                                <?php
+                                                            }
+                                                        }
+                                                        if (!empty($data->statement_item->shareholder)) {
+                                                            ?>
+                                                            <span class="float-left badge badge-info mr-2 mt-2">shareholder payment to <?= $row->shareholder->full_name; ?></span>
+                                                            <?php                                                            
+                                                        }
+                                                        if (!empty($data->statement_item->employee)) {
+                                                            ?>
+                                                            <span class="float-left badge badge-info mr-2 mt-2">employee payment to <?= $row->employee->full_name; ?></span>                                                            
+                                                            <?php                                                            
+                                                        }
+                                                        if (!empty($data->statement_item->project)) {
+                                                            ?>
+                                                            <a href="<?= UrlHelper::backend($project_url . '/edit/' . $row->project->id); ?>" class="float-left badge badge-info mr-2 mt-2">Project: <?= $row->project->name; ?></a>
+                                                            <?php
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <td class="align-top">
+                                                        <span class="badge badge-success">
+                                                            <?= NumberHelper::toCurrency($data->statement_item->in); ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="align-top">
+                                                        <span class="badge badge-danger">
+                                                            <?= NumberHelper::toCurrency($data->statement_item->out); ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="align-top">
+                                                        <span class="badge badge-primary">
+                                                            <?= NumberHelper::toCurrency($data->statement_item->balance); ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center align-top">
+                                                        <span class="badge badge-<?= !empty($data->statement_item->taxable) ? 'success' : 'danger'; ?>">
+                                                            <?= !empty($data->statement_item->taxable) ? 'Yes' : 'No'; ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center align-top">
+                                                        <span class="badge badge-<?= $data->statement_item->receipts->count() ? 'success' : 'danger'; ?>">
+                                                            <?= $data->statement_item->receipts->count() ? 'Yes' : 'No'; ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center align-top">
+                                                        <span class="badge badge-<?= $data->statement_item->invoices->count() ? 'success' : 'danger'; ?>">
+                                                            <?= $data->statement_item->invoices->count() ? 'Yes' : 'No'; ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="align-top">
+                                                        <a
+                                                            href="<?= UrlHelper::from($statements_url . '/' . $data->statement_item->statement_id . '/items/edit/' . $row->id); ?>"
+                                                            class="btn btn-blank float-right"
+                                                            title="Edit the item"
+                                                            data-toggle="tooltip"
+                                                            data-trigger="hover"
+                                                            data-dismiss="click"
+                                                            data-placement="top">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+                                                            </svg>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                            <?php
+                                    } else {
+                                        ?>
+                                        <span class="h4">Not attached to a statement</span>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('notes-tab', 'overview-tab'); ?>"
+                    id="notes-tab"
+                    role="tabpanel"
+                    aria-labelledby="notes-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card shadow-none">
+                                        <div class="card-header m-0">
+                                            <span class="card-title">Notes</span>
+                                        </div>
+                                        <div class="card-body">
+                                            <?= $this->partial(
+                                                'common/notes/list',
+                                                [
+                                                    'notes' => $data->notes,
+                                                    'url' => $url . '/edit/' . $data->id . '?clear=true#notes-tab'
+                                                ]
+                                            ); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

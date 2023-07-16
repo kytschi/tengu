@@ -1,0 +1,2164 @@
+<?php
+/**
+ * Self assessment UK 2022 template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\NumberHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$dividends = 0;
+if ($data->employee->dividends->count()) {
+    $dividends = $data->employee->dividendsTaxYearAmount($data->tax_year);
+}
+?>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body p-0">
+                <ul class="nav p-0 m-0">
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-person-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-person-tab">
+                            Person details
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-type-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-type-tab">
+                            Type
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-income-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-income-tab">
+                            Income
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-tax-reliefs-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-tax-reliefs-tab">
+                            Tax reliefs
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-student-loans-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-student-loans-tab">
+                            Student loans
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-child-benefits-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-child-benefits-tab">
+                            Child benefits
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-income-convid-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-income-convid-tab">
+                            Coronavirus support
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-marriage-allowance-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-marriage-allowance-tab">
+                            Marriage allowance
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-finish-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-finish-tab">
+                            Finish
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-other-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-other-tab">
+                            Other
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-back-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-back-tab">
+                            Sending back
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a
+                            class="nav-link <?= UrlHelper::activeTab('return-preview-tab', 'return-person-tab'); ?>"
+                            data-toggle="tab"
+                            role="tab"
+                            href="#return-preview-tab">
+                            Preview
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content col-12">
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-person-tab', 'return-person-tab'); ?>"
+            id="return-person-tab"
+            role="tabpanel"
+            aria-labelledby="return-person-tab">
+            <div class="row m-0">
+                <div class="col-12 p-0">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Return</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="utr">
+                                            <strong>UTR</strong>
+                                        </label>
+                                        <input
+                                            name="utr"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="utr"
+                                            value="<?= $data->employee->utr; ?>"
+                                            readonly="readonly">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="nino">
+                                            <strong>NINO</strong>
+                                        </label>
+                                        <input
+                                            name="nino"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="nino"
+                                            value="<?= FormController::getFormData('nino', $return); ?>">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="employee_ref">
+                                            <strong>Employee reference</strong>
+                                        </label>
+                                        <input
+                                            name="employee_ref"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="employee_ref"
+                                            value="<?= $data->employee->employee_ref; ?>"
+                                            readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4" style="height: calc(100% - 50px)">
+                                        <label for="address">
+                                            <strong>Your name and address</strong>
+                                        </label>
+                                        <textarea 
+                                            name="address" 
+                                            class="form-control" 
+                                            rows="5"
+                                            style="height: 100%"
+                                            readonly="readonly"><?php
+                                                echo $data->employee->full_name . "\n";
+                                                echo $data->employee->address;
+                                            ?></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Your personal details</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="dob">
+                                            [1] <strong>Your date of birth</strong>
+                                        </label>
+                                        <input
+                                            name="dob"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="dob"
+                                            value="<?= DateHelper::pretty($data->employee->dob, false); ?>"
+                                            readonly="readonly">
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="phone">
+                                            [3] <strong>Your phone number</strong>
+                                        </label>
+                                        <input
+                                            name="phone"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="phone"
+                                            value="<?= $data->employee->phone; ?>"
+                                            readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="national_insurance">
+                                            [4] <strong>Your National Insurance number</strong>
+                                        </label>
+                                        <input
+                                            name="national_insurance"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="national_insurance"
+                                            value="<?= $data->employee->national_insurance; ?>"
+                                            readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-type-tab', 'return-person-tab'); ?>"
+            id="return-type-tab"
+            role="tabpanel"
+            aria-labelledby="return-type-tab">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row m-0">
+                                <div class="col-6">
+                                    <div class="form-group form-check mb-5">
+                                        <label for="employment" class="float-left w-100 pb-2">
+                                            <strong>Employment</strong>
+                                        </label>
+                                        <div class="checkbox switcher float-left">
+                                            <label>
+                                                <input
+                                                    id="employment"
+                                                    type="checkbox"
+                                                    name="employment"
+                                                    value="1"
+                                                    <?= FormController::getFormData('employment', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <input
+                                            name="employment_page_no"
+                                            type="text"
+                                            class="form-control float-left"
+                                            aria-describedby="employment_page_no"
+                                            placeholder="Page no"
+                                            value="<?= ($num = FormController::getFormData('employment_page_no', $return)) ? $num : ''; ?>"
+                                            style="width:100px">
+                                        <p class="float-left w-100 mt-3">
+                                            Were you an employee, director, office holder or agency worker in the year to 5 April 2022? Please read the notes before answering. Fill in a separate "Employment" page for each employment, directorship and so on. On each "Employment" page you complete, enter any other payments, expenses or benefits related to that employment. Say how many "Employment" pages you are completing in the "Number" box below.
+                                        </p>
+                                    </div>
+                                    <div class="form-group form-check mb-5">
+                                        <label for="self_employment" class="float-left w-100 pt-3 pb-2">
+                                            <strong>Self-employment</strong>
+                                        </label>
+                                        <div class="checkbox switcher float-left">
+                                            <label>
+                                                <input
+                                                    id="self_employment"
+                                                    type="checkbox"
+                                                    name="self_employment"
+                                                    value="1"
+                                                    <?= FormController::getFormData('self_employment', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <input
+                                            name="self_employment_page_no"
+                                            type="text"
+                                            class="form-control float-left"
+                                            aria-describedby="self_employment_page_no"
+                                            placeholder="Page no"
+                                            value="<?= ($num = FormController::getFormData('self_employment_page_no', $return)) ? $num : ''; ?>"
+                                            style="width:100px">
+                                        <p class="float-left w-100 mt-3">
+                                            On each "Self-employment" page you complete, enter any payments or expenses related to that business. Say how many businesses you had in the "Number" box below. (Answer "Yes" if you were a "Name" at Lloyd's.)
+                                        </p>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="partnership" class="float-left w-100 pt-3 pb-2">
+                                            <strong>Partnership</strong>
+                                        </label>
+                                        <div class="checkbox switcher float-left">
+                                            <label>
+                                                <input
+                                                    id="partnership"
+                                                    type="checkbox"
+                                                    name="partnership"
+                                                    value="1"
+                                                    <?= FormController::getFormData('partnership', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <input
+                                            name="partnership_page_no"
+                                            type="text"
+                                            class="form-control float-left"
+                                            aria-describedby="partnership_page_no"
+                                            placeholder="Page no"
+                                            value="<?= ($num = FormController::getFormData('partnership_page_no', $return)) ? $num : ''; ?>"
+                                            style="width:100px">
+                                        <p class="float-left w-100">
+                                            Were you in a partnership? Fill in a separate "Partnership" page for each partnership you were a partner in and say how many partnerships you had in the "Number" box below.
+                                        </p>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="property" class="float-left w-100 pt-3 pb-2">
+                                            <strong>UK property</strong>
+                                        </label>
+                                        <div class="checkbox switcher float-left">
+                                            <label>
+                                                <input
+                                                    id="property"
+                                                    type="checkbox"
+                                                    name="property"
+                                                    value="1"
+                                                    <?= FormController::getFormData('property', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p class="float-left w-100">
+                                            If you received income from UK property (including rents and other income from land you own or lease out), read the notes to decide if you need to fill in the "UK property" pages. You may not need to if this income is up to £1,000. Do you need to fill in the "UK property" pages?
+                                        </p>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="foreign" class="float-left w-100 pt-3 pb-2">
+                                            <strong>Foreign</strong>
+                                        </label>
+                                        <div class="checkbox switcher float-left">
+                                            <label>
+                                                <input
+                                                    id="foreign"
+                                                    type="checkbox"
+                                                    name="foreign"
+                                                    value="1"
+                                                    <?= FormController::getFormData('foreign', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p class="float-left w-100">
+                                            If you:
+                                        </p>
+                                        <div class="float-left w-100">
+                                            <ul>
+                                                <li>were entitled to any foreign income</li>
+                                                <li>have, or could have, received (directly or indirectly) income, or a capital payment or benefit from a person abroad as a result of any transfer of assets</li>
+                                                <li>want to claim relief for foreign tax paid</li>
+                                            </ul>
+                                        </div>
+                                        <p class="float-left w-100">
+                                            Read the notes to decide if you need to fill in the "Foreign" pages. You may not need to if your only foreign income was from land and property abroad up to £1,000.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="trusts" class="float-left w-100 pt-3 pb-2">
+                                            <strong>Trusts etc</strong>
+                                        </label>
+                                        <div class="checkbox switcher float-left">
+                                            <label>
+                                                <input
+                                                    id="trusts"
+                                                    type="checkbox"
+                                                    name="trusts"
+                                                    value="1"
+                                                    <?= FormController::getFormData('trusts', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p class="float-left w-100">
+                                            Did you receive, or are you treated as having received, income from a trust, settlement or the residue of a deceased person's estate? This does not include cash lump sums/transfer of assets, otherwise known as capital distributions, received under a will.
+                                        </p>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="capital_gains" class="float-left w-100 pt-3 pb-2">
+                                            <strong>Capital Gains Tax summary</strong>
+                                        </label>
+                                        <div class="checkbox switcher float-left">
+                                            <label>
+                                                <input
+                                                    id="capital_gains"
+                                                    type="checkbox"
+                                                    name="capital_gains"
+                                                    value="1"
+                                                    <?= FormController::getFormData('capital_gains', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <span class="ml-5 mr-3 float-left">Computation(s) provided</span>
+                                        <div class="checkbox switcher float-left">
+                                            <label>
+                                                <input
+                                                    id="computation_provided"
+                                                    type="checkbox"
+                                                    name="computation_provided"
+                                                    value="1"
+                                                    <?= FormController::getFormData('computation_provided', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p class="float-left w-100">
+                                            If you sold or disposed of any assets (for example, stocks, shares, land and property, a business), or had any chargeable gains, read the notes to decide if you have to fill in the "Capital Gains Tax summary" page. If you do, you must also provide separate computations. Do you need to fill in the "Capital Gains Tax summary" page and provide computations?
+                                        </p>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="residence" class="float-left w-100 pt-3 pb-2">
+                                            <strong>Residence, remittance basis etc</strong>
+                                        </label>
+                                        <div class="checkbox switcher float-left w-100">
+                                            <label>
+                                                <input
+                                                    id="residence"
+                                                    type="checkbox"
+                                                    name="residence"
+                                                    value="1"
+                                                    <?= FormController::getFormData('residence', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p class="float-left w-100">
+                                            Were you, for all or part of the year to 5 April 2022, one or more of the following:
+                                        </p>
+                                        <div class="float-left w-100">
+                                            <ul>
+                                                <li>not resident</li>
+                                                <li>not domiciled in the UK and claiming the remittance basis</li>
+                                                <li>dual resident in the UK and another country?</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="additional_info" class="float-left w-100 pt-3 pb-2">
+                                            <strong>Additional information</strong>
+                                        </label>
+                                        <div class="checkbox switcher float-left">
+                                            <label>
+                                                <input
+                                                    id="additional_info"
+                                                    type="checkbox"
+                                                    name="additional_info"
+                                                    value="1"
+                                                    <?= FormController::getFormData('additional_info', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p class="float-left w-100">
+                                            Some less common kinds of income and tax reliefs, for example, Married Couple's Allowance, Life insurance gains, chargeable event gains, Seafarer's Earnings Deduction and details of disclosed tax avoidance schemes, should be returned on the "Additional information" pages. Do you need to fill in the "Additional information" pages?
+                                        </p>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="more_pages" class="float-left w-100 pt-3 pb-2">
+                                            <strong>If you need more pages</strong>
+                                        </label>
+                                        <div class="checkbox switcher float-left">
+                                            <label>
+                                                <input
+                                                    id="more_pages"
+                                                    type="checkbox"
+                                                    name="more_pages"
+                                                    value="1"
+                                                    <?= FormController::getFormData('more_pages', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p class="float-left w-100">
+                                            If you answered "Yes" to any of questions 1 to 9, please check to see if within this return, there's a page dealing with that kind of income or gain. If there's not, you'll need separate supplementary pages. Do you need to get and fill in separate supplementary pages?
+                                        </p>
+                                        <p class="float-left w-100">
+                                            If "Yes", go to <a href="https://www.gov.uk/self-assessment-tax-return-forms">www.gov.uk/taxreturnforms</a> to download them.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-income-tab', 'return-person-tab'); ?>"
+            id="return-income-tab"
+            role="tabpanel"
+            aria-labelledby="return-income-tab">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                Interest and dividends from UK banks and building societies
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="taxed_uk_interest">
+                                            [1] <strong>Taxed UK interest</strong>
+                                        </label>
+                                        <input
+                                            name="taxed_uk_interest"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="taxed_uk_interest"
+                                            value="<?= FormController::getFormData('taxed_uk_interest', $return, 0); ?>">
+                                        <p>
+                                            The net amount after tax has been taken off - read the notes
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="untaxed_uk_interest">
+                                            [2] <strong>Untaxed UK interest</strong>
+                                        </label>
+                                        <input
+                                            name="untaxed_uk_interest"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="untaxed_uk_interest"
+                                            value="<?= FormController::getFormData('untaxed_uk_interest', $return, 0); ?>">
+                                        <p>
+                                            Amounts which have not had tax taken off - read the notes
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="untaxed_foreign_interest">
+                                            [3] <strong>Untaxed foreign interest (up to £2,000)</strong>
+                                        </label>
+                                        <input
+                                            name="untaxed_foreign_interest"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="untaxed_foreign_interest"
+                                            value="<?= FormController::getFormData('untaxed_foreign_interest', $return, 0); ?>">
+                                        <p>
+                                            Amounts which have not had tax taken off - read the notes
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="dividends_uk_companies">
+                                            [4] <strong>Dividends from UK companies</strong>
+                                        </label>
+                                        <input
+                                            name="dividends_uk_companies"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="dividends_uk_companies"
+                                            value="<?= $dividends; ?>"
+                                            readonly="readonly">
+                                        <p>
+                                            The amount received - read the notes
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="other_dividends">
+                                            [5] <strong>Other dividends</strong>
+                                        </label>
+                                        <input
+                                            name="other_dividends"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="other_dividends"
+                                            value="<?= FormController::getFormData('other_dividends', $return, 0); ?>">
+                                        <p>
+                                            The amount received - read the notes
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="foreign_dividends">
+                                            [6] <strong>Foreign dividends (up to £2,000)</strong>
+                                        </label>
+                                        <input
+                                            name="foreign_dividends"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="foreign_dividends"
+                                            value="<?= FormController::getFormData('foreign_dividends', $return, 0); ?>">
+                                        <p>
+                                            The amount in sterling after foreign tax was taken off. Do not include this amount in the "Foreign" pages
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="tax_taken_off_foreign_dividends">
+                                            [7] <strong>Tax taken off foreign dividends</strong>
+                                        </label>
+                                        <input
+                                            name="tax_taken_off_foreign_dividends"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="tax_taken_off_foreign_dividends"
+                                            value="<?= FormController::getFormData('tax_taken_off_foreign_dividends', $return, 0); ?>">
+                                        <p>
+                                            The sterling equivalent
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                UK pensions, annuities and other state benefits received
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="state_pension">
+                                            [8] <strong>State Pension</strong>
+                                        </label>
+                                        <input
+                                            name="state_pension"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="state_pension"
+                                            value="<?= FormController::getFormData('state_pension', $return, 0); ?>">
+                                        <p>
+                                            The amount you were entitled to receive in the year, not the weekly or 4-weekly amount - read the notes
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="state_pension_lump">
+                                            [9] <strong>State Pension lump sum</strong>
+                                        </label>
+                                        <input
+                                            name="state_pension_lump"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="state_pension_lump"
+                                            value="<?= FormController::getFormData('state_pension_lump', $return, 0); ?>">
+                                        <p>
+                                            The gross amount of any lump sum - read the notes
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="tax_off_state_pension_lump">
+                                            [10] <strong>Tax taken off State Pension lump sum</strong>
+                                        </label>
+                                        <input
+                                            name="tax_off_state_pension_lump"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="tax_off_state_pension_lump"
+                                            value="<?= FormController::getFormData('tax_off_state_pension_lump', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="other_pensions">
+                                            [11] <strong>Other pensions</strong>
+                                        </label>
+                                        <input
+                                            name="other_pensions"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="other_pensions"
+                                            value="<?= FormController::getFormData('other_pensions', $return, 0); ?>">
+                                        <p>
+                                            Other than State Pension, retirement annuities and taxable lump sums treated as pensions.  The gross amount. Tax taken off goes in the "Tax talen off" box
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="tax_off_other_pensions">
+                                            [12] <strong>Tax taken off</strong>
+                                        </label>
+                                        <input
+                                            name="tax_off_other_pensions"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="tax_off_other_pensions"
+                                            value="<?= FormController::getFormData('tax_off_other_pensions', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="tax_benefits">
+                                            [13] <strong>Taxable Incapacity Benefit and contribution-based Employment and Support Allowance</strong>
+                                        </label>
+                                        <input
+                                            name="tax_benefits"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="tax_benefits"
+                                            value="<?= FormController::getFormData('tax_benefits', $return, 0); ?>">
+                                        <p>
+                                            Read the notes
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="tax_taken_off_benefits">
+                                            [14] <strong>Tax taken off Incapacity Benefit in box 13</strong>
+                                        </label>
+                                        <input
+                                            name="tax_taken_off_benefits"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="tax_taken_off_benefits"
+                                            value="<?= FormController::getFormData('tax_taken_off_benefits', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="jobseekers_allowance">
+                                            [15] <strong>Jobseeker's Allowance</strong>
+                                        </label>
+                                        <input
+                                            name="jobseekers_allowance"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="jobseekers_allowance"
+                                            value="<?= FormController::getFormData('jobseekers_allowance', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="tax_other_pensions_benefits">
+                                            [16] <strong>Total of any other taxable State Pensions and benefits</strong>
+                                        </label>
+                                        <input
+                                            name="tax_other_pensions_benefits"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="tax_other_pensions_benefits"
+                                            value="<?= FormController::getFormData('tax_other_pensions_benefits', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                Other UK income not included on supplementary pages
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    Do not use this section for income that should be returned on supplementary pages. Share schemes, gilts, stock dividends, life insurance gains and certain other kinds of income go on the "Additional information" pages.
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="other_taxable_income">
+                                            [17] <strong>Other taxable income</strong>
+                                        </label>
+                                        <input
+                                            name="other_taxable_income"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="other_taxable_income"
+                                            value="<?= FormController::getFormData('other_taxable_income', $return, 0); ?>">
+                                        <p>
+                                            Before expenses and tax taken off
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="total_amount_allowable_expenses">
+                                            [18] <strong>Total amount of allowable expenses</strong>
+                                        </label>
+                                        <input
+                                            name="total_amount_allowable_expenses"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="total_amount_allowable_expenses"
+                                            value="<?= FormController::getFormData('total_amount_allowable_expenses', $return, 0); ?>">
+                                        <p>
+                                            Read the notes
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="tax_off_other_lump">
+                                            [19] <strong>Any tax taken off box 17</strong>
+                                        </label>
+                                        <input
+                                            name="tax_off_other_lump"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="tax_off_other_lump"
+                                            value="<?= FormController::getFormData('tax_off_other_lump', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="benefit_from_pre_assets">
+                                            [20] <strong>Benefit from pre-owned assets</strong>
+                                        </label>
+                                        <input
+                                            name="benefit_from_pre_assets"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="benefit_from_pre_assets"
+                                            value="<?= FormController::getFormData('benefit_from_pre_assets', $return, 0); ?>">
+                                        <p>
+                                            Read the notes
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="description_of_income">
+                                            [21] <strong>Description of income in boxes 17 and 20</strong>
+                                        </label>
+                                        <input
+                                            name="description_of_income"
+                                            class="form-control mt-2"
+                                            maxlength="117"
+                                            aria-describedby="description_of_income"
+                                            value="<?= FormController::getFormData('description_of_income', $return, 0); ?>">
+                                        <p>
+                                            If there's not enough space here please give details in the "Any other information" box, box 19, on page TR 7
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-tax-reliefs-tab', 'return-person-tab'); ?>"
+            id="return-tax-reliefs-tab"
+            role="tabpanel"
+            aria-labelledby="return-tax-reliefs-tab">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                Paying into registered pension schemes and overseas pension schemes
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <p>
+                                        Do not include payments you make to your employer's pension scheme which are deducted from your pay before tax or payments made by your employer. If your contributions and other pension inputs are more than the Annual Allowance, you should also fill in boxes 10 to 12 on page Ai 4 of the "Additional information" pages.
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="payment_to_registered_pensions">
+                                            [1] <strong>Payments to registered pension schemes where basic rate tax relief will be claimed by your pension provider (called "relief at source"). Enter the payments and basic rate tax</strong>
+                                        </label>
+                                        <input
+                                            name="payment_to_registered_pensions"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="payment_to_registered_pensions"
+                                            value="<?= FormController::getFormData('payment_to_registered_pensions', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="payments_to_retirement_annuity">
+                                            [2] <strong>Payments to a retirement annuity contract where basic rate tax relief will not be claimed by your provider</strong>
+                                        </label>
+                                        <input
+                                            name="payments_to_retirement_annuity"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="payments_to_retirement_annuity"
+                                            value="<?= FormController::getFormData('payments_to_retirement_annuity', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="payments_to_employer_scheme">
+                                            [3] <strong>Payments to your employer's scheme which were not deducted from your pay before tax</strong>
+                                        </label>
+                                        <input
+                                            name="payments_to_employer_scheme"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="payments_to_employer_scheme"
+                                            value="<?= FormController::getFormData('payments_to_employer_scheme', $return, 0); ?>">
+                                        <p>
+                                            This will be unusual - read the notes
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="payments_to_overseas_pension_scheme">
+                                            [4] <strong>Payments to an overseas pension scheme, which is not UK-registered, which are eligible for tax relief and were not deducted from your pay before tax</strong>
+                                        </label>
+                                        <input
+                                            name="payments_to_overseas_pension_scheme"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="payments_to_overseas_pension_scheme"
+                                            value="<?= FormController::getFormData('payments_to_overseas_pension_scheme', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                Charitable giving
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="gift_aid_payments">
+                                            [5] <strong>Gift Aid payments made in the year to 5 April 2022</strong>
+                                        </label>
+                                        <input
+                                            name="gift_aid_payments"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="gift_aid_payments"
+                                            value="<?= FormController::getFormData('gift_aid_payments', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="one_off_payments">
+                                            [6] <strong>Total of any "one-off" payments in box 5</strong>
+                                        </label>
+                                        <input
+                                            name="one_off_payments"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="one_off_payments"
+                                            value="<?= FormController::getFormData('one_off_payments', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="gift_aid_payments_treated">
+                                            [7] <strong>Gift Aid payments made in the year to 5 April 2022 but treated as if made in the year to 5 April 2021</strong>
+                                        </label>
+                                        <input
+                                            name="gift_aid_payments_treated"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="gift_aid_payments_treated"
+                                            value="<?= FormController::getFormData('gift_aid_payments_treated', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="gift_aid_payments_treated_2">
+                                            [8] <strong>Gift Aid payments made after 5 April 2022 but to be treated as if made in the year to 5 April 2022</strong>
+                                        </label>
+                                        <input
+                                            name="gift_aid_payments_treated_2"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="gift_aid_payments_treated_2"
+                                            value="<?= FormController::getFormData('gift_aid_payments_treated_2', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="qualifying_shares">
+                                            [9] <strong>Value of qualifying shares or securities gifted to charity</strong>
+                                        </label>
+                                        <input
+                                            name="qualifying_shares"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="qualifying_shares"
+                                            value="<?= FormController::getFormData('qualifying_shares', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="qualifying_land_gifted_charity">
+                                            [10] <strong>Value of qualifying land and buildings gifted to charity</strong>
+                                        </label>
+                                        <input
+                                            name="qualifying_land_gifted_charity"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="qualifying_land_gifted_charity"
+                                            value="<?= FormController::getFormData('qualifying_land_gifted_charity', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="qualifying_investments">
+                                            [11] <strong>Value of qualifying investments gifted to non-UK charities in boxes 9 and 10</strong>
+                                        </label>
+                                        <input
+                                            name="qualifying_investments"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="qualifying_investments"
+                                            value="<?= FormController::getFormData('qualifying_investments', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="gift_aid_payments_non_uk_charity">
+                                            [12] <strong>Gift Aid payments to non-UK charities in box 5</strong>
+                                        </label>
+                                        <input
+                                            name="gift_aid_payments_non_uk_charity"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="gift_aid_payments_non_uk_charity"
+                                            value="<?= FormController::getFormData('gift_aid_payments_non_uk_charity', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                Blind Person's Allowance
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="registered_blind">
+                                            [13] <strong>If you're registered blind, or severely sight impaired, and your name is on a local authority or other register</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="registered_blind"
+                                                    type="checkbox"
+                                                    name="registered_blind"
+                                                    value="1"
+                                                    <?= FormController::getFormData('registered_blind', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="registered_blind_name">
+                                            [14] <strong>Enter the name of the local authority or other register</strong>
+                                        </label>
+                                        <input
+                                            name="registered_blind_name"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="registered_blind_name"
+                                            value="<?= FormController::getFormData('registered_blind_name', $return); ?>"
+                                            maxlength="80">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="spouse_surplus_allowance">
+                                            [15] <strong>If you want your spouse's, or civil partner's, surplus allowance</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="surplus_allowance"
+                                                    type="checkbox"
+                                                    name="surplus_allowance"
+                                                    value="1"
+                                                    <?= FormController::getFormData('surplus_allowance', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="your_surplus_allowance">
+                                            [16] <strong>If you want your spouse, or civil partner, to have your surplus allowance</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="your_surplus_allowance"
+                                                    type="checkbox"
+                                                    name="your_surplus_allowance"
+                                                    value="1"
+                                                    <?= FormController::getFormData('your_surplus_allowance', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-student-loans-tab', 'return-person-tab'); ?>"
+            id="return-student-loans-tab"
+            role="tabpanel"
+            aria-labelledby="return-student-loans-tab">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                Please read the notes before filling in boxes 1 to 3.
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="student_loan_repayment">
+                                            [1] <strong>If you've received notification from Student Loans Company that your repayment of an Income Contingent Loan was due before 6 April 2022</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="student_loan_repayment"
+                                                    type="checkbox"
+                                                    name="student_loan_repayment"
+                                                    value="1"
+                                                    <?= FormController::getFormData('student_loan_repayment', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p>
+                                            We'll use your plan and or loan type to calculate amounts due
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="student_loan_replayment_amount">
+                                            [2] <strong>If your employer has deducted Student Loan repayments enter the amount deducted</strong>
+                                        </label>
+                                        <input
+                                            name="student_loan_replayment_amount"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="student_loan_replayment_amount"
+                                            value="<?= FormController::getFormData('student_loan_replayment_amount', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="postgraduate_loan_replayment_amount">
+                                            [3] <strong>If your employer has deducted Postgraduate Loan repayments enter the amount deducted</strong>
+                                        </label>
+                                        <input
+                                            name="postgraduate_loan_replayment_amount"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="postgraduate_loan_replayment_amount"
+                                            value="<?= FormController::getFormData('postgraduate_loan_replayment_amount', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-child-benefits-tab', 'return-person-tab'); ?>"
+            id="return-child-benefits-tab"
+            role="tabpanel"
+            aria-labelledby="return-child-benefits-tab">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                Please read the notes before filling in this section. Only fill in this section if all of the following apply:
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 pb-3">
+                                    <ul>
+                                        <li>your income was over £50,000</li>
+                                        <li>you or your partner (if you have one) got Child Benefit (this also applies if someone else claims Child Benefit for a child who lives with you and pays you or your partner for the child's upkeep)</li>
+                                        <li>couples only - your income was higher than your partner's</li>
+                                    </ul>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="child_benefits_amount">
+                                            [1] <strong>Enter the total amount of Child Benefit you and your partner got for the year to 5 April 2022</strong>
+                                        </label>
+                                        <input
+                                            name="child_benefits_amount"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="child_benefits_amount"
+                                            value="<?= FormController::getFormData('child_benefits_amount', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="child_benefits_no_children">
+                                            [2] <strong>Enter the number of children you and your partner got Child Benefit for on 5 April 2022</strong>
+                                        </label>
+                                        <input
+                                            name="child_benefits_no_children"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="child_benefits_no_children"
+                                            value="<?= FormController::getFormData('child_benefits_no_children', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="child_benefits_date">
+                                            [3] <strong>Enter the date that you and your partner stopped getting all Child Benefit payments if this was before 6 April 2022</strong>
+                                        </label>
+                                        <input
+                                            name="child_benefits_date"
+                                            type="text"
+                                            class="form-control mt-2 datepicker"
+                                            aria-describedby="child_benefits_date"
+                                            value="<?= DateHelper::pretty(FormController::getFormData('child_benefits_date', $return), true, ''); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-income-convid-tab', 'return-person-tab'); ?>"
+            id="return-income-convid-tab"
+            role="tabpanel"
+            aria-labelledby="return-income-convid-tab">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                Incorrectly claimed coronavirus support scheme payments
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 pb-3">
+                                    Please read the notes before filling in this section. Only fill in this section if you incorrectly claimed any payments from the Coronavirus Job Retention Scheme, Eat Out to Help Out Scheme, Self-Employment Income Support Scheme (SEISS) or from any other applicable HMRC coronavirus support scheme and you still need to tell HMRC
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="convid_incorrectly_claimed">
+                                            [1] <strong>Amount of HMRC coronavirus support scheme payments (other than SEISS) incorrectly claimed</strong>
+                                        </label>
+                                        <input
+                                            name="convid_incorrectly_claimed"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="convid_incorrectly_claimed"
+                                            value="<?= FormController::getFormData('convid_incorrectly_claimed', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="convid_incorrectly_claimed_seiss">
+                                            [2] <strong>Amount of SEISS payments incorrectly claimed</strong>
+                                        </label>
+                                        <input
+                                            name="convid_incorrectly_claimed_seiss"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="convid_incorrectly_claimed_seiss"
+                                            value="<?= FormController::getFormData('convid_incorrectly_claimed_seiss', $return, 0); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-marriage-allowance-tab', 'return-person-tab'); ?>"
+            id="return-marriage-allowance-tab"
+            role="tabpanel"
+            aria-labelledby="return-marriage-allowance-tab">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 pb-3">
+                                    <p>
+                                        Please read the notes. If your income for the year ended 5 April 2022 was less than £12,570 you can transfer £1,260 of your Personal Allowance to your spouse or civil partner to reduce the amount of tax they pay if all of the following apply:
+                                    </p>
+                                    <ul>
+                                        <li>you were married to, or in a civil partnership with, the same person for all or part of the tax year</li>
+                                        <li>you were both born on or after 6 April 1935</li>
+                                        <li>your spouse or civil partner's income was not taxed at the higher rate</li>
+                                    </ul>
+                                    <p>
+                                        Fill in this section if you want to make the transfer:
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="spouse_first_name">
+                                            [1] <strong>Your spouse or civil partner's first name</strong>
+                                        </label>
+                                        <input
+                                            name="spouse_first_name"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="spouse_first_name"
+                                            value="<?= FormController::getFormData('spouse_first_name', $return); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="spouse_last_name">
+                                            [2] <strong>Your spouse or civil partner's last name</strong>
+                                        </label>
+                                        <input
+                                            name="spouse_last_name"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="spouse_last_name"
+                                            value="<?= FormController::getFormData('spouse_last_name', $return); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="spouse_national_insurance_no">
+                                            [3] <strong>Your spouse or civil partner's last name</strong>
+                                        </label>
+                                        <input
+                                            name="spouse_national_insurance_no"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="spouse_national_insurance_no"
+                                            value="<?= FormController::getFormData('spouse_national_insurance_no', $return); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="spouse_dob">
+                                            [4] <strong>Your spouse or civil partner's date of birth</strong>
+                                        </label>
+                                        <input
+                                            name="spouse_dob"
+                                            type="text"
+                                            class="form-control mt-2 datepicker"
+                                            aria-describedby="spouse_dob"
+                                            value="<?= DateHelper::pretty(FormController::getFormData('spouse_dob', $return), true, ''); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="marriage_date">
+                                            [5] <strong>Date of marriage or civil partnership</strong>
+                                        </label>
+                                        <input
+                                            name="marriage_date"
+                                            type="text"
+                                            class="form-control mt-2 datepicker"
+                                            aria-describedby="marriage_date"
+                                            value="<?= DateHelper::pretty(FormController::getFormData('marriage_date', $return), true, ''); ?>">
+                                        <p>
+                                            &nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-finish-tab', 'return-person-tab'); ?>"
+            id="return-finish-tab"
+            role="tabpanel"
+            aria-labelledby="return-finish-tab">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>
+                                Calculating your tax - if we receive this paper tax return by 31 October 2022 or if you file online, we'll do the calculation for you and tell you how much you have to pay (or what your repayment will be) before 31 January 2023. We'll add the amount due to your Self Assessment Statement, together with any other amounts due.
+                            </p>
+                            <p>
+                                Do not enter payments on account, or other payments you've made towards the amounts due, on your tax return. We'll deduct these on your Self Assessment Statement. If you want to calculate your tax, ask us for the "Tax calculation summary" pages and notes. The notes will help you work out any tax due, or repayable, and if payments on account are necessary.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                Tax refunded or set off
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group mb-4">
+                                        <label for="tax_refunded_amount">
+                                            [1] <strong>If you've had any 2021 - 22 Income Tax refunded or set off by us or Jobcentre Plus, enter the amount</strong>
+                                        </label>
+                                        <input
+                                            name="tax_refunded_amount"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="tax_refunded_amount"
+                                            value="<?= FormController::getFormData('tax_refunded_amount', $return, 0); ?>">
+                                        <p>
+                                            Read the notes
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                If you have not paid enough tax
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <p>
+                                        We recommend you pay any tax due electronically. Read the notes.
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="owe_tax">
+                                            [2] <strong>If you owe less than £3,000 for the 2021 - 22 tax year (excluding Class 2 NICs) and you send us your paper tax return by 31 October, or 30 December 2022 if you file online, we'll try to collect the tax through your wages or pension by adjusting your 2023 - 24 tax code. If you do not want us to do this</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="owe_tax"
+                                                    type="checkbox"
+                                                    name="owe_tax"
+                                                    value="1"
+                                                    <?= FormController::getFormData('owe_tax', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p>
+                                            Read the notes
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="owe_tax_on_savings">
+                                            [3] <strong>If you owe tax on savings, casual earnings and/or the High Income Child Benefit Charge for the 2022 - 23 tax year, we'll try to collect it through your wages orpension by adjusting your 2022 - 23 tax code. If you do not want us to do this</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="owe_tax_on_savings"
+                                                    type="checkbox"
+                                                    name="owe_tax_on_savings"
+                                                    value="1"
+                                                    <?= FormController::getFormData('owe_tax_on_savings', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <p>
+                                            Read the notes
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                If you have paid too much tax
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <p>
+                                        To claim a repayment, fill in boxes 4 to 14 below. If you paid your tax by credit or debit card, we'll always try to repay back to your card first before making any repayment as requested by you below. Please allow up to 4 weeks for any repayment to reach you before contacting us.
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="name_of_bank">
+                                            [4] <strong>Name of bank or building society</strong>
+                                        </label>
+                                        <input
+                                            id="name_of_bank"
+                                            type="text"
+                                            name="name_of_bank"
+                                            class="form-control mt-2"
+                                            value="<?= FormController::getFormData('name_of_bank', $return); ?>">
+                                    </div>
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="name_of_account_holder">
+                                            [5] <strong>Name of account holder (or nominee)</strong>
+                                        </label>
+                                        <input
+                                            id="name_of_account_holder"
+                                            type="text"
+                                            name="name_of_account_holder"
+                                            class="form-control mt-2"
+                                            value="<?= FormController::getFormData('name_of_account_holder', $return); ?>">
+                                    </div>
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="sort_code">
+                                            [6] <strong>Branch sort code</strong>
+                                        </label>
+                                        <input
+                                            id="sort_code"
+                                            type="text"
+                                            name="sort_code"
+                                            class="form-control mt-2"
+                                            value="<?= FormController::getFormData('sort_code', $return); ?>">
+                                    </div>
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="account_number">
+                                            [7] <strong>Account number</strong>
+                                        </label>
+                                        <input
+                                            id="account_number"
+                                            type="text"
+                                            name="account_number"
+                                            class="form-control mt-2"
+                                            value="<?= FormController::getFormData('account_number', $return); ?>">
+                                    </div>
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="society_ref">
+                                            [8] <strong>Building society reference number</strong>
+                                        </label>
+                                        <input
+                                            id="society_ref"
+                                            type="text"
+                                            name="society_ref"
+                                            class="form-control mt-2"
+                                            value="<?= FormController::getFormData('society_ref', $return); ?>">
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="no_society_account">
+                                            [9] <strong>If you do not have a bank or building society account, or if you want us to send a cheque to you or to your nominee.</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="no_society_account"
+                                                    type="checkbox"
+                                                    name="no_society_account"
+                                                    value="1"
+                                                    <?= FormController::getFormData('no_society_account', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="nominees_name">
+                                            [10] <strong>If you've entered a nominee's name in box 5</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="nominees_name"
+                                                    type="checkbox"
+                                                    name="nominees_name"
+                                                    value="1"
+                                                    <?= FormController::getFormData('nominees_name', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="nominee_is_tax_adviser">
+                                            [11] <strong>If your nominee is your tax adviser</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="nominee_is_tax_adviser"
+                                                    type="checkbox"
+                                                    name="nominee_is_tax_adviser"
+                                                    value="1"
+                                                    <?= FormController::getFormData('nominee_is_tax_adviser', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="nominee_address">
+                                            [12] <strong>Nominee's address</strong>
+                                        </label>
+                                        <textarea
+                                            id="nominee_address"
+                                            name="nominee_address"
+                                            rows="4"
+                                            maxlength="100"
+                                            class="form-control mt-2"><?= FormController::getFormData('nominee_address', $return); ?></textarea>
+                                    </div>
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="nominee_postcode">
+                                            [13] <strong>and postcode</strong>
+                                        </label>
+                                        <input
+                                            id="nominee_postcode"
+                                            type="text"
+                                            name="nominee_postcode"
+                                            class="form-control mt-2"
+                                            value="<?= FormController::getFormData('nominee_postcode', $return); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">
+                                Your tax adviser, if you have one
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <p>
+                                        This section is optional. Please read the notes about authorising your tax adviser.
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="tax_advisors_name">
+                                            [15] <strong>Your tax adviser's name</strong>
+                                        </label>
+                                        <input
+                                            id="tax_advisors_name"
+                                            type="text"
+                                            name="tax_advisors_name"
+                                            class="form-control mt-2"
+                                            value="<?= FormController::getFormData('tax_advisors_name', $return); ?>">
+                                    </div>
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="tax_advisors_phone">
+                                            [16] <strong>Their phone number</strong>
+                                        </label>
+                                        <input
+                                            id="tax_advisors_phone"
+                                            type="text"
+                                            name="tax_advisors_phone"
+                                            class="form-control mt-2"
+                                            value="<?= FormController::getFormData('tax_advisors_phone', $return); ?>">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="tax_advisors_address">
+                                            [17] <strong>The first line of their address including the postcode</strong>
+                                        </label>
+                                        <textarea
+                                            id="tax_advisors_address"
+                                            name="tax_advisors_address"
+                                            rows="4"
+                                            maxlength="100"
+                                            class="form-control mt-2"><?= FormController::getFormData('tax_advisors_address', $return); ?></textarea>
+                                        <input
+                                            id="tax_advisors_postcode"
+                                            type="text"
+                                            name="tax_advisors_postcode"
+                                            class="form-control mt-2"
+                                            placeholder="Postcode"
+                                            maxlength="10"
+                                            value="<?= FormController::getFormData('tax_advisors_postcode', $return); ?>">
+                                    </div>
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="tax_advisors_ref">
+                                            [18] <strong>The reference your adviser uses for you</strong>
+                                        </label>
+                                        <input
+                                            id="tax_advisors_ref"
+                                            type="text"
+                                            name="tax_advisors_ref"
+                                            class="form-control mt-2"
+                                            maxlength="14"
+                                            value="<?= FormController::getFormData('tax_advisors_ref', $return); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-other-tab', 'return-person-tab'); ?>"
+            id="return-other-tab"
+            role="tabpanel"
+            aria-labelledby="return-other-tab">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group mt-0 mb-4">
+                                <label for="other_info">
+                                    [19] <strong>Please give any other information in this space</strong>
+                                </label>
+                                <textarea
+                                    id="other_info"
+                                    name="other_info"
+                                    rows="20"
+                                    class="form-control mt-2"><?= FormController::getFormData('other_info', $return); ?></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-back-tab', 'return-person-tab'); ?>"
+            id="return-back-tab"
+            role="tabpanel"
+            aria-labelledby="return-back-tab">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="provisional_figures">
+                                            [20] <strong>If this tax return contains provisional figures</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="provisional_figures"
+                                                    type="checkbox"
+                                                    name="provisional_figures"
+                                                    value="1"
+                                                    <?= FormController::getFormData('provisional_figures', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="convid_support_received">
+                                            [20.1] <strong>If any of your businesses received coronavirus support payments (such as CJRS, SEISS) you must put "X" in the box to declare that they have been included when calculating profits in the period of this return</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="convid_support_received"
+                                                    type="checkbox"
+                                                    name="convid_support_received"
+                                                    value="1"
+                                                    <?= FormController::getFormData('convid_support_received', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="additional_pages">
+                                            [21] <strong>If you're enclosing separate supplementary pages</strong>
+                                        </label>
+                                        <div class="checkbox switcher">
+                                            <label>
+                                                <input
+                                                    id="additional_pages"
+                                                    type="checkbox"
+                                                    name="additional_pages"
+                                                    value="1"
+                                                    <?= FormController::getFormData('additional_pages', $return) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        yes
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        no
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="signed_on_behalf">
+                                            [23] <strong>If you've signed on behalf of someone else, enter the capacity. For example, executor, receiver</strong>
+                                        </label>
+                                        <input
+                                            id="signed_on_behalf"
+                                            type="text"
+                                            name="signed_on_behalf"
+                                            class="form-control mt-2"
+                                            value="<?= FormController::getFormData('signed_on_behalf', $return); ?>">
+                                    </div>
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="signed_on_behalf_name">
+                                            [24] <strong>Enter the name of the person you've signed for</strong>
+                                        </label>
+                                        <input
+                                            id="signed_on_behalf_name"
+                                            type="text"
+                                            name="signed_on_behalf_name"
+                                            class="form-control mt-2"
+                                            value="<?= FormController::getFormData('signed_on_behalf_name', $return); ?>">
+                                    </div>
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="signed_on_behalf_your_name">
+                                            [25] <strong>If you filled in boxes 23 and 24 enter your name</strong>
+                                        </label>
+                                        <input
+                                            id="signed_on_behalf_your_name"
+                                            type="text"
+                                            name="signed_on_behalf_your_name"
+                                            class="form-control mt-2"
+                                            value="<?= FormController::getFormData('signed_on_behalf_your_name', $return); ?>">
+                                    </div>
+                                    <div class="form-group mt-0 mb-4">
+                                        <label for="signed_on_behalf_your_address">
+                                            [26] <strong>and your address</strong>
+                                        </label>
+                                        <textarea
+                                            id="signed_on_behalf_your_address"
+                                            name="signed_on_behalf_your_address"
+                                            rows="4"
+                                            maxlength="100"
+                                            class="form-control mt-2"><?= FormController::getFormData('signed_on_behalf_your_address', $return); ?></textarea>
+                                        <input
+                                            id="signed_on_behalf_your_postcode"
+                                            type="text"
+                                            name="signed_on_behalf_your_postcode"
+                                            class="form-control mt-2"
+                                            placeholder="Postcode"
+                                            maxlength="10"
+                                            value="<?= FormController::getFormData('signed_on_behalf_your_postcode', $return); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="tab-pane <?= UrlHelper::activeTab('return-preview-tab', 'return-person-tab'); ?>"
+            id="return-preview-tab"
+            role="tabpanel"
+            aria-labelledby="return-preview-tab">
+            <div class="row m-0">
+                <div class="col-12 p-0">
+                    <div class="card p-0">
+                        <div class="card-body">
+                            <?php
+                            if (!empty($return->file)) {
+                                switch ($return->file->mime_type) {
+                                    case 'application/pdf':
+                                        ?>
+                                        <div 
+                                            class="pdf-render"
+                                            data-url="<?= UrlHelper::backend($return->file->output_url); ?>"></div>
+                                        <?php
+                                        break;
+                                    default:
+                                    ?>
+                                    <?php
+                                }
+                            } else {
+                                ?>
+                                <div class="h4 p-4">Nothing to preview</div>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

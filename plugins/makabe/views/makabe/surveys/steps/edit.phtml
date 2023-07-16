@@ -1,0 +1,559 @@
+<?php
+/**
+ * Survey step edit template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = ($this->di->getConfig())->urls->mms . '/surveys/' . $survey_id . '/steps';
+echo $this->partial("common/form/messages");
+?>
+<script src="<?= $this->tengu->theme->getAsset('js/plugins/chartjs.min.js'); ?>"></script>
+<script src="<?= $this->tengu->theme->getAsset('js/core/edit.js'); ?>"></script>
+<form id="form-edit" method="post" action="<?= UrlHelper::backend($url . '/update/' . $data->id); ?>" enctype="multipart/form-data">
+    <input type="hidden" name="survey_id" value="<?= $survey_id; ?>"/>
+    <div class="row mb-3">
+        <div class="col-3">
+            <div class="card bg-primary">
+                <div class="card-body">
+                    <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 16s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H4Zm4-5.95a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                        <path d="M2 1a2 2 0 0 0-2 2v9.5A1.5 1.5 0 0 0 1.5 14h.653a5.373 5.373 0 0 1 1.066-2H1V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9h-2.219c.554.654.89 1.373 1.066 2h.653a1.5 1.5 0 0 0 1.5-1.5V3a2 2 0 0 0-2-2H2Z"/>
+                    </svg>
+                    <div class="h3 text-white mt-3 mb-1">
+                        <strong><?= $data->stats['total']; ?></strong> visits
+                    </div>
+                    <div class="text-white">
+                        Lookie loos
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <a
+						href="<?= UrlHelper::backend(($this->di->getConfig())->urls->mms . '/surveys/edit/' . $survey_id . '#steps-tab'); ?>"
+						class="btn btn-blank mr-2 text-center"
+						title="Go back to the survey"
+						data-toggle="tooltip"
+						data-trigger="hover"
+						data-dismiss="click"
+						data-placement="bottom">
+						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+							<path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.74 8.74 0 0 0-1.921-.306 7.404 7.404 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254a.503.503 0 0 0-.042-.028.147.147 0 0 1 0-.252.499.499 0 0 0 .042-.028l3.984-2.933zM7.8 10.386c.068 0 .143.003.223.006.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96v-.667z"/>
+						</svg><br/>
+						back
+					</a>
+                    <button
+                        id="btn-save"
+                        class="btn btn-blank float-right"
+                        type="button"
+                        title="Save the survey step"
+                        data-toggle="tooltip"
+                        data-trigger="hover"
+                        data-dismiss="click"
+                        data-placement="top">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v4.5h2a.5.5 0 0 1 .354.854l-2.5 2.5a.5.5 0 0 1-.708 0l-2.5-2.5A.5.5 0 0 1 5.5 6.5h2V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                        </svg><br/>
+                        save
+                    </button>
+                    <a
+                        href="<?= $data->url; ?>"
+                        target="_blank"
+                        class="btn btn-blank float-right"
+                        title="Check it out on the live site"
+                        data-toggle="tooltip"
+                        data-trigger="hover"
+                        data-dismiss="click"
+                        data-placement="top">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM13.991 3l.024.001a1.46 1.46 0 0 1 .538.143.757.757 0 0 1 .302.254c.067.1.145.277.145.602v5.991l-.001.024a1.464 1.464 0 0 1-.143.538.758.758 0 0 1-.254.302c-.1.067-.277.145-.602.145H2.009l-.024-.001a1.464 1.464 0 0 1-.538-.143.758.758 0 0 1-.302-.254C1.078 10.502 1 10.325 1 10V4.009l.001-.024a1.46 1.46 0 0 1 .143-.538.758.758 0 0 1 .254-.302C1.498 3.078 1.675 3 2 3h11.991zM14 2H2C0 2 0 4 0 4v6c0 2 2 2 2 2h12c2 0 2-2 2-2V4c0-2-2-2-2-2z"/>
+                        </svg><br/>
+                        view
+                    </a>
+                    <a
+                        href="<?= UrlHelper::backend($url . '/create'); ?>"
+                        class="btn btn-blank float-right"
+                        title="Build a new survey step"
+                        data-toggle="tooltip"
+                        data-trigger="hover"
+                        data-dismiss="click"
+                        data-placement="top">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8.5 6a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z"/>
+                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
+                        </svg><br/>
+                        new
+                    </a>
+                    <?php
+                    if ($data->status == 'deleted') {
+                        ?>
+                        <button
+                            class="btn btn-blank float-right"
+                            type="button"
+                            data-original-title="Are you sure?"
+                            data-html="true"
+                            data-trigger="focus"
+                            data-toggle="popover"
+                            data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/recover/' . $data->id); ?>">Yes</a>'>
+                            <div
+                                data-toggle="tooltip"
+                                data-dismiss="hover"
+                                data-placement="top"
+                                title="Recover the survey step from the trash">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"/>
+                                </svg><br/>
+                                recover
+                            </div>
+                        </button>
+                        <?php
+                    } else {
+                    ?>
+                        <button
+                            class="btn btn-blank float-right"
+                            type="button"
+                            data-original-title="Are you sure?"
+                            data-html="true"
+                            data-trigger="focus"
+                            data-toggle="popover"
+                            data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/delete/' . $data->id); ?>">Yes</a>'>
+                            <div
+                                data-toggle="tooltip"
+                                data-dismiss="hover"
+                                data-placement="top"
+                                title="Throw the survey step into the trash">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                </svg><br/>
+                                delete
+                            </div>
+                        </button>
+                        <?php
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 mb-3">
+			Required fields <span class="required">*</span>
+		</div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body p-0 pt-4">
+                    <div class="d-flex flex-wrap flex-sm-nowrap pl-3 pr-3">
+                        <div class="mr-4 mb-4">
+							<div class="preview-img">
+								<div class="position-relative border">
+                                	<img src="/dump/<?= $data->id; ?>-snap.jpg" onerror="onImageError(this)">
+								</div>
+                                <?php
+                                switch ($data->status) {
+                                    case 'active':
+                                        $label = "I'm live!";
+                                        $bg_colour = 'bg-success';
+                                        break;
+                                    case 'inactive':
+                                        $label = "I'm inactive";
+                                        $bg_colour = 'bg-warning';
+                                        break;
+                                    case 'deleted':
+                                        $label = "I'm in a deleted state";
+                                        $bg_colour = 'bg-danger';
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                ?>
+                                <div title="<?= $label; ?>" class="circle border border-white <?= $bg_colour; ?>"></div>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 mb-4">
+                            <div class="form-group form-check mt-0 mb-4">
+                                <label for="status">Go live</label>
+                                <div class="checkbox switcher mt-2">
+                                    <label>
+                                        <input
+                                            id="status"
+                                            type="checkbox"
+                                            name="status"
+                                            value="<?= FormController::getFormData('status', $data); ?>"
+                                            <?= FormController::getFormData('status', $data) == 'active' ? ' checked="checked"' : ''; ?>>
+                                        <span>
+                                            <small class="switcher-on">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                </svg>
+                                            </small>
+                                            <small class="switcher-off">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                </svg>
+                                            </small>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="name">
+									Title
+                                    <span class="required">*</span>
+								</label>
+                                <input
+                                    id="name"
+                                    name="name"
+                                    type="text"
+                                    class="form-control mt-2"
+                                    aria-describedby="name"
+                                    value="<?= FormController::getFormData('name', $data); ?>">
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="type">
+                                    Type
+                                    <span class="required">*</span>
+                                </label>
+                                <select
+                                    id="type"
+                                    name="type"
+                                    class="form-control mt-2"
+                                    aria-describedby="type"
+                                    required>
+                                    <?php
+                                    foreach ($types as $type) {
+                                        $selected = FormController::getFormData('step.type', $data);
+                                        ?>
+                                        <option value="<?= $type; ?>"<?= $selected == $type ? ' selected="selected"' : '';?>><?= ucfirst($type); ?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <?= $this->partial("makabe/surveys/steps/type_options", ['data' => $data, 'selected' => $selected]); ?>
+                            <div class="form-group form-check mt-0 mb-4">
+                                <label>Required</label>
+                                <div class="checkbox switcher mt-2">
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            name="required"
+                                            value="1"
+                                            <?= FormController::getFormData('step.required', $data) ? ' checked="checked"' : ''; ?>>
+                                        <span>
+                                            <small class="switcher-on">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                </svg>
+                                            </small>
+                                            <small class="switcher-off">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                </svg>
+                                            </small>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="slogan">
+                                    Slogan
+                                </label>
+                                <input
+                                    id="slogan"
+                                    name="slogan"
+                                    type="text"
+                                    class="form-control mt-2"
+                                    aria-describedby="slogan"
+                                    value="<?= FormController::getFormData('slogan', $data); ?>">
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="summary">Summary</label>
+                                <input
+                                    id="summary"
+                                    name="summary"
+                                    type="text"
+                                    class="form-control mt-2"
+                                    aria-describedby="summary"
+                                    value="<?= FormController::getFormData('summary', $data); ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="nav p-0 m-0">
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('overview-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#overview-tab">
+                                Overview
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('responses-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#responses-tab">
+                                Responses<span class="badge badge-primary"><?= $data->surveys->count(); ?></span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('template-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#template-tab">
+                                Look &amp; feel <span class="required">*</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('seo-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#seo-tab">
+                                SEO
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('media-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#media-tab">
+                                Media
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('stats-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#stats-tab">
+                                Stats
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('notes-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#notes-tab">
+                                Notes
+                                <?php
+								if ($note_count = $data->notes->count()) {
+									?>
+									<span class="badge badge-primary"><?= $note_count; ?></span>
+									&nbsp;
+									<?php
+								}
+								?>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link <?= UrlHelper::activeTab('activity-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#activity-tab">
+                                Activity
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-content mt-5">
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('overview-tab', 'overview-tab'); ?>"
+                    id="overview-tab"
+                    role="tabpanel"
+                    aria-labelledby="overview-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <?= $this->partial("common/tags", ['data' => $data->tags, 'meta' => true]); ?>
+                        </div>
+                        <div class="col-12">
+                            <?= $this->partial("website/pages/sections/content", ['data' => $data]); ?>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('responses-tab', 'overview-tab'); ?>"
+                    id="responses-tab"
+                    role="tabpanel"
+                    aria-labelledby="responses-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card shadow-none">
+                                <div class="card-header m-0">
+                                    <span class="card-title">Responses</span>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Survey completed</th>
+                                                <th width="120px">&nbsp;</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            foreach ($data->surveys as $survey) {
+                                                ?>
+                                                <tr>
+                                                    <td>
+                                                        <?= DateHelper::pretty($survey->created_at); ?>
+                                                    </td>
+                                                    <td>
+                                                        <a
+                                                            href="<?= UrlHelper::backend($url . '/view/' . $survey->id); ?>"
+                                                            class="btn btn-blank float-right"
+                                                            title="View the survey response"
+                                                            data-toggle="tooltip"
+                                                            data-trigger="hover"
+                                                            data-dismiss="click"
+                                                            data-placement="top">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+                                                            </svg>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <?php
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('template-tab', 'overview-tab'); ?>"
+                    id="template-tab"
+                    role="tabpanel"
+                    aria-labelledby="template-tab">
+                    <?= $this->partial("website/templates/widget", ['data' => $data]); ?>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('seo-tab', 'overview-tab'); ?>"
+                    id="seo-tab"
+                    role="tabpanel"
+                    aria-labelledby="seo-tab">
+					<?= $this->partial(
+						"website/pages/sections/seo",
+						[
+							'data' => $data,
+							'add' => false
+						]
+					); ?>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('media-tab', 'overview-tab'); ?>"
+                    id="media-tab"
+                    role="tabpanel"
+                    aria-labelledby="media-tab">
+                    <?= $this->partial(
+						"common/media",
+						[
+							'data' => $data,
+							'url' => $url . '/edit/' . $data->id
+						]
+					); ?>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('stats-tab', 'overview-tab'); ?>"
+                    id="stats-tab"
+                    role="tabpanel"
+                    aria-labelledby="stats-tab">
+                    <?= $this->partial("website/pages/sections/stats", ['data' => $data]); ?>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('notes-tab', 'overview-tab'); ?>"
+                    id="notes-tab"
+                    role="tabpanel"
+                    aria-labelledby="notes-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card shadow-none">
+                                <div class="card-header m-0">
+                                    <span class="card-title">Notes</span>
+                                </div>
+                                <div class="card-body">
+                                    <?php
+                                    echo $this->partial(
+                                        'common/notes/list',
+                                        [
+                                            'notes' => $data->notes,
+                                            'url' => $url . '/edit/' . $data->id . '?clear=true&tab=notes-tab'
+                                        ]
+                                    );
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+                if (($this->di->getConfig())->apps->makabe) {
+					?>
+                    <div
+                        class="tab-pane <?= UrlHelper::activeTab('persona-tab', 'overview-tab'); ?>"
+                        id="persona-tab"
+                        role="tabpanel"
+                        aria-labelledby="persona-tab">
+                        <?= $this->partial(
+                            "makabe/personas/widget",
+                            [
+                                'data' => $data,
+                                'url' => $url . '/edit/' . $data->id
+                            ]
+                        ); ?>
+                    </div>
+                    <div
+                        class="tab-pane <?= UrlHelper::activeTab('spin-tab', 'overview-tab'); ?>"
+                        id="spin-tab"
+                        role="tabpanel"
+                        aria-labelledby="spin-tab">
+                        <?= $this->partial(
+                            "makabe/spinner/widget",
+                            [
+                                'data' => $data,
+                                'url' => $url
+                            ]); ?>
+                    </div>
+                    <?php
+				}
+                ?>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('activity-tab', 'overview-tab'); ?>"
+                    id="activity-tab"
+                    role="tabpanel"
+                    aria-labelledby="activity-tab">
+                    <div class="row">
+                        <div class="col-6">
+                            <?= $this->partial("common/logs", ['data' => $data->logs]); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input id="add_step" name="add_step" value="" type="hidden"/>
+</form>

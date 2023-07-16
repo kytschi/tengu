@@ -1,0 +1,58 @@
+@page {
+    margin-top: 0px;
+    margin-left:0px;
+  }
+#dividend {
+    float: left;
+    width: 100%;
+}
+#dividend-info th {
+    padding: 10px 0;
+    text-align: left !important;
+    border-bottom: 1px solid #000;
+}
+
+#dividend-info td {
+    padding: 10px 0;
+    border-bottom: 1px solid #000;
+}
+
+.dividends-image {
+    height: 100px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #000;
+}
+
+#dividend-title {
+    float: left;
+    width: 100%;
+    padding: 5px 0px 10px 0px;
+    text-align: center;
+    background-color: #009ef7;
+    color: #fff;
+}
+
+#dividend .col-12 {
+    float: left;
+    width: 100%;
+    padding: 10px 40px;
+}
+
+#dividend .col-6 {
+    float: left;
+    width: 45%;
+    padding: 10px 40px;
+    margin-bottom: 40px;
+}
+
+#dividend .p-0 {
+    padding: 0 !important;
+}
+
+#dividend .table {
+    width: 100%;
+}
+
+.align-bottom {
+    vertical-align: bottom;
+}

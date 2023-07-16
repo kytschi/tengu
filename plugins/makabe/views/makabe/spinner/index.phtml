@@ -1,0 +1,316 @@
+<?php
+/**
+ * Spinner index template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Makabe\Controllers\KeywordsController;
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+switch ($page->type) {
+	case 'blog-post':
+		$url = ($this->di->getConfig())->urls->cms . '/blog-posts/';
+		$parentUrl = ($this->di->getConfig())->urls->cms . '/blog-posts';
+		$parent = 'Blog posts';
+		$child = 'Blog post';
+		break;
+	case 'blog-post-category':
+		$url = ($this->di->getConfig())->urls->cms . '/blog-posts/categories/';
+		$parentUrl = ($this->di->getConfig())->urls->cms . '/blog-posts/categories';
+		$parent = 'Blog post categories';
+		$child = 'Blog post category';
+		break;
+	case 'page':
+		$url = ($this->di->getConfig())->urls->cms . '/pages/';
+		$parentUrl = ($this->di->getConfig())->urls->cms . '/pages';
+		$parent = 'Pages';
+		$child = 'Page';
+		break;
+	case 'portfolio':
+		$url = ($this->di->getConfig())->urls->cms . '/portfolio/';
+		$parentUrl = ($this->di->getConfig())->urls->cms . '/portfolio';
+		$parent = 'Portfolio';
+		$child = 'Portfolio piece';
+		break;
+}
+
+$url .= $page->id . '/spinner';
+
+$filter_status = $this->tengu->getFilters('status');
+
+echo $this->partial("common/form/messages");
+?>
+<link href="<?= $this->tengu->theme->getCSS('plugins/summernote/summernote-bs4.min.css');?>" rel="stylesheet">
+<script src="<?= $this->tengu->theme->getAsset('plugins/summernote/summernote-bs4.min.js');?>"></script>
+<div class="row mb-3">
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=live'); ?>" class="card bg-primary">
+            <div class="card-body">
+				<svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10.854 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 8.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
+                    <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+					<?= !empty($page->current_spun_content) ? 'One is live' : 'None live'; ?>
+				</div>
+                <div class="text-white">
+					<?= !empty($page->current_spun_content) ? 'Awesome' : 'Still waiting'; ?>					
+				</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=waiting'); ?>" class="card bg-info">
+            <div class="card-body">
+				<svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5zm2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2h-7z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+					<strong><?= $stats['pending']; ?></strong> spun
+				</div>
+                <div class="text-white">
+					Waiting to be used
+				</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=deleted'); ?>" class="card bg-danger">
+            <div class="card-body">
+				<svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+					<strong><?= $stats['deleted']; ?></strong> deleted
+				</div>
+                <div class="text-white">
+					For the scrap heap
+				</div>
+            </div>
+        </a>
+    </div>
+	<div class="col-3">
+		<div class="card bg-warning">
+			<div class="card-body">
+				<svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path d="M8 9.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+					<path d="M9.5 2c-.9 0-1.75.216-2.501.6A5 5 0 0 1 13 7.5a6.5 6.5 0 1 1-13 0 .5.5 0 0 1 1 0 5.5 5.5 0 0 0 8.001 4.9A5 5 0 0 1 3 7.5a6.5 6.5 0 0 1 13 0 .5.5 0 0 1-1 0A5.5 5.5 0 0 0 9.5 2zM8 3.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+				</svg>
+				<div class="h3 text-white mt-3 mb-1">
+					Every <strong><?= ($this->di->getConfig())->makabe->spin_days; ?></strong> days
+				</div>
+				<div class="text-white">
+					Spun content is used
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row mb-3">
+	<div class="col-12">
+		<div class="card p-0">
+			<div class="card-body">
+				<a
+					href="<?= UrlHelper::backend($parentUrl . '/edit/' . $page->id); ?>"
+					class="btn btn-blank mr-2"
+					title="Go back to the page"
+					data-toggle="tooltip"
+					data-trigger="hover"
+					data-dismiss="click"
+					data-placement="bottom">
+					<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+						<path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.74 8.74 0 0 0-1.921-.306 7.404 7.404 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254a.503.503 0 0 0-.042-.028.147.147 0 0 1 0-.252.499.499 0 0 0 .042-.028l3.984-2.933zM7.8 10.386c.068 0 .143.003.223.006.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96v-.667z"/>
+					</svg><br/>
+					back
+				</a>
+				<a
+					class="btn btn-blank float-right"
+					href="<?= UrlHelper::backend($parentUrl . '/' . $page->id . '/spinner/add'); ?>">
+					<span
+						title="Spin some content"
+						data-toggle="tooltip"
+						data-trigger="hover"
+						data-dismiss="click"
+						data-placement="top">
+						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+							<path fill-rule="evenodd" d="M8 5a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5A.5.5 0 0 1 8 5z"/>
+							<path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
+							<path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
+						</svg><br/>
+						add spin
+					</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row mb-3">
+	<div class="col-12">
+		<div class="card p-0">
+			<div class="card-body">
+				<?php
+				$this->partial('common/lists/search', ['url' => $url]);
+
+				if (empty($name)) {
+					$name = 'name';
+				}
+				$filter = !empty($_GET['order_by']) ? $_GET['order_by'] : $name;
+				$order = !empty($_GET['order_dir']) ? strtoupper($_GET['order_dir']) : 'ASC';
+				?>
+				<div class="float-right dropdown mr-3">
+					<a
+						href="#"
+						class="btn btn-default form-control-solid dropdown-toggle"
+						data-toggle="dropdown"
+						role="button"
+						aria-expanded="false">
+						Filter
+					</a>
+					<div class="dropdown-menu p-4">
+						<div class="pb-3">Filter Options</div>
+						<form method="get" action="<?= UrlHelper::backend($url); ?>">
+							<label class="form-label fw-bold">Status:</label>
+							<select
+								name="filters[status]"
+								class="form-control"
+								data-placeholder="Please select an option"
+								tabindex="-1"
+								aria-hidden="true">
+								<option value="">No filter</option>
+								<option value="live"<?= $filter_status == 'live' ? ' selected="selected"' : ''; ?>>Live</option>
+								<option value="waiting"<?= $filter_status == 'waiting' ? ' selected="selected"' : ''; ?>>Waiting</option>
+								<option value="deleted"<?= $filter_status == 'deleted' ? ' selected="selected"' : ''; ?>>Deleted</option>
+							</select>
+							<div class="d-flex justify-content-end mt-4">
+								<a href="<?= UrlHelper::backend($url); ?>" class="btn btn-default btn-sm p-2 pl-3 pr-3 mr-2">Reset</a>
+								<button type="submit" class="btn btn-sm btn-primary p-2 pl-3 pr-3" >Apply</button>
+							</div>
+							<?php
+							if (!empty($_GET['search'])) {
+								?>
+								<input type="hidden" name="search" value="<?= $_GET['search']; ?>"/>
+								<?php
+							}
+							?>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row mb-2">
+	<div class="col-12">
+		<div class="card">
+            <div class="card-body p-3">
+			<?php
+			if ($data->total_items) {
+				?>
+				<table class="table tablesorter">
+					<thead>
+						<tr>
+							<th>Label</th>
+							<th>Campaign</th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+						foreach ($data->getItems() as $row) {
+							?>
+							<tr>
+								<td>
+									<a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+										<?= $row->label; ?>
+									</a>
+								</td>
+								<td>
+									<a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+										<?= !empty($row->campaign) ? $row->campaign->name : 'N/A'; ?>
+									</a>
+								</td>
+								<td>
+									<a
+										href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>"
+										class="btn btn-blank float-right"
+										title="Edit the spin content"
+										data-toggle="tooltip"
+										data-trigger="hover"
+										data-dismiss="click"
+										data-placement="top">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">
+											<path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+										</svg>
+									</a>
+									<?php
+									if (!$row->deleted_at) {
+										?>
+										<button
+											type="button"
+											class="btn btn-blank float-right"
+											data-original-title="Are you sure?"
+											data-trigger="focus"
+											data-html="true"
+											data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/delete/' . $row->id); ?>?from=<?= urlencode($url); ?>">Yes</a>'
+											data-toggle="popover">
+											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">
+												<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+												<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+											</svg>
+										</button>
+										<?php
+									} else {
+										?>
+										<button
+											type="button"
+											class="btn btn-blank float-right"
+											data-original-title="Are you sure?"
+											data-trigger="focus"
+											data-html="true"
+											data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/recover/' . $row->id); ?>?from=<?= urlencode($url); ?>">Yes</a>'
+											data-toggle="popover">
+											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">
+												<path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"/>
+											</svg>
+										</button>
+										<?php
+									}
+									?>
+								</td>
+							</tr>
+							<?php
+						}
+						?>
+					</tbody>
+				</table>
+				<?php
+			}  else {
+				?>
+				<p class="h6 pb-0 m-0">No spin content</p>
+				<?php
+			}
+			?>
+			</div>
+        </div>
+    </div>
+</div>
+<?php
+    echo $this->partial(
+        'common/lists/pagination',
+        [
+            'data' => $data,
+            'url' => UrlHelper::backend($url)
+        ]
+    );
+?>
+<script src="<?= $this->tengu->theme->getAsset('js/core/list.js'); ?>"></script>
+<script src="<?= $this->tengu->theme->getAsset('js/core/spinner.js'); ?>"></script>

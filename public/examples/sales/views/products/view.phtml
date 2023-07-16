@@ -1,0 +1,138 @@
+<?php
+/**
+ * Products view template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+if (!empty($page->banner_image)) {
+    ?>
+    <div class="page-background-image blur">
+        <img src="<?= $page->banner_image->url; ?>" alt="<?= $page->banner_image->label; ?>">
+    </div>
+    <?php
+}
+?>
+<div class="container">
+	<div id="page-content" class="row mt-3 mb-5">
+        <div class="col-12">
+			<div class="page-title">
+                <h2>
+					<a href="/portfolio" class="btn btn-primary">&lt;</a>&nbsp;&nbsp;<?= $page->name; ?>
+				</h2>
+            </div>
+            <section class="card">
+				<div class="card-body">
+					<div id="page-content" class="col-12 p-0">
+						<?= $page->content; ?>
+					</div>
+					<form 
+						class="col-12 p-0"
+						method="post"
+						action="<?= UrlHelper::from('/basket/add/' . $page->id); ?>">
+						<hr/>
+						<?php
+						if ($page->canOrder()) {
+							?>
+							<p>Add to basket</p>
+							<input
+								name="quantity[<?= $page->id; ?>]"
+								type="text"
+								class="form-control float-left mr-2"
+								value="1"
+								style="width:120px">
+							<button
+								class="btn btn-primary float-left"
+								title="Add to the basket"
+								name="add"
+								type="submit"
+								data-toggle="tooltip"
+								data-trigger="hover"
+								data-dismiss="click"
+								data-placement="top">
+								<svg class="svg-white" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+									<path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6h1.717L5.07 1.243a.5.5 0 0 1 .686-.172zM3.394 15l-1.48-6h-.97l1.525 6.426a.75.75 0 0 0 .729.574h9.606a.75.75 0 0 0 .73-.574L15.056 9h-.972l-1.479 6h-9.21z"/>
+								</svg>
+							</button>
+							<?php
+						} else {
+							?>
+							<strong>Out of stock</strong>
+							<?php
+						}
+						?>
+					</form>
+					<?php
+					if ($page->carousel->count()) {
+						?>
+						<div class="col-12 p-0 pt-3">
+							<div id="carousel" class="carousel slide" data-ride="carousel">
+								<ol class="carousel-indicators">
+									<?php
+									foreach ($page->carousel as $key => $image) {
+										?>
+										<li data-target="#carousel" data-slide-to="<?= $key; ?>"<?= !$key ? ' class="active"' : ''; ?>></li>
+										<?php
+									}
+									?>
+								</ol>
+								<div class="carousel-inner">
+									<?php
+									foreach ($page->carousel as $key => $image) {
+										?>
+										<div class="carousel-item<?= !$key ? ' active' : ''; ?>">
+											<img class="d-block w-100" src="<?= $image->file->url; ?>" alt="<?= $image->file->label; ?>">
+											<div class="carousel-caption d-none d-md-block">
+												<h5><?= $image->file->label; ?></h5>
+											</div>
+										</div>
+										<?php
+									}
+									?>
+								</div>
+								<a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									<span class="sr-only">Previous</span>
+								</a>
+								<a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+									<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									<span class="sr-only">Next</span>
+								</a>
+							</div>
+						</div>
+						<script type="text/javascript">
+						$(function () {
+							$('.carousel').carousel();
+						});
+						</script>
+						<?php
+					}
+					?>
+				</div>
+			</section>
+			<?php
+			if ($page->tags->count()) {
+				?>
+				<div class="tags">
+					<?php
+					foreach ($page->tags as $tag) {
+						?>
+						<a href="/search?search=<?= $tag->tag; ?>" class="badge badge-secondary p-2 mr-2 mb-2"><?= $tag->tag; ?></a>
+						<?php
+					}
+					?>
+				</div>
+				<?php
+				}
+			?>
+		</div>
+	</div>
+</div>

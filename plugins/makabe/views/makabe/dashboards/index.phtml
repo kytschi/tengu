@@ -1,0 +1,95 @@
+<?php
+/**
+ * Dashboard template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Makabe\Controllers\KeywordsController;
+use Kytschi\Tengu\Helpers\StringHelper;
+
+?>
+<script src="<?= $this->tengu->theme->getAsset('js/plugins/chartjs.min.js'); ?>"></script>
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-header">
+				<span class="card-title">Keyword traction</span>
+			</div>
+			<div class="card-body">
+				<canvas id="stats" width="600" height="<?= $keywords->count() * 20; ?>px"></canvas>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var ctx = document.getElementById('stats').getContext('2d');
+		var data = new Chart(ctx, {
+			type: 'horizontalBar',
+			data: {
+				<?php
+					$labels = [];
+					$totals = [];
+					$colours = [];
+
+					foreach ($keywords as $key => $keyword) {
+						$stats = $keyword->dashboardStats;
+						if ($stats['visitors']) {
+							$visitors[$key] = intval($stats['visitors']);
+						}
+					}
+
+					arsort($visitors);
+
+					foreach ($visitors as $key => $visitor) {
+						$keyword = $keywords[$key];
+						$stats = $keyword->dashboardStats;
+						$labels[] = '"' . $keyword->keyword . '"';
+						$searches[] = intval($stats['search']);
+					}
+				?>
+				labels: [<?= implode(',', $labels); ?>],
+				datasets: [
+					{
+						label: 'visitors',
+						data: [<?= implode(',', $visitors); ?>],
+						backgroundColor: "#00c129",
+						borderColor: "#00c129",
+						borderWidth: 0.4
+					},
+					{
+						label: 'searches',
+						data: [<?= implode(',', $searches); ?>],
+						backgroundColor: "#1D8CF8",
+						borderColor: "#1D8CF8",
+						borderWidth: 0.4
+					},
+				]
+			},
+			options: {
+				indexAxis: 'y',
+				responsive: true,
+				plugins: {
+					legend: {
+						position: 'right'
+					},
+					title: {
+						display: false
+					}
+				},
+				scales: {
+					x: {
+						stacked: true,
+					},
+					y: {
+						stacked: true
+					}
+				}
+			}
+		});
+	</script>
+</div>

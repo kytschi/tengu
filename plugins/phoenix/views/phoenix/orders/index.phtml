@@ -1,0 +1,302 @@
+<?php
+/**
+ * Baskets index template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Phoenix\Controllers\OrdersController;
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Controllers\Website\MenuController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\NumberHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = ($this->di->getConfig())->urls->sales . '/orders';
+$products_url = ($this->di->getConfig())->urls->sales . '/products';
+$filter_status = $this->tengu->getFilters('status');
+
+echo $this->partial("common/form/messages");
+?>
+<div class="row mb-3">
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=active'); ?>" class="card bg-primary">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    In progress
+                </div>
+                <div class="text-white">
+					<strong><?= $stats['active']; ?></strong> <?= $stats['active'] == 1 ? 'is' : 'are'; ?> actively being worked on
+				</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=complete'); ?>" class="card bg-success">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+                    <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    Complete
+                </div>
+                <div class="text-white">
+					<strong><?= $stats['complete']; ?></strong> <?= $stats['complete'] == 1 ? 'is' : 'are'; ?>  complete
+				</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=inactive'); ?>" class="card bg-warning">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.5 7a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4z"/>
+                    <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    Saved for later
+                </div>
+                <div class="text-white">
+					<strong><?= $stats['inactive']; ?></strong> <?= $stats['inactive'] == 1 ? 'is' : 'are'; ?>  marked as inactive
+				</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-3">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=deleted'); ?>" class="card bg-danger">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.354 5.646a.5.5 0 1 0-.708.708L7.793 7.5 6.646 8.646a.5.5 0 1 0 .708.708L8.5 8.207l1.146 1.147a.5.5 0 0 0 .708-.708L9.207 7.5l1.147-1.146a.5.5 0 0 0-.708-.708L8.5 6.793 7.354 5.646z"/>
+                    <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                </svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    Deleted
+                </div>
+                <div class="text-white">
+					<strong><?= $stats['deleted']; ?></strong> <?= $stats['deleted'] == 1 ? 'has' : 'have'; ?> been deleted
+				</div>
+            </div>
+        </a>
+    </div>
+</div>
+<div class="row mb-3">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-body">
+				<?php
+				    $this->partial('common/lists/search', ['url' => $url]);
+				?>
+				<a href="<?= UrlHelper::backend($products_url); ?>" class="btn btn-primary float-right">
+		            Add
+		        </a>
+		        <div class="float-right dropdown mr-3">
+		            <a
+                        href="#"
+                        class="btn btn-default form-control-solid dropdown-toggle"
+                        data-toggle="dropdown"
+                        role="button"
+                        aria-expanded="false">
+		                Filter
+		            </a>
+		            <div class="dropdown-menu p-4">
+		                <div class="pb-3">Filter Options</div>
+		                <form method="get" action="<?= UrlHelper::backend($url); ?>">
+                            <?php
+                                $this->partial('common/lists/sorting', ['url' => $url]);
+                            ?>
+		                    <label class="form-label fw-bold">Status:</label>
+		                    <select
+		                        name="filters[status]"
+		                        class="form-control form-control-solid"
+		                        data-placeholder="Please select an option"
+		                        tabindex="-1"
+		                        aria-hidden="true">
+		                        <option value="">No filter</option>
+		                        <option value="active"<?= $filter_status == 'active' ? ' selected="selected"' : ''; ?>>Active</option>
+		                        <option value="deleted"<?= $filter_status == 'deleted' ? ' selected="selected"' : ''; ?>>Deleted</option>
+		                    </select>
+		                    <div class="d-flex justify-content-end mt-4">
+		                        <a href="<?= UrlHelper::backend($url); ?>" class="btn btn-default btn-sm p-2 pl-3 pr-3 mr-2">Reset</a>
+		                        <button type="submit" class="btn btn-sm btn-primary p-2 pl-3 pr-3" >Apply</button>
+		                    </div>
+		                </form>
+		            </div>
+		        </div>
+			</div>
+		</div>
+	</div>
+</div>
+<form id="form-list" method="post" action="<?= UrlHelper::backend($url); ?>/delete/all?from=<?= UrlHelper::backend($url); ?>" class="row mb-2">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body p-3">
+                <?php
+                if ($data->total_items) {
+                    ?>
+                    <table class="table tablesorter">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th width="140">Quantity</th>
+                                <th width="140">Amount</th>
+                                <th width="120">Status</th>
+                                <th width="200">Owner</th>
+                                <th width="220">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            foreach ($data->getItems() as $row) {
+                                $bg_colour = OrdersController::statusColour($row->status);
+                                ?>
+                                <tr>
+                                    <td>
+                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                            <?= $row->number; ?>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                            <?= $row->quantity; ?>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                            <?= NumberHelper::toCurrency($row->total); ?>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                            <span class="badge <?= $bg_colour; ?>"><?= ucwords($row->status); ?></span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                            <?= !empty($row->updated) ? $row->updated->full_name : 'Customer'; ?>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a
+                                            href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>"
+                                            class="btn btn-blank float-right"
+                                            title="View the order"
+                                            data-toggle="tooltip"
+                                            data-trigger="hover"
+                                            data-dismiss="click"
+                                            data-placement="top">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+                                            </svg>
+                                        </a>
+                                        <?php
+                                        if (!$row->dispatched_at) {
+                                            if (!$row->deleted_at) {
+                                                ?>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-blank float-right"
+                                                    data-original-title="Are you sure?"
+                                                    data-trigger="focus"
+                                                    data-html="true"
+                                                    data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/delete/' . $row->id); ?>?from=<?= urlencode($url); ?>">Yes</a>'
+                                                    data-toggle="popover">
+                                                    <span
+                                                        title="Delete the order"
+                                                        data-toggle="tooltip"
+                                                        data-trigger="hover"
+                                                        data-dismiss="click"
+                                                        data-placement="top">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                                <?php
+                                            } else {
+                                                ?>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-blank float-right"
+                                                    data-original-title="Are you sure?"
+                                                    data-trigger="focus"
+                                                    data-html="true"
+                                                    data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/recover/' . $row->id); ?>?from=<?= urlencode($url); ?>">Yes</a>'
+                                                    data-toggle="popover">
+                                                    <span
+                                                        title="Recover the order"
+                                                        data-toggle="tooltip"
+                                                        data-trigger="hover"
+                                                        data-dismiss="click"
+                                                        data-placement="top">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                            <path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"/>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                                <?php
+                                            }
+                                        }
+                                        
+                                        if ($row->status == 'inactive') {
+                                            ?>
+                                            <button
+                                                type="button"
+                                                class="btn btn-blank float-right"
+                                                data-original-title="Are you sure?"
+                                                data-trigger="focus"
+                                                data-html="true"
+                                                data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/resume/' . $row->id); ?>">Yes</a>'
+                                                data-toggle="popover">
+                                                <span
+                                                    title="Resume the order"
+                                                    data-toggle="tooltip"
+                                                    data-trigger="hover"
+                                                    data-dismiss="click"
+                                                    data-placement="top">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                        <path d="M4 10a1 1 0 0 1 2 0v2a1 1 0 0 1-2 0v-2zm3 0a1 1 0 0 1 2 0v2a1 1 0 0 1-2 0v-2zm3 0a1 1 0 1 1 2 0v2a1 1 0 0 1-2 0v-2z"/>
+                                                        <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-.623l-1.844 6.456a.75.75 0 0 1-.722.544H3.69a.75.75 0 0 1-.722-.544L1.123 8H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6h1.717L5.07 1.243a.5.5 0 0 1 .686-.172zM2.163 8l1.714 6h8.246l1.714-6H2.163z"/>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                            <?php
+                                        } 
+                                        ?>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    <?php
+                } else {
+                    ?>
+                    <strong class="h5">No results</strong>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</form>
+<?php
+    echo $this->partial(
+        'common/lists/pagination',
+        [
+            'data' => $data,
+            'url' => UrlHelper::backend($url)
+        ]
+    );
+?>
+<script src="<?= $this->tengu->theme->getAsset('js/core/list.js'); ?>"></script>

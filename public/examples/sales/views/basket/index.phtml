@@ -1,0 +1,181 @@
+<?php
+/**
+ * Basket template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+if (!empty($page->banner_image)) {
+    ?>
+    <div class="page-background-image">
+        <img src="<?= $page->banner_image->url; ?>" alt="<?= $page->banner_image->label; ?>">
+    </div>
+    <?php
+}
+?>
+<div class="container">
+    <div id="page-content" class="row mt-3 mb-5">
+        <div class="col-12">
+            <div class="page-title">
+                <h2><?= $page->name; ?></h2>
+            </div>
+            <section class="card">
+                <div class="card-body">
+                <?php
+                if (!empty($data->items) && $data->items->count()) {
+                    ?>
+                    <form
+                        id="form-edit"
+                        method="post" 
+                        action="/basket/update/<?= $data->id; ?>">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th width="120">In stock</th>
+                                    <th width="120">Quantity</th>
+                                    <th width="140">Sub-total</th>
+                                    <th width="140">VAT</th>
+                                    <th width="140">Total</th>
+                                    <th width="70">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                foreach ($data->items as $item) {
+                                    ?>
+                                    <tr>
+                                        <td>
+                                            <?= $item->product->page->name; ?>
+                                        </td>
+                                        <td><?= $item->product->stock; ?></td>
+                                        <td>
+                                            <input
+                                                name="quantity[<?= $item->id; ?>]"
+                                                type="text"
+                                                class="form-control"
+                                                value="<?= $item->quantity; ?>">
+                                        </td>
+                                        <td><?= $item->sub_total; ?></td>
+                                        <td><?= $item->vat; ?></td>
+                                        <td><?= $item->total; ?></td>
+                                        <td>
+                                            <button
+                                                class="btn btn-blank float-right"
+                                                type="button"
+                                                data-original-title="Are you sure?"
+                                                data-html="true"
+                                                data-trigger="focus"
+                                                data-toggle="popover"
+                                                data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::from('/basket/delete/' . $item->product_id); ?>">Yes</a>'>
+                                                <div
+                                                    data-toggle="tooltip"
+                                                    data-dismiss="hover"
+                                                    data-placement="top"
+                                                    title="Remove the item from the basket">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                    </svg>
+                                                </div>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                                ?>
+                                <tr>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="5">&nbsp;</th>
+                                    <th class="text-right">Sub-total</th>
+                                    <td><?= $data->sub_total; ?></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="5" class="border-0">&nbsp;</th>
+                                    <th class="text-right border-0">VAT</th>
+                                    <td class="border-0"><?= $data->vat; ?></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="5" class="border-0">&nbsp;</th>
+                                    <th class="text-right border-0">Total</th>
+                                    <td class="border-0"><?= $data->total; ?></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <hr/>
+                        <div class="col-12">
+                            <button
+                                class="btn btn-blank"
+                                type="button"
+                                data-original-title="Are you sure?"
+                                data-html="true"
+                                data-trigger="focus"
+                                data-toggle="popover"
+                                data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="/basket/clear">Yes</a>'>
+                                <div
+                                    data-toggle="tooltip"
+                                    data-dismiss="hover"
+                                    data-placement="top"
+                                    title="Throw the basket into the trash">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg><br/>
+                                    delete
+                                </div>
+                            </button>
+                            <button
+                                class="btn btn-blank btn-save float-right"
+                                type="submit"
+                                name="checkout"
+                                data-title="Go to the checkout"
+                                data-toggle="tooltip"
+                                data-trigger="hover"
+                                data-dismiss="click"
+                                data-placement="top"
+                                value="checkout">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z"/>
+                                    <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                                </svg><br/>
+                                checkout
+                            </button>
+                            <button
+                                class="btn btn-blank btn-save float-right"
+                                type="submit"
+                                name="update"
+                                data-title="Update the basket"
+                                data-toggle="tooltip"
+                                data-trigger="hover"
+                                data-dismiss="click"
+                                data-placement="top"
+                                value="update">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v4.5h2a.5.5 0 0 1 .354.854l-2.5 2.5a.5.5 0 0 1-.708 0l-2.5-2.5A.5.5 0 0 1 5.5 6.5h2V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                                </svg><br/>
+                                update
+                            </button>
+                        </div>
+                    </form>
+                    <?php
+                } else {
+                    ?>
+                    <h3>Nothing in the basket</h3>
+                    <?php
+                }
+                ?>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

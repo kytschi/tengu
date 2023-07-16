@@ -1,0 +1,49 @@
+<?php
+/**
+ * Save error template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+?>
+
+<div id="error" class="d-flex justify-content-center pb-5">
+    <div class="text-center">
+        <img src="/tengu/imgs/illustrations/sigma-1/9-dark.png" alt="I failed at something" width="460px">
+        <div class="text-left">
+            <div class="card mb-2">
+                <div class="card-header mb-0">
+                    <span class="card-title">OH NO!</span>
+                </div>
+                <div class="card-body mb-4">
+                    <?php
+                    echo !empty($message) ? $message : 'Something has gone wrong';
+                    if (($_ENV['APP_DEBUG'] || $_ENV['APP_DEBUG'] == 'true')) {
+                        if (!empty($data)) {
+                            ?>
+                            <p class="pt-4">
+                            <?php
+                            if (is_array($data) || is_object($data)) {
+                                ?>
+                                <pre><?php var_dump($data); ?></pre>
+                                <?php
+                            } else {
+                                echo $data;
+                            }
+                            ?>
+                            </p>
+                            <?php
+                        }
+                    }
+                    ?>
+                </div>
+            </div>
+            <a href="#" onclick="window.history.back();" class="btn btn-primary mt-3">Go back</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+<?php
+/**
+ * Dashboard template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Helpers\NumberHelper;
+?>
+
+<div class="row mb-3">
+	<div class="col-3">
+		<div class="card bg-primary">
+			<div class="card-body">
+				<svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+  					<path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+				</svg>
+				<div class="h3 text-white mt-3 mb-1">
+					<strong><?= $data['hours_month']; ?></strong>
+				</div>
+				<div class="text-white">
+					Hours this month
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

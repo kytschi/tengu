@@ -1,0 +1,358 @@
+<?php
+/**
+ * List card template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+if (!isset($show_live)) {
+	$show_live = true;
+}
+
+if (!isset($show_url)) {
+	$show_url = true;
+}
+
+if (!isset($show_spinner)) {
+	$show_spinner = true;
+}
+
+if (!isset($title_var)) {
+	$title_var = 'name';
+}
+
+switch ($data->status) {
+    case 'active':
+        $bg_colour = 'primary';
+        break;
+	case 'live':
+		$bg_colour = 'primary';
+		break;
+	case 'pending':
+		$bg_colour = 'info';
+		break;
+	case 'inactive':
+		$bg_colour = 'info';
+		break;
+    case 'deleted':
+        $bg_colour = 'danger';
+        break;
+    default:
+        $bg_colour = 'primary';
+        break;
+}
+?>
+<div class="tile-item">
+    <div class="card p-2">
+        <div class="card-body pb-0">
+			<div class="low-stock">Low stock</div>
+			<?php
+			if (property_exists($data, 'url') && $show_url) {
+				if ($data->url) {
+				?>
+					<div class="mb-3">
+						<a href="<?= UrlHelper::backend($url . '/edit/' . $data->id); ?>">
+							<span>
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+									<path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+									<path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
+								</svg>
+							</span>
+							<small><?= $data->url; ?></small>
+						</a>
+					</div>
+				<?php
+				}
+			}
+			if (property_exists($data, $title_var)) {
+				if ($data->$title_var) {
+					?>
+					<div class="h3 mb-3">
+						<a href="<?= UrlHelper::backend($url . '/edit/' . $data->id); ?>">
+							<?= $data->$title_var; ?>
+						</a>
+					</div>
+					<?php
+				}
+			}
+			
+			$content = '';
+			if (property_exists($data, 'content')) {
+				$content = $data->content;
+			}
+
+			if (property_exists($data, 'summary')) {
+				$content = $data->summary;
+			}
+			
+			if (property_exists($data, 'description')) {
+				$content = $data->description;
+			}
+
+			$content =  strip_tags($content);
+			if (strlen($content) > 100) {
+				$content = substr($content, 0, 100) . '...';
+			}
+			if ($content) {
+				?>
+				<p>
+					<a href="<?= UrlHelper::backend($url . '/edit/' . $data->id); ?>">
+						<?= $content; ?>
+					</a>
+				</p>
+				<?php
+			}
+			if (!empty($data->tags)) {
+				foreach ($data->tags as $tag) {
+					?>
+					<a href="<?= UrlHelper::backend($url . '?search=' . $tag->tag); ?>" class="float-left badge badge-primary mr-2 mt-2"><?= $tag->tag; ?></a>
+					<?php
+				}
+			}
+			?>
+        </div>
+		<div class="card-footer">
+			<span
+				class="text-<?= $bg_colour;?> mr-4"
+				title="Entry is marked as <?= $data->status; ?>"
+				data-toggle="tooltip"
+				data-trigger="hover"
+				data-dismiss="click"
+				data-placement="top">
+				<?php
+				if (in_array($data->status, ['active', 'live'])) {
+					?>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+						<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+						<path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+					</svg>
+					<?php
+				} elseif (in_array($data->status, ['pending'])) {
+					?>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+						<path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
+  						<path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"/>
+  						<path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
+					</svg>
+					<?php
+				} else {
+					?>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+						<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+  						<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+					</svg>
+					<?php
+				}
+				?>
+			</span>
+			<span class="btn btn-blank float-right p-0" data-toggle="dropdown">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+					<path fill-rule="evenodd" d="M2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+				</svg>
+			</span>
+			<ul class="dropdown-menu">
+				<li class="nav-link">
+					<a
+						href="<?= UrlHelper::backend($url . '/edit/' . $data->id); ?>"
+						class="float-left mr-4"
+						title="Edit the entry"
+						data-toggle="tooltip"
+						data-trigger="hover"
+						data-dismiss="click"
+						data-placement="top">
+						<p class="float-left btn-list-icon mr-2">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+								<path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+							</svg>
+						</p>
+						<p class="float-left btn-list-text">
+							Edit
+						</p>
+					</a>
+				</li>
+				<?php
+				if (property_exists($data, 'url') && $show_live) {
+					?>
+					<li class="nav-link">
+						<a
+							href="<?= $data->url; ?>"
+							class="float-left mr-4"
+							target="_blank"
+							title="View me live"
+							data-toggle="tooltip"
+							data-trigger="hover"
+							data-dismiss="click"
+							data-placement="top">
+							<p class="float-left btn-list-icon mr-2">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+									<path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM13.991 3l.024.001a1.46 1.46 0 0 1 .538.143.757.757 0 0 1 .302.254c.067.1.145.277.145.602v5.991l-.001.024a1.464 1.464 0 0 1-.143.538.758.758 0 0 1-.254.302c-.1.067-.277.145-.602.145H2.009l-.024-.001a1.464 1.464 0 0 1-.538-.143.758.758 0 0 1-.302-.254C1.078 10.502 1 10.325 1 10V4.009l.001-.024a1.46 1.46 0 0 1 .143-.538.758.758 0 0 1 .254-.302C1.498 3.078 1.675 3 2 3h11.991zM14 2H2C0 2 0 4 0 4v6c0 2 2 2 2 2h12c2 0 2-2 2-2V4c0-2-2-2-2-2z"/>
+								</svg>
+							</p>
+							<p class="float-left btn-list-text">
+								View live
+							</p>
+						</a>
+					</li>
+					<?php
+				}
+				if (($this->di->getConfig())->apps->makabe && $show_spinner) {
+					?>
+					<li class="nav-link">
+						<a
+							href="<?= UrlHelper::backend($url . '/' . $data->id . '/spinner'); ?>"
+							class="float-left mr-4"
+							title="Access this resource's content spinner"
+							data-toggle="tooltip"
+							data-trigger="hover"
+							data-dismiss="click"
+							data-placement="top">
+							<p class="float-left btn-list-icon mr-2">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+									<path d="M8 9.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+									<path d="M9.5 2c-.9 0-1.75.216-2.501.6A5 5 0 0 1 13 7.5a6.5 6.5 0 1 1-13 0 .5.5 0 0 1 1 0 5.5 5.5 0 0 0 8.001 4.9A5 5 0 0 1 3 7.5a6.5 6.5 0 0 1 13 0 .5.5 0 0 1-1 0A5.5 5.5 0 0 0 9.5 2zM8 3.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+								</svg>
+							</p>
+							<p class="float-left btn-list-text">
+								Spinner
+							</p>
+						</a>
+					</li>
+					<?php
+				}
+				if (!$data->deleted_at) {
+					?>
+					<li class="nav-link">
+						<a
+							href="#"
+							class="float-left mr-4"
+							data-original-title="Are you sure?"
+							data-trigger="focus"
+							data-html="true"
+							data-content="<span class='btn btn-secondary'>No</span>&nbsp;<a class='btn btn-danger' href='<?= UrlHelper::backend($url . '/delete/' . $data->id); ?>?from=<?= urlencode($url); ?>'>Yes</a>"
+							data-toggle="popover">
+							<span
+								title="Delete the entry"
+								data-toggle="tooltip"
+								data-trigger="hover"
+								data-dismiss="click"
+								data-placement="top">
+								<p class="float-left btn-list-icon mr-2">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+										<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+										<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+									</svg>
+								</p>
+								<p class="float-left btn-list-text">
+									Delete
+								</p>
+							</span>
+						</a>
+					</li>
+					<?php
+				} else {
+					?>
+					<li class="nav-link">
+						<a
+							href="#"
+							class="float-left mr-4"
+							data-original-title="Are you sure?"
+							data-trigger="focus"
+							data-html="true"
+							data-content="<span class='btn btn-secondary'>No</span>&nbsp;<a class='btn btn-danger' href='<?= UrlHelper::backend($url . '/recover/' . $data->id); ?>?from=<?= urlencode($url); ?>'>Yes</a>"
+							data-toggle="popover">
+							<span
+								title="Recover the entry"
+								data-toggle="tooltip"
+								data-trigger="hover"
+								data-dismiss="click"
+								data-placement="top">
+								<p class="float-left btn-list-icon mr-2">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+										<path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707V11.5z"/>
+										<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+									</svg>
+								</p>
+								<p class="float-left btn-list-text">
+									Recover
+								</p>
+							</span>
+						</a>
+					</li>
+					<?php
+				}
+				?>
+			</ul>
+			<span
+				class="mr-4"
+				title="Last updated"
+				data-toggle="tooltip"
+				data-trigger="hover"
+				data-dismiss="click"
+				data-placement="top">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+					<path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+  					<path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+				</svg>&nbsp;&nbsp;<?= DateHelper::prettyFull($data->updated_at, false); ?>
+			</span>
+			<span
+				class="mr-4"
+				title="In stock"
+				data-toggle="tooltip"
+				data-trigger="hover"
+				data-dismiss="click"
+				data-placement="top">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+					<path d="M2.95.4a1 1 0 0 1 .8-.4h8.5a1 1 0 0 1 .8.4l2.85 3.8a.5.5 0 0 1 .1.3V15a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4.5a.5.5 0 0 1 .1-.3L2.95.4ZM7.5 1H3.75L1.5 4h6V1Zm1 0v3h6l-2.25-3H8.5ZM15 5H1v10h14V5Z"/>
+				</svg>&nbsp;&nbsp;<?= $data->stock; ?>
+			</span>
+			<?php
+			if (method_exists($data, 'getStats')) {
+				if (!empty($stats = $data->stats)) {
+					?>
+					<span
+						class="mr-4"
+						title="Number of visitors"
+						data-toggle="tooltip"
+						data-trigger="hover"
+						data-dismiss="click"
+						data-placement="top">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+							<path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+							<path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+						</svg>&nbsp;&nbsp;<?= $stats['total']; ?>
+					</span>
+					<?php
+				}
+			}
+			if (property_exists($data, 'spinnable')) {
+				if ($data->spinnable) {
+					$date = date('Y-m-d', strtotime($data->last_spun . ' +3 week'));
+					$today = new DateTime();
+					?>
+					<span
+						class="mr-4"
+						title="Spinner enabled"
+						data-toggle="tooltip"
+						data-trigger="hover"
+						data-dismiss="click"
+						data-placement="top">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+							<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+							<path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 4a4 4 0 0 0-4 4 .5.5 0 0 1-1 0 5 5 0 0 1 5-5 .5.5 0 0 1 0 1zm4.5 3.5a.5.5 0 0 1 .5.5 5 5 0 0 1-5 5 .5.5 0 0 1 0-1 4 4 0 0 0 4-4 .5.5 0 0 1 .5-.5z"/>
+						</svg>&nbsp;&nbsp;<?= $today->diff(new DateTime($date))->format('%a') . ' days'; ?>
+					</span>
+					<?php
+				}
+			}
+			?>
+		</div>
+    </div>
+</div>

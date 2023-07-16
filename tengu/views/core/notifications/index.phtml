@@ -1,0 +1,105 @@
+<?php
+/**
+ * Notifications index template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = '/notifications';
+echo $this->partial("common/form/messages");
+?>
+<div class="row mb-3">
+	<div class="col-12">
+	<?php
+	if ($data->total_items) {
+		foreach ($data->getItems() as $row) {
+			switch ($row->type) {
+				case 'info':
+					$bg_colour = 'info';
+					break;
+				case 'danger':
+					$bg_colour = 'danger';
+					break;
+				default:
+					$bg_colour = 'primary';
+					break;
+			}
+		?>
+			<div class="alert alert-<?= $bg_colour; ?>">
+				<a
+					href="<?= UrlHelper::backend('/notifications/delete/' . $row->id); ?>"
+					aria-hidden="true"
+					class="close"
+					title="Mark as read"
+					data-toggle="tooltip"
+					data-trigger="hover"
+					data-dismiss="click"
+					data-placement="top"
+					aria-label="Close">
+					<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+						<path d="M2 2a2 2 0 0 0-2 2v8.01A2 2 0 0 0 2 14h5.5a.5.5 0 0 0 0-1H2a1 1 0 0 1-.966-.741l5.64-3.471L8 9.583l7-4.2V8.5a.5.5 0 0 0 1 0V4a2 2 0 0 0-2-2H2Zm3.708 6.208L1 11.105V5.383l4.708 2.825ZM1 4.217V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.217l-7 4.2-7-4.2Z"/>
+  						<path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-1.993-1.679a.5.5 0 0 0-.686.172l-1.17 1.95-.547-.547a.5.5 0 0 0-.708.708l.774.773a.75.75 0 0 0 1.174-.144l1.335-2.226a.5.5 0 0 0-.172-.686Z"/>
+					</svg>
+				</a>
+				<p class="p-0 m-0">
+					<?= $row->subject; ?><br/>
+					<?php
+					if (!empty($row->content)) {
+						echo $row->content . '<br/>';
+					}
+					?>
+					<small class="pt-1">From <?= $row->from->full_name; ?> on <?= DateHelper::pretty($row->created_at); ?></small>
+				</p>
+				<?php
+				if ($row->url) {
+					?>
+					<a
+						href="<?= UrlHelper::backend($row->url); ?>"
+						class="btn btn-blank m-0 p-0 mt-1"
+						aria-hidden="true"
+						title="View the entry"
+						data-toggle="tooltip"
+						data-trigger="hover"
+						data-dismiss="click"
+						data-placement="top">
+						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+							<path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+  							<path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+						</svg>
+					</a>
+					<?php
+				}
+				?>
+			</div>
+			<?php
+		}
+	} else {
+		?>
+		<div class="card">
+			<div class="card-body">
+				<p class="h6 p-3 m-0">No notifications</p>
+			</div>
+		</div>
+		<?php
+	}
+	?>
+	</div>
+</div>
+<?php
+    echo $this->partial(
+        'common/lists/pagination',
+        [
+            'data' => $data,
+            'url' => UrlHelper::backend($url)
+        ]
+    );
+?>

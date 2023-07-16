@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <link href="<?= $this->tengu->theme->getCSS('plugins/bootstrap.min.css'); ?>" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->tengu->theme->getCSS('tengu_theme.css'); ?>" rel="stylesheet" type="text/css" />
+        <?php
+        if (file_exists($file = ($this->di->getConfig())->application->pluginsDir . 'wako/assets/css/wako.css')) {
+            echo '<style>' . file_get_contents($file) . '</style>';
+        }
+        ?>
+    </head>
+    <body>
+        <?= $this->getContent(); ?>
+    </body>
+</html>

@@ -1,0 +1,106 @@
+*:focus {
+    border: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+#accordion-menu .accordion-button {
+	background-color: var(--bg-white) !important;
+	color: var(--font-grey) !important;
+	border: none !important;
+	border-color: var(--bg-white) !important;
+}
+
+#accordion-menu .accordion-body {
+	background-color: var(--bg-white) !important;
+	color: var(--font-grey) !important;
+	border-bottom: 1px solid var(--border-grey-lighter);
+	border-top: 1px solid var(--border-grey-lighter);
+}
+
+#accordion-menu .accordion-header {
+	border: none !important;
+	background-color: var(--bg-white) !important;
+	padding: 5px 0 4px 0;
+}
+
+.badge-primary {
+	color: var(--font-blue);
+	background-color: var(--bg-blue-lighterer) !important;
+}
+
+body {
+	background-color: var(--bg-grey-lighter) !important;
+	color: var(--font-grey) !important;
+}
+
+.btn-default {
+	color: var(--font-grey);
+	background-color: var(--bg-white);
+  	border: 1px solid var(--bg-grey) !important;
+}
+
+.btn-default:hover {
+	background-color: var(--bg-grey-lighter);
+  	border-color: var(--bg-grey);
+}
+
+.card {
+	border: 1px solid var(--bg-grey) !important;
+	box-shadow: 0 .75rem 1.5rem rgba(18,38,63,.03) !important;
+}
+
+.card .card-header {
+	padding: 15px 15px;
+	border: 0;
+	color: var(--font-grey) !important;
+	background: none !important;
+	border-bottom: 1px solid var(--bg-grey) !important;
+}
+
+.navbar {
+	border-top: 2px solid var(--border-blue-lighter);
+    border-bottom: 1px solid var(--border-blue-lighter);
+}
+
+#page-sub-title {
+	color: var(--font-blue) !important;
+	background-color: var(--bg-white) !important;
+	border: 1px solid var(--bg-grey) !important;
+	box-shadow: 0 .75rem 1.5rem rgba(18,38,63,.03) !important;
+	margin-top: 1.5rem !important;
+	margin-bottom: 1.5rem !important;
+}
+
+.sidebar {
+	background-color: var(--bg-white) !important;
+	border-right: 1px solid var(--border-blue-lighter);
+}
+
+.sidebar .nav li a {
+	color: var(--font-grey) !important;
+}
+
+.sidebar .nav li.active a {
+	color: var(--font-blue) !important;
+}
+
+.sidebar .nav li.active a p {
+	float: left;
+	padding: 0 15px 0 0;
+	margin: 0;
+}
+
+.sidebar .nav li.active a {
+	float: left;
+	border-radius: 0.475rem;
+	padding: 10px 15px;
+	margin-left: -15px;
+	margin-bottom: 10px;
+	width: 100%;
+	background-color: var(--bg-grey-lighterish) !important;
+}
+
+.tagify .tagify__tag {
+	background-color: var(--tag-bg) !important;
+}

@@ -1,0 +1,165 @@
+<?php
+/**
+ * Settings index template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$url = ($this->di->getConfig())->urls->sales . '/settings';
+
+echo $this->partial("common/form/messages");
+?>
+<form id="form-edit" method="post" action="<?= UrlHelper::backend($url . '/update'); ?>">
+    <div class="row mb-3">
+		<div class="col-12">
+			<div class="card p-0">
+				<div class="card-body">
+					<button
+						id="btn-save"
+						class="btn btn-blank float-right"
+						type="button"
+						title="Save my page"
+						data-toggle="tooltip"
+						data-trigger="hover"
+						data-dismiss="click"
+						data-placement="top">
+						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v4.5h2a.5.5 0 0 1 .354.854l-2.5 2.5a.5.5 0 0 1-.708 0l-2.5-2.5A.5.5 0 0 1 5.5 6.5h2V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                        </svg><br/>
+						save
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div class="row">
+        <div class="col-12 mb-3">
+			Required fields <span class="required">*</span>
+		</div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap flex-sm-nowrap pl-3 pr-3">
+                        <div class="flex-grow-1 mb-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="name">
+                                            VAT
+                                            <span class="required">*</span>
+                                        </label>
+                                        <input
+                                            id="vat"
+                                            name="vat"
+                                            type="text"
+                                            class="form-control mt-2"
+                                            aria-describedby="vat"
+                                            value="<?= FormController::getFormData('vat', $data); ?>"
+                                            required>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="zero_stock">Zero stock</label>
+                                        <div class="checkbox switcher mt-2">
+                                            <label>
+                                                <input
+                                                    id="zero_stock"
+                                                    type="checkbox"
+                                                    name="zero_stock"
+                                                    value="1"
+                                                    <?= FormController::getFormData('zero_stock', $data) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                        </svg>
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                        </svg>
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <small>Allow the ordering of products that have zero stock</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="default_shipping">Default shipping</label>
+                                        <select
+                                            name="default_shipping"
+                                            class="form-control mt-2"
+                                            tabindex="-1"
+                                            aria-hidden="true"
+                                            required>
+                                            <?php
+                                            $selected = FormController::getFormData('default_shipping', $data);
+                                            foreach ($shipping_companies as $shipping_company) {
+                                                ?>
+                                                <option value="<?= $shipping_company->code; ?>"<?= $selected == $shipping_company->code ? ' selected="selected"' : '';?>>
+                                                    <?= $shipping_company->name; ?>
+                                                </option>
+                                                <?php
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group form-check mt-0 mb-4">
+                                        <label for="onscreen_keyboard">Onscreen keyboard</label>
+                                        <div class="checkbox switcher mt-2">
+                                            <label>
+                                                <input
+                                                    id="onscreen_keyboard"
+                                                    type="checkbox"
+                                                    name="onscreen_keyboard"
+                                                    value="1"
+                                                    <?= FormController::getFormData('onscreen_keyboard', $data) ? ' checked="checked"' : ''; ?>>
+                                                <span>
+                                                    <small class="switcher-on">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                        </svg>
+                                                    </small>
+                                                    <small class="switcher-off">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                        </svg>
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <small>Display onscreen keyboard for dispatch if using touchscreen</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content">
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('overview-tab', 'overview-tab'); ?>"
+                    id="overview-tab"
+                    role="tabpanel"
+                    aria-labelledby="overview-tab">
+                    <div class="row">
+                        <div class="col-6">
+                            <?= $this->partial("common/logs", ['data' => $data->logs]); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="<?= $this->tengu->theme->getAsset('js/core/edit.js'); ?>"></script>

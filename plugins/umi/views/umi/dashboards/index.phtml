@@ -1,0 +1,31 @@
+<?php
+/**
+ * Dashboard template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\UsersController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+use Kytschi\Tengu\Models\Core\Logs;
+
+$user = UsersController::getUser();
+$logs = (new Logs())->find([
+    'order' => 'created_at DESC',
+    'limit' => 5
+]);
+?>
+<script src="<?= $this->tengu->theme->getAsset('js/plugins/chartjs.min.js'); ?>"></script>
+<?php
+if ($this->tengu->isAdmin()) {
+	?>
+	
+	<?php
+}
+?>

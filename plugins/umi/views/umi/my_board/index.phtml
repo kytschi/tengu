@@ -1,0 +1,47 @@
+<?php
+/**
+ * My board index template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Helpers\UrlHelper;
+$url = ($this->di->getConfig())->urls->pms . '/my-board';
+
+echo $this->partial("common/form/messages");
+
+if ($board) {
+	echo $this->partial(
+		'umi/my_board/board',
+		[
+			'board' => $board,
+			'from' => $url
+		]
+	);
+} else {
+?>
+	<div class="row mb-3">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body">
+					<p>
+						This is the first time you are using this app so we'll need to create your board now.
+					</p><br/>
+					<a
+						href="<?= UrlHelper::backend($url . '/create'); ?>"
+						class="btn btn-primary"
+						title="Create your board">
+						Create
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php
+}
+?>

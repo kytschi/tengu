@@ -1,0 +1,176 @@
+<?php
+/**
+ * Page section for stats template.
+ *
+ * @copyright   2022 Kytschi
+ * @version     0.0.1
+ *
+ * Copyright Kytschi - All Rights Reserved.
+ * Unauthorised copying of this file, via any medium is strictly prohibited.
+ * Proprietary and confidential.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+?>
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+				<span class="card-title">Visitors this year</span>
+            </div>
+            <div class="card-body pt-0">
+				<canvas id="stats" width="600" height="200"></canvas>
+            </div>
+        </div>
+		<script>
+			var ctx = document.getElementById('stats').getContext('2d');
+			var orders = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+					datasets: [
+						<?php
+						$colours = [
+							'visitors' => '#E14ECA',
+							'unique' => '#1D8CF8',
+							'bot' => '#00c129',
+						];
+
+						foreach ($data->stats as $label => $stats) {
+							if ($label == 'total') {
+								continue;
+							}
+							$values = '';
+							foreach ($stats as $value) {
+								$values .= $value . ',';
+							}
+							?>
+							{
+								label: '<?= ucwords($label); ?>',
+								data: [<?= rtrim($values, ','); ?>],
+								fill: false,
+								backgroundColor: '<?= $colours[$label]; ?>',
+								borderColor: '<?= $colours[$label]; ?>',
+								tension: 0.1
+							},
+							<?php
+						}
+						?>
+					]
+				},
+				options: {
+					scales: {
+						y: {
+							beginAtZero: true
+						}
+					}
+				}
+			});
+		</script>
+    </div>
+	<div class="col-6">
+        <div class="card">
+            <div class="card-header">
+				<span class="card-title">Bots</span>
+            </div>
+            <div class="card-body">
+				<?php
+				if (count($data->bots)) {
+					?>
+					<canvas id="bots" width="600" height="<?= ($height = count($data->bots) * 30) < 200 ? 200 : $height ; ?>"></canvas>
+					<script type="text/javascript">
+						var ctx_bots = document.getElementById('bots').getContext('2d');
+						
+						var bots = new Chart(ctx_bots, {
+							type: 'horizontalBar',
+							data: {
+								<?php
+								$labels = [];
+								$totals = [];
+								$colours = [];
+
+								foreach ($data->bots as $key => $values) {
+									$labels[] = '"' . $values['bot'] . '"';
+									$totals[] = $values['total'];
+									$colours[] = '"#' . substr(md5($values['bot']), 3, 6) . '"';
+								}
+								?>
+								labels: [<?= implode(',', $labels); ?>],
+								datasets: [
+									{
+										label: 'bots',
+										data: [<?= implode(',', $totals); ?>],
+										backgroundColor: [<?= implode(',', $colours); ?>],
+										borderColor: "#5E5E60",
+										borderWidth: 0.4
+									},
+								]
+							},
+							options: {
+								indexAxis: 'y',
+								responsive: true,
+								legend: {
+									display: false
+								},
+								plugins: {
+									legend: {
+										position: 'right'
+									},
+									title: {
+										display: false
+									}
+								}
+							}
+						});
+					</script>
+					<?php
+				} else {
+					?>
+					<strong class="h5">No bots detected</strong>
+					<?php
+				}
+				?>
+            </div>
+        </div>
+    </div>
+	<div class="col-6">
+        <div class="card">
+            <div class="card-header">
+				<span class="card-title">Referrers</span>
+            </div>
+            <div class="card-body pt-0">
+				<canvas id="referrers" width="600" height="400"></canvas>
+				<script type="text/javascript">
+				var ctx_referrers = document.getElementById('referrers').getContext('2d');
+				var referrers = new Chart(ctx_referrers, {
+					type: 'pie',
+					data: {
+						<?php
+						$labels = [];
+						$totals = [];
+
+						foreach ($data->referrers as $key => $values) {
+							$labels[] = '"' . $values['referer'] . '"';
+							$totals[] = $values['total'];
+							$colours[] = '"#' . substr(md5($values['referer']), 3, 6) . '"';
+						}
+						?>
+						labels: [<?= implode(',', $labels); ?>],
+						datasets: [
+							{
+								label: 'referrers',
+								data: [<?= implode(',', $totals); ?>],
+								backgroundColor: [<?= implode(',', $colours); ?>],
+								borderColor: "#5E5E60",
+								borderWidth: 0.4
+							},
+						]
+					},
+					options: {
+					}
+				});
+				</script>
+            </div>
+        </div>
+    </div>
+</div>
