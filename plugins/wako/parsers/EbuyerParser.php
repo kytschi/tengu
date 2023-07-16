@@ -21,7 +21,7 @@ use Kytschi\Tengu\Helpers\DateHelper;
 use Kytschi\Tengu\Helpers\NumberHelper;
 use Kytschi\Tengu\Models\Core\Tags;
 use Kytschi\Wako\Models\Receipts;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 
 class EbuyerParser extends ControllerBase
 {

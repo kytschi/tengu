@@ -352,6 +352,7 @@ class PagesController extends ControllerBase
         return $this->view->partial(
             $template,
             [
+                'url' => $this->global_url,
                 'data' => $paginator->paginate(),
                 'stats' => $this->stats()
             ]

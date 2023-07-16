@@ -96,11 +96,11 @@ switch ($data->status) {
 				$content = $data->description;
 			}
 
-			$content =  strip_tags($content);
-			if (strlen($content) > 100) {
-				$content = substr($content, 0, 100) . '...';
-			}
 			if ($content) {
+				$content =  strip_tags($content);
+				if (strlen($content) > 100) {
+					$content = substr($content, 0, 100) . '...';
+				}
 				?>
 				<p>
 					<a href="<?= UrlHelper::backend($url . '/edit/' . $data->id); ?>">

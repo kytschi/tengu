@@ -31,7 +31,7 @@ use Kytschi\Tengu\Traits\Core\Notes;
 use Kytschi\Tengu\Traits\Core\Pagination;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
 use simplehtmldom\HtmlDocument;
@@ -92,9 +92,8 @@ class PersonasController extends ControllerBase
 
         $table = (new PersonaPages())->getSource();
 
-        $this->db->query(
-            '
-                INSERT INTO ' . $table . ' (id, persona_id, page_id, created_at, created_by, updated_at, updated_by)
+        $this->db->query('INSERT INTO ' . $table . ' 
+                (id, persona_id, page_id, created_at, created_by, updated_at, updated_by)
                 SELECT
                     :id,
                     :persona_id,
@@ -107,19 +106,25 @@ class PersonasController extends ControllerBase
                 (
                     SELECT id, page_id, persona_id, created_at, created_by, updated_at, updated_by
                     FROM ' . $table . '
-                    WHERE page_id=:page_id AND persona_id=:persona_id 
-                );
-            UPDATE ' . $table . '
+                    WHERE page_id=:page_id_2 AND persona_id=:persona_id_2 
+                )',
+                [
+                    ':id' => (new Random())->uuid(),
+                    ':page_id' => $page_id,
+                    ':page_id_2' => $page_id,
+                    ':persona_id' => $_POST['persona_id'],
+                    ':persona_id_2' => $_POST['persona_id'],
+                    ':created_at' => date('Y-m-d H:i:s'),
+                    ':created_by' => $user_id,
+                    ':updated_at' => date('Y-m-d H:i:s'),
+                    ':updated_by' => $user_id
+                ]);
+        $this->db->query('UPDATE ' . $table . '
             SET deleted_at=NULL, deleted_by=NULL 
             WHERE page_id=:page_id AND persona_id=:persona_id;',
             [
-                ':id' => (new Random())->uuid(),
                 ':page_id' => $page_id,
-                ':persona_id' => $_POST['persona_id'],
-                ':created_at' => date('Y-m-d H:i:s'),
-                ':created_by' => $user_id,
-                ':updated_at' => date('Y-m-d H:i:s'),
-                ':updated_by' => $user_id
+                ':persona_id' => $_POST['persona_id']
             ]
         );
     }

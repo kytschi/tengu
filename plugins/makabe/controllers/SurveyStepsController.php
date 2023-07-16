@@ -33,7 +33,7 @@ use Kytschi\Tengu\Traits\Core\Notes;
 use Kytschi\Tengu\Traits\Core\Pagination;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\Email;
 use Phalcon\Validation\Validator\PresenceOf;

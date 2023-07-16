@@ -25,7 +25,7 @@ use Kytschi\Tengu\Traits\Core\Json;
 use Kytschi\Tengu\Traits\Core\Security;
 use Kytschi\Tengu\Traits\Core\User;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 use Phalcon\Filter\Validation;
 use Phalcon\Filter\Validation\Validator\PresenceOf;
 

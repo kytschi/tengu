@@ -22,7 +22,7 @@ use Kytschi\Tengu\Helpers\NumberHelper;
 use Kytschi\Tengu\Helpers\UrlHelper;
 use Kytschi\Tengu\Traits\Core\Files;
 use Mpdf\Mpdf;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 
 class SelfAssessmentBuilder extends ControllerBase
 {

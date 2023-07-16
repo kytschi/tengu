@@ -23,7 +23,7 @@ use Kytschi\Tengu\Models\Core\Tags;
 use Kytschi\Tengu\Traits\Core\Currency;
 use Kytschi\Wako\Exceptions\ParseException;
 use Kytschi\Wako\Models\Receipts;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 
 class GenericParser extends ControllerBase
 {

@@ -33,7 +33,7 @@ use Kytschi\Mai\Models\Timesheets;
 use Kytschi\Wako\Models\Invoices;
 use Kytschi\Wako\Models\InvoiceTimesheets;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
 

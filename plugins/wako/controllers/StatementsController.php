@@ -36,7 +36,7 @@ use Kytschi\Wako\Models\StatementItems;
 use Kytschi\Wako\Models\Statements;
 use Kytschi\Wako\Traits\TaxYear;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
 use Smalot\PdfParser\Parser;

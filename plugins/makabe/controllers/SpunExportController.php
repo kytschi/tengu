@@ -30,7 +30,7 @@ use Kytschi\Tengu\Traits\Core\Logs;
 use Kytschi\Tengu\Traits\Core\Pagination;
 use Kytschi\Tengu\Traits\Core\Queue;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
 

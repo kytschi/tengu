@@ -16,7 +16,7 @@ namespace Kytschi\Tengu\Traits\Website;
 
 use Kytschi\Tengu\Exceptions\SaveException;
 use Kytschi\Tengu\Models\Website\OldUrls as Model;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 
 trait OldUrls
 {

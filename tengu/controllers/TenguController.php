@@ -31,7 +31,7 @@ use Kytschi\Tengu\Models\Website\Themes;
 use Kytschi\Tengu\Traits\Core\Filters;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Kytschi\Tengu\Traits\Core\User;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 use Phalcon\Tag;
 
 class TenguController

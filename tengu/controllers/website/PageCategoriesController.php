@@ -31,7 +31,7 @@ use Kytschi\Tengu\Traits\Core\Queue;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Kytschi\Tengu\Traits\Website\OldUrls;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 use Phalcon\Filter\Validation;
 use Phalcon\Filter\Validation\Validator\PresenceOf;
 
@@ -96,31 +96,14 @@ class PageCategoriesController extends PagesController
         }
 
         $table = (new PageCategories())->getSource();
-        $params = [
-            ':page_id' => $page_id,
-            ':created_at' => date('Y-m-d H:i:s'),
-            ':created_by' => $user_id,
-            ':updated_at' => date('Y-m-d H:i:s'),
-            ':updated_by' => $user_id
-        ];
-
-        $query = '';
-
+        
         foreach ($_POST['category_id'] as $key => $id) {
             if (empty($id)) {
                 continue;
             }
 
-            $params = array_merge(
-                $params,
-                [
-                    ':id_' . $key => (new Random())->uuid(),
-                    ':category_id_' . $key => $id
-                ]
-            );
-
-            $query .= '
-                INSERT INTO ' . $table . ' (id, category_id, page_id, created_at, created_by, updated_at, updated_by)
+            $this->db->query('INSERT INTO ' . $table . ' 
+                (id, category_id, page_id, created_at, created_by, updated_at, updated_by)
                 SELECT
                     :id_' . $key . ',
                     :category_id_' . $key . ',
@@ -133,21 +116,28 @@ class PageCategoriesController extends PagesController
                 (
                     SELECT id, page_id, category_id, created_at, created_by, updated_at, updated_by
                     FROM ' . $table . '
-                    WHERE page_id=:page_id AND category_id=:category_id_' . $key . ' 
-                );
-            UPDATE ' . $table . '
-            SET deleted_at=NULL, deleted_by=NULL 
-            WHERE page_id=:page_id AND category_id=:category_id_' . $key . ';';
+                    WHERE page_id=:page_id_2 AND category_id=:category_id_' . $key . '_2 
+                )',
+            [
+                ':id_' . $key => (new Random())->uuid(),
+                ':category_id_' . $key => $id,
+                ':category_id_' . $key . '_2' => $id,
+                ':page_id' => $page_id,
+                ':page_id_2' => $page_id,
+                ':created_at' => date('Y-m-d H:i:s'),
+                ':created_by' => $user_id,
+                ':updated_at' => date('Y-m-d H:i:s'),
+                ':updated_by' => $user_id
+            ]);
+            $this->db->query('UPDATE ' . $table . '
+                SET deleted_at=NULL, deleted_by=NULL 
+                WHERE page_id=:page_id AND category_id=:category_id_' . $key,
+                [
+                    ':category_id_' . $key => $id,
+                    ':page_id' => $page_id
+                ]
+            );
         }
-        
-        if (empty($query)) {
-            return;
-        }
-
-        $this->db->query(
-            $query,
-            $params
-        );
     }
 
     public static function all($type = '')

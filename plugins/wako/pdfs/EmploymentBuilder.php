@@ -21,7 +21,7 @@ use Kytschi\Tengu\Helpers\DateHelper;
 use Kytschi\Tengu\Helpers\NumberHelper;
 use Kytschi\Tengu\Traits\Core\Files;
 use Mpdf\Mpdf;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 
 class EmploymentBuilder extends ControllerBase
 {

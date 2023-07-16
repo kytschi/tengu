@@ -20,7 +20,7 @@ use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Helpers\DateHelper;
 use Kytschi\Tengu\Helpers\NumberHelper;
 use Kytschi\Wako\Models\StatementItems;
-use Phalcon\Security\Random;
+use Phalcon\Encryption\Security\Random;
 
 class BarclaysBusinessParser extends ControllerBase
 {

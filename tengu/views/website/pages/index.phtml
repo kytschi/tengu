@@ -14,8 +14,6 @@ use Kytschi\Tengu\Controllers\Core\FormController;
 use Kytschi\Tengu\Helpers\DateHelper;
 use Kytschi\Tengu\Helpers\UrlHelper;
 
-$url = ($this->di->getConfig())->urls->cms . '/pages';
-
 $filter_status = $this->tengu->getFilters('status');
 
 echo $this->partial("common/form/messages");
