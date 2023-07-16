@@ -34,6 +34,13 @@ class DashboardsController extends InvoicesController
         $this->setPageTitle('Dashboard');
 
         $tax_year = $this->getCurrentTaxYear();
+        $users = null;
+        if ($groups = (new DividendsController())->getGroups()) {
+            $users = (new Users())->find([
+            'conditions' =>
+                'group_id IN("' . implode('","', $groups) . '")',
+            ]);
+        }
 
         return $this->view->partial(
             'wako/dashboards/index',
@@ -41,11 +48,7 @@ class DashboardsController extends InvoicesController
                 'directions' => $this->directions,
                 'tax_year' => $tax_year,
                 'stats' => $this->stats($tax_year->tax_year_start, $tax_year->tax_year_end),
-                'users' => (
-                    new Users())->find([
-                    'conditions' =>
-                        'group_id IN("' . implode('","', (new DividendsController())->getGroups()) . '")',
-                    ]),
+                'users' => $users,
                 'years' => $this->getTaxYears()
             ]
         );
@@ -67,8 +70,14 @@ class DashboardsController extends InvoicesController
         }
 
         $params = [
-            'start' => $start,
-            'end' => $end
+            'incoming_start' => $start,
+            'incoming_end' => $end,
+            'outgoing_start' => $start,
+            'outgoing_end' => $end,
+            'incoming_taxable_start' => $start,
+            'incoming_taxable_end' => $end,
+            'outgoing_taxable_start' => $start,
+            'outgoing_taxable_end' => $end
         ];
 
         $invoice = new Invoices();
@@ -81,7 +90,7 @@ class DashboardsController extends InvoicesController
             WHERE 
                 deleted_at IS NULL AND 
                 direction = 'incoming' AND 
-                (issued_on BETWEEN :start AND :end)) AS incoming,
+                (issued_on BETWEEN :incoming_start AND :incoming_end)) AS incoming,
             (SELECT
                 SUM(amount) as total
             FROM 
@@ -89,7 +98,7 @@ class DashboardsController extends InvoicesController
             WHERE 
                 deleted_at IS NULL AND 
                 direction = 'outgoing' AND 
-                (issued_on BETWEEN :start AND :end)) AS outgoing,
+                (issued_on BETWEEN :outgoing_start AND :outgoing_end)) AS outgoing,
             (SELECT
                 SUM(amount) as total
             FROM 
@@ -98,7 +107,7 @@ class DashboardsController extends InvoicesController
                 deleted_at IS NULL AND 
                 direction = 'incoming' AND 
                 taxable = 1 AND 
-                (issued_on BETWEEN :start AND :end)) AS incoming_taxable,
+                (issued_on BETWEEN :incoming_taxable_start AND :incoming_taxable_end)) AS incoming_taxable,
             (SELECT
                 SUM(amount) as total
             FROM 
@@ -107,7 +116,7 @@ class DashboardsController extends InvoicesController
                 deleted_at IS NULL AND 
                 direction = 'outgoing' AND 
                 taxable = 1 AND 
-                (issued_on BETWEEN :start AND :end)) AS outgoing_taxable";
+                (issued_on BETWEEN :outgoing_taxable_start AND :outgoing_taxable_end)) AS outgoing_taxable";
 
         $result =
             (
@@ -134,7 +143,7 @@ class DashboardsController extends InvoicesController
             WHERE 
                 deleted_at IS NULL AND 
                 invoice_id IS NULL AND 
-                (processed_at BETWEEN :start AND :end)) AS incoming,
+                (processed_at BETWEEN :incoming_start AND :incoming_end)) AS incoming,
             (SELECT
                 SUM(`out`) as total
             FROM 
@@ -142,7 +151,7 @@ class DashboardsController extends InvoicesController
             WHERE 
                 deleted_at IS NULL AND 
                 invoice_id IS NULL AND 
-                (processed_at BETWEEN :start AND :end)) AS outgoing,
+                (processed_at BETWEEN :outgoing_start AND :outgoing_end)) AS outgoing,
             (SELECT
                 SUM(`in`) as total
             FROM 
@@ -151,7 +160,7 @@ class DashboardsController extends InvoicesController
                 deleted_at IS NULL AND 
                 invoice_id IS NULL AND 
                 taxable = 1 AND 
-                (processed_at BETWEEN :start AND :end)) AS incoming_taxable,
+                (processed_at BETWEEN :incoming_taxable_start AND :incoming_taxable_end)) AS incoming_taxable,
             (SELECT
                 SUM(`out`) as total
             FROM 
@@ -160,7 +169,7 @@ class DashboardsController extends InvoicesController
                 deleted_at IS NULL AND 
                 invoice_id IS NULL AND 
                 taxable = 1 AND 
-                (processed_at BETWEEN :start AND :end)) AS outgoing_taxable";
+                (processed_at BETWEEN :outgoing_taxable_start AND :outgoing_taxable_end)) AS outgoing_taxable";
 
         $result =
             (
