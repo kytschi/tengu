@@ -403,8 +403,10 @@ class TaxReturnsController extends ControllerBase
         $table = $model->getSource();
 
         $params = [
-            'start' => $start,
-            'end' => $end
+            'outgoing_taxable_start' => $start,
+            'outgoing_taxable_end' => $end,
+            'outgoing_vat_start' => $start,
+            'outgoing_vat_end' => $end
         ];
 
         $search = '';
@@ -428,7 +430,7 @@ class TaxReturnsController extends ControllerBase
             WHERE 
                 deleted_at IS NULL AND
                 taxable = 1 AND 
-                (issued_on BETWEEN :start AND :end)
+                (issued_on BETWEEN :outgoing_taxable_start AND :outgoing_taxable_end)
                 $search
         ) AS outgoing_taxable,
         (
@@ -439,9 +441,9 @@ class TaxReturnsController extends ControllerBase
             WHERE 
                 deleted_at IS NULL AND
                 taxable = 1 AND 
-                (issued_on BETWEEN :start AND :end)
+                (issued_on BETWEEN :outgoing_vat_start AND :outgoing_vat_end)
                 $search
-        ) AS outgoing_vat,";
+        ) AS outgoing_vat";
 
         return (new \Phalcon\Mvc\Model\Resultset\Simple(
             null,

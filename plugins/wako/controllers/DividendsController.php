@@ -414,8 +414,10 @@ class DividendsController extends ControllerBase
     public function stats($start, $end)
     {
         $params = [
-            'start' => $start,
-            'end' => $end
+            'paid_start' => $start,
+            'paid_end' => $end,
+            'pending_start' => $start,
+            'pending_end' => $end
         ];
 
         $model = new Dividends();
@@ -442,7 +444,7 @@ class DividendsController extends ControllerBase
             WHERE 
                 deleted_at IS NULL AND 
                 `status` = 'paid' AND 
-                issued_on BETWEEN :start AND :end
+                issued_on BETWEEN :paid_start AND :paid_end
         ) AS paid,
         (
             SELECT
@@ -452,9 +454,9 @@ class DividendsController extends ControllerBase
             WHERE 
                 deleted_at IS NULL AND 
                 `status` = 'pending' AND 
-                issued_on BETWEEN :start AND :end
+                issued_on BETWEEN :pending_start AND :pending_end
                 $search
-        ) AS pending,";
+        ) AS pending";
 
         return (new \Phalcon\Mvc\Model\Resultset\Simple(
             null,

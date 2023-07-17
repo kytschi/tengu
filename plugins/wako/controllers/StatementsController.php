@@ -666,8 +666,10 @@ class StatementsController extends InvoicesController
         $table = $model->getSource();
 
         $params = [
-            'start' => $start,
-            'end' => $end
+            'outgoing_start' => $start,
+            'outgoing_end' => $end,
+            'incoming_start' => $start,
+            'incoming_end' => $end
         ];
 
         $query = "SELECT 
@@ -678,7 +680,7 @@ class StatementsController extends InvoicesController
                 $table
             WHERE 
                 deleted_at IS NULL AND 
-                (processed_at BETWEEN :start AND :end)
+                (processed_at BETWEEN :outgoing_start AND :outgoing_end)
         ) AS outgoing,
         (
             SELECT
@@ -687,8 +689,8 @@ class StatementsController extends InvoicesController
                 $table
             WHERE 
                 deleted_at IS NULL AND 
-                (processed_at BETWEEN :start AND :end)
-        ) AS incoming,";
+                (processed_at BETWEEN :incoming_start AND :incoming_end)
+        ) AS incoming";
 
         return (new \Phalcon\Mvc\Model\Resultset\Simple(
             null,

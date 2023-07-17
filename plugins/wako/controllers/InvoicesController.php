@@ -466,8 +466,12 @@ class InvoicesController extends ControllerBase
     public function stats($start, $end)
     {
         $params = [
-            'start' => $start,
-            'end' => $end
+            'incoming_start' => $start,
+            'incoming_end' => $end,
+            'outgoing_start' => $start,
+            'outgoing_end' => $end,
+            'vat_start' => $start,
+            'vat_end' => $end
         ];
 
         $model = new Invoices();
@@ -494,7 +498,7 @@ class InvoicesController extends ControllerBase
             WHERE 
                 deleted_at IS NULL AND 
                 direction = 'incoming' AND 
-                issued_on BETWEEN :start AND :end
+                issued_on BETWEEN :incoming_start AND :incoming_end
         ) AS incoming,
         (
             SELECT
@@ -504,7 +508,7 @@ class InvoicesController extends ControllerBase
             WHERE 
                 deleted_at IS NULL AND 
                 direction = 'outgoing' AND 
-                issued_on BETWEEN :start AND :end
+                issued_on BETWEEN :outgoing_start AND :outgoing_end
                 $search
         ) AS outgoing,
         (
@@ -515,7 +519,7 @@ class InvoicesController extends ControllerBase
             WHERE 
                 deleted_at IS NULL AND 
                 direction = 'outgoing' AND 
-                issued_on BETWEEN :start AND :end
+                issued_on BETWEEN :vat_start AND :vat_end
                 $search
         ) AS vat,
         (
@@ -527,7 +531,7 @@ class InvoicesController extends ControllerBase
                 deleted_at IS NULL AND 
                 paid_on IS NULL
                 $search
-        ) AS unpaid,";
+        ) AS unpaid";
 
         return (new \Phalcon\Mvc\Model\Resultset\Simple(
             null,
