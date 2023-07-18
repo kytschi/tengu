@@ -219,6 +219,10 @@ class UrlHelper
     {
         $parsed = parse_url($_SERVER['REQUEST_URI']);
 
+        if (empty($parsed['path'])) {
+            return false;
+        }
+        
         $path = '/' . trim(ltrim($parsed['path'], $_ENV['APP_TENGU_URL']), '/');
 
         if ($url == '/') {

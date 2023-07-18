@@ -81,6 +81,10 @@ class TenguController
             }
 
             $path = parse_url($_SERVER['REQUEST_URI']);
+            if (empty($path['path'])) {
+                return '';
+            }
+            
             $url = (!empty($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $path['path'];
             return $url;
         } catch (\Exception $err) {
