@@ -2,12 +2,24 @@
 /**
  * Dashboard template.
  *
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 use Kytschi\Makabe\Controllers\KeywordsController;
@@ -22,74 +34,90 @@ use Kytschi\Tengu\Helpers\StringHelper;
 				<span class="card-title">Keyword traction</span>
 			</div>
 			<div class="card-body">
+			<?php
+			if ($keywords->count()) {
+				?>
 				<canvas id="stats" width="600" height="<?= $keywords->count() * 20; ?>px"></canvas>
+				<?php
+			} else {
+				?>
+				<p>No keywords defined</p>
+				<?php
+			}
+			?>
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript">
-		var ctx = document.getElementById('stats').getContext('2d');
-		var data = new Chart(ctx, {
-			type: 'horizontalBar',
-			data: {
-				<?php
-					$labels = [];
-					$totals = [];
-					$colours = [];
+	<?php
+	if ($keywords->count()) {
+		?>
+		<script type="text/javascript">
+			var ctx = document.getElementById('stats').getContext('2d');
+			var data = new Chart(ctx, {
+				type: 'horizontalBar',
+				data: {
+					<?php
+						$labels = [];
+						$totals = [];
+						$colours = [];
 
-					foreach ($keywords as $key => $keyword) {
-						$stats = $keyword->dashboardStats;
-						if ($stats['visitors']) {
-							$visitors[$key] = intval($stats['visitors']);
+						foreach ($keywords as $key => $keyword) {
+							$stats = $keyword->dashboardStats;
+							if ($stats['visitors']) {
+								$visitors[$key] = intval($stats['visitors']);
+							}
+						}
+
+						arsort($visitors);
+
+						foreach ($visitors as $key => $visitor) {
+							$keyword = $keywords[$key];
+							$stats = $keyword->dashboardStats;
+							$labels[] = '"' . $keyword->keyword . '"';
+							$searches[] = intval($stats['search']);
+						}
+					?>
+					labels: [<?= implode(',', $labels); ?>],
+					datasets: [
+						{
+							label: 'visitors',
+							data: [<?= implode(',', $visitors); ?>],
+							backgroundColor: "#00c129",
+							borderColor: "#00c129",
+							borderWidth: 0.4
+						},
+						{
+							label: 'searches',
+							data: [<?= implode(',', $searches); ?>],
+							backgroundColor: "#1D8CF8",
+							borderColor: "#1D8CF8",
+							borderWidth: 0.4
+						},
+					]
+				},
+				options: {
+					indexAxis: 'y',
+					responsive: true,
+					plugins: {
+						legend: {
+							position: 'right'
+						},
+						title: {
+							display: false
+						}
+					},
+					scales: {
+						x: {
+							stacked: true,
+						},
+						y: {
+							stacked: true
 						}
 					}
-
-					arsort($visitors);
-
-					foreach ($visitors as $key => $visitor) {
-						$keyword = $keywords[$key];
-						$stats = $keyword->dashboardStats;
-						$labels[] = '"' . $keyword->keyword . '"';
-						$searches[] = intval($stats['search']);
-					}
-				?>
-				labels: [<?= implode(',', $labels); ?>],
-				datasets: [
-					{
-						label: 'visitors',
-						data: [<?= implode(',', $visitors); ?>],
-						backgroundColor: "#00c129",
-						borderColor: "#00c129",
-						borderWidth: 0.4
-					},
-					{
-						label: 'searches',
-						data: [<?= implode(',', $searches); ?>],
-						backgroundColor: "#1D8CF8",
-						borderColor: "#1D8CF8",
-						borderWidth: 0.4
-					},
-				]
-			},
-			options: {
-				indexAxis: 'y',
-				responsive: true,
-				plugins: {
-					legend: {
-						position: 'right'
-					},
-					title: {
-						display: false
-					}
-				},
-				scales: {
-					x: {
-						stacked: true,
-					},
-					y: {
-						stacked: true
-					}
 				}
-			}
-		});
-	</script>
+			});
+		</script>
+		<?php
+	}
+	?>
 </div>
