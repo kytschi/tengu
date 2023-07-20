@@ -21,6 +21,26 @@ $apps = [
     'phoenix' => false
 ];
 
+if ($_ENV['APP_MARKETING'] == 'true') {
+    $apps['makabe'] = true;
+}
+
+if ($_ENV['APP_HR'] == 'true') {
+    $apps['mai'] = true;
+}
+
+if ($_ENV['APP_DEVELOPMENT'] == 'true') {
+    $apps['umi'] = true;
+}
+
+if ($_ENV['APP_FINANCE'] == 'true') {
+    $apps['wako'] = true;
+}
+
+if ($_ENV['APP_SALES'] == 'true') {
+    $apps['phoenix'] = true;
+}
+
 $urls = [
     'cms' => '/cms',
     'pms' => '/pms',
@@ -80,6 +100,9 @@ $global_cfg = [
 ];
 
 foreach ($apps as $app => $status) {
+    if (!$status) {
+        continue;
+    }
     if (file_exists($file = BASE_PATH . '/plugins/' . $app . '/config/config.php')) {
         include $file;
 
