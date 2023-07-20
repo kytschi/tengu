@@ -6,6 +6,21 @@ This is public for now just to illustrate to those looking at me for work the ty
 
 If you after a more lightweight CMS go with my other project https://github.com/kytschi/dumb-dog
 
+## Setup
+
+### Creating the tengu.pub file for encryption
+Tengu uses openssl for encrypting various pieces of data stored within the system. It looks for a PUB file called `tengu.pub` located in the secure folder.
+
+If your on Linux you can do this by running the following command.
+
+** DON'T SET A PASSWORD **
+
+```bash
+ssh-keygen -f secure/tengu
+```
+
+Make sure your webserver never serves the `secure` folder and feel free to backup the files generated. Even move the private key `tengu` if you like.
+
 ## Migrations
 
 ### Create

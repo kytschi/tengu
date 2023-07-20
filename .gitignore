@@ -52,3 +52,4 @@ public/website
 *.json
 tengu.pub
 .tmp/mpdf
+secure/*

@@ -38,7 +38,11 @@ class DashboardsController extends ControllerBase
         $this->setFilters();
 
         $stat = Stats::findFirst(['order' => 'created_at']);
-        $years = [intval(date('Y', strtotime($stat->created_at)))];
+        if ($stat) {
+            $years = [intval(date('Y', strtotime($stat->created_at)))];
+        } else {
+            $years = [intval(date('Y'))];
+        }
         for ($iLoop = $years[0] + 1; $iLoop <= intval(date('Y')); $iLoop++) {
             $years[] = $iLoop;
         }

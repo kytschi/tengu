@@ -19,6 +19,7 @@ namespace Kytschi\Tengu\Controllers\Website;
 use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Exceptions\RequestException;
 use Kytschi\Tengu\Exceptions\SaveException;
+use Kytschi\Tengu\Exceptions\ThemeException;
 use Kytschi\Tengu\Exceptions\ValidationException;
 use Kytschi\Tengu\Helpers\UrlHelper;
 use Kytschi\Tengu\Models\Website\Themes;
@@ -390,6 +391,12 @@ class ThemesController extends ControllerBase
                         'conditions' => 'deleted_at IS NULL AND default = 1'
                     ]
                 );
+
+                if (empty($this->current_theme)) {
+                    throw new ThemeException(
+                        'Failed to start as no theme defined'
+                    );
+                }
 
                 $this->current_theme->status = 'active';
                 if ($this->current_theme->save() === false) {

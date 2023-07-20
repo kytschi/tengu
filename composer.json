@@ -28,5 +28,10 @@
     },
     "require-dev": {
         "phalcon/migrations": "^3.0"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php -f ./tengu/scripts/Install.php"
+        ]
     }
 }

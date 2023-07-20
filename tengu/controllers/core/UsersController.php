@@ -69,6 +69,7 @@ class UsersController extends ControllerBase
     ];
 
     public $types = [
+        'user',
         'customer',
         'director',
         'employee',

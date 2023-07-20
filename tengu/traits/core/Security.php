@@ -42,7 +42,7 @@ trait Security
     public static function decrypt($string, $key = null)
     {
         if (empty($key)) {
-            $key = file_get_contents(BASE_PATH . '/tengu.pub');
+            $key = file_get_contents(BASE_PATH . '/secure/tengu.pub');
         }
 
         if (
@@ -61,7 +61,7 @@ trait Security
     public static function encrypt($string, $key = null)
     {
         if (empty($key)) {
-            $key = file_get_contents(BASE_PATH . '/tengu.pub');
+            $key = file_get_contents(BASE_PATH . '/secure/tengu.pub');
         }
 
         return @openssl_encrypt(
