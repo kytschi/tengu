@@ -1,0 +1,32 @@
+{
+    "name": "kytschi/tengu",
+    "type": "project",
+    "description": "Kytschi's Tengu",
+    "keywords": ["kytschi", "cms"],
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Mike Welsh",
+            "email": "dev@kytschi.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.0",
+        "google/apiclient": "^2.12.1",
+        "phpmailer/phpmailer": "~6.1",
+        "simplehtmldom/simplehtmldom": "dev-master",
+        "vlucas/phpdotenv": "^5.3",
+        "chrome-php/chrome": "^1.6",
+        "tgalopin/html-sanitizer": "^1.5",
+        "mpdf/mpdf": "^8.1"        
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
+        }
+    },
+    "require-dev": {
+        "phalcon/migrations": "^3.0"
+    }
+}
