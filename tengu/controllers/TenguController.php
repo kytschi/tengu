@@ -30,6 +30,7 @@ namespace Kytschi\Tengu\Controllers;
 
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\ClientException;
+use Kytschi\Izumi\Traits\Events;
 use Kytschi\Tengu\Controllers\Core\FormController;
 use Kytschi\Tengu\Controllers\Website\BlogPostsController;
 use Kytschi\Tengu\Controllers\Website\PagesController;
@@ -49,6 +50,7 @@ use Phalcon\Tag;
 
 class TenguController
 {
+    use Events;
     use Filters;
     use Tags;
     use User;
@@ -195,7 +197,7 @@ class TenguController
             return false;
         }
 
-        $token = openssl_decrypt(
+        $token = @openssl_decrypt(
             $_REQUEST['_TENGU_CAPTCHA'],
             'aes128',
             $captcha,

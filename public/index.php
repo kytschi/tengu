@@ -13,9 +13,21 @@
 
 declare(strict_types=1);
 
+//Let tengu handle the errors
+error_reporting(0);
+@ini_set('display_errors', 0);
+
 define('TENGU_START_TIME', microtime(true) * 1000);
 
 use Phalcon\Di\FactoryDefault;
+
+/*function fatal_error()
+{
+    $error = error_get_last();
+    echo "<p><strong>Error:</strong><br/>" . nl2br($error['message']) . "</p>";
+}
+
+register_shutdown_function('fatal_error');*/
 
 try {
     define('BASE_PATH', dirname(getcwd()));
@@ -95,7 +107,8 @@ try {
      * Handle the request
      */
     $application = new \Phalcon\Mvc\Application($di);
-    echo $application->handle($_SERVER['REQUEST_URI'])->getContent();
+    $render = $application->handle($_SERVER['REQUEST_URI'])->getContent();
+    echo $render;
 } catch (Kytschi\Tengu\Exceptions\ValidationException $err) {
     if (TENGU_API) {
         (new Kytschi\Tengu\Controllers\IndexController())->apiError($err);
@@ -199,4 +212,6 @@ try {
         echo 'A fatal error has occurred';
         die();
     }
-}
+} /*finally {
+    echo 'fatal error';
+}*/

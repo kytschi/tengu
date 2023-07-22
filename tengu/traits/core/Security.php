@@ -46,7 +46,7 @@ trait Security
         }
 
         if (
-            $string = openssl_decrypt(
+            $string = @openssl_decrypt(
                 $string,
                 'aes128',
                 $key

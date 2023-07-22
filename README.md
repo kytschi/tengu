@@ -19,6 +19,14 @@ If your on Linux you can do this by running the following command.
 ssh-keygen -f secure/tengu
 ```
 
+### Dump folder
+The dump folder is used to store any file uploaded in tengu so it must have permissions by the webserver user to write into it. For example you can set the permissions as follows,
+
+```bash
+sudo chown -R www-data public/dump
+sudo chmod -R 755 public/dump
+```
+
 Make sure your webserver never serves the `secure` folder and feel free to backup the files generated. Even move the private key `tengu` if you like.
 
 ## Migrations

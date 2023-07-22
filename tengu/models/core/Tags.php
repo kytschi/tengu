@@ -14,6 +14,7 @@
 
 namespace Kytschi\Tengu\Models\Core;
 
+use Kytschi\Tengu\Models\Core\Files;
 use Kytschi\Tengu\Models\Model;
 
 class Tags extends Model
@@ -22,4 +23,17 @@ class Tags extends Model
     public $resource_id;
     public $tag;
     public $type;
+
+    public function initialize()
+    {
+        $this->hasOne(
+            'resource_id',
+            Files::class,
+            'id',
+            [
+                'alias'    => 'file',
+                'reusable' => true,
+            ]
+        );
+    }
 }

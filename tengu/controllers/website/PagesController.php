@@ -4,12 +4,24 @@
  * Pages controller.
  *
  * @package     Kytschi\Tengu\Controllers\Website\PagesController
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.2
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 declare(strict_types=1);
@@ -74,6 +86,9 @@ class PagesController extends ControllerBase
             case 'blog-post':
                 $this->setPageTitle('Write a blog post');
                 break;
+            case 'event':
+                $this->setPageTitle('Create an event');
+                break;
             case 'page':
                 $this->setPageTitle('Build a page');
                 break;
@@ -89,7 +104,8 @@ class PagesController extends ControllerBase
                 'categories' => PageCategoriesController::all($this->resource . '-category'),
                 'statuses' => $this->defaultStatuses(),
                 'templates' => self::getTemplates(),
-                'url' => $this->global_url
+                'url' => $this->global_url,
+                'resource' => $this->resource
             ]
         );
     }
@@ -183,6 +199,9 @@ class PagesController extends ControllerBase
             case 'blog-post':
                 $this->setPageTitle('Editing the blog post');
                 break;
+            case 'event':
+                $this->setPageTitle('Editing the event');
+                break;
             case 'page':
                 $this->setPageTitle('Managing the page');
                 break;
@@ -199,7 +218,8 @@ class PagesController extends ControllerBase
                 'data' => $model,
                 'statuses' => $this->defaultStatuses(),
                 'templates' => self::getTemplates(),
-                'url' => $this->global_url
+                'url' => $this->global_url,
+                'resource' => $this->resource
             ]
         );
     }
@@ -279,6 +299,9 @@ class PagesController extends ControllerBase
         switch ($this->resource) {
             case 'blog-post':
                 $this->setPageTitle('Blog posts');
+                break;
+            case 'event':
+                $this->setPageTitle('Our events');
                 break;
             case 'page':
                 $this->setPageTitle('Our pages');
@@ -597,6 +620,15 @@ class PagesController extends ControllerBase
                         throw new SaveException(
                             'Failed to update the media item',
                             $file->getMessages()
+                        );
+                    }
+
+                    if (!empty($_POST['media_tags'])) {
+                        $this->addTags(
+                            json_decode($_POST['media_tags']),
+                            $file->id,
+                            true,
+                            'file'
                         );
                     }
                 }

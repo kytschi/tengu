@@ -31,7 +31,7 @@ use Kytschi\Tengu\Models\Core\Users;
 
 function decrypt($string)
 {
-    return openssl_decrypt(
+    return @openssl_decrypt(
         $string,
         'aes128',
         $_ENV['APP_KEY']

@@ -263,13 +263,13 @@ echo $this->partial("common/form/messages");
                             </div>
                             <div class="form-group mb-4">
                                 <label for="summary">Summary</label>
-                                <input
+                                <textarea
                                     id="summary"
                                     name="summary"
                                     type="text"
                                     class="form-control mt-2"
-                                    aria-describedby="summary"
-                                    value="<?= FormController::getFormData('summary', $data); ?>">
+                                    rows="4"
+                                    aria-describedby="summary"><?= FormController::getFormData('summary', $data); ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -283,6 +283,21 @@ echo $this->partial("common/form/messages");
                                 Content &amp; Marketing
                             </a>
                         </li>
+                        <?php
+                        if ($resource == 'event') {
+                            ?>
+                            <li class="nav-item mt-2">
+                                <a
+                                    class="nav-link <?= UrlHelper::activeTab('event-tab', 'content-tab'); ?>"
+                                    data-toggle="tab"
+                                    role="tab"
+                                    href="#event-tab">
+                                    Event <span class="required">*</span>
+                                </a>
+                            </li>
+                            <?php
+                        }
+                        ?>
                         <li class="nav-item mt-2">
                             <a
                                 class="nav-link <?= UrlHelper::activeTab('template-tab', 'overview-tab'); ?>"
@@ -611,6 +626,19 @@ echo $this->partial("common/form/messages");
                         </div>
                     </div>
                 </div>
+                <?php
+                if ($resource == 'event') {
+                    ?>
+                    <div
+                        class="tab-pane <?= UrlHelper::activeTab('event-tab', 'content-tab'); ?>"
+                        id="event-tab"
+                        role="tabpanel"
+                        aria-labelledby="event-tab">
+                        <?= $this->partial("izumi/events/widget", ['data' => $data]); ?>
+                    </div>
+                    <?php
+                }
+                ?>
                 <div
                     class="tab-pane <?= UrlHelper::activeTab('template-tab', 'content-tab'); ?>"
                     id="template-tab"

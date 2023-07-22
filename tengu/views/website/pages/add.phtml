@@ -2,12 +2,24 @@
 /**
  * Pages add template.
  *
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 use Kytschi\Tengu\Controllers\Core\FormController;
@@ -151,13 +163,13 @@ echo $this->partial("common/form/messages");
                             </div>
                             <div class="form-group mb-4">
                                 <label for="summary">Summary</label>
-                                <input
+                                <textarea
                                     id="summary"
                                     name="summary"
                                     type="text"
                                     class="form-control mt-2"
-                                    aria-describedby="summary"
-                                    value="<?= FormController::getFormData('summary'); ?>">
+                                    rows="4"
+                                    aria-describedby="summary"><?= FormController::getFormData('summary'); ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -171,6 +183,21 @@ echo $this->partial("common/form/messages");
                                 Content &amp; Marketing
                             </a>
                         </li>
+                        <?php
+                        if ($resource == 'event') {
+                            ?>
+                            <li class="nav-item mt-2">
+                                <a
+                                    class="nav-link <?= UrlHelper::activeTab('event-tab', 'content-tab'); ?>"
+                                    data-toggle="tab"
+                                    role="tab"
+                                    href="#event-tab">
+                                    Event <span class="required">*</span>
+                                </a>
+                            </li>
+                            <?php
+                        }
+                        ?>
                         <li class="nav-item mt-2">
                             <a
                                 class="nav-link <?= UrlHelper::activeTab('template-tab', 'content-tab'); ?>"
@@ -281,6 +308,19 @@ echo $this->partial("common/form/messages");
                         </div>
                     </div>
                 </div>
+                <?php
+                if ($resource == 'event') {
+                    ?>
+                    <div
+                        class="tab-pane <?= UrlHelper::activeTab('event-tab', 'content-tab'); ?>"
+                        id="event-tab"
+                        role="tabpanel"
+                        aria-labelledby="event-tab">
+                        <?= $this->partial("izumi/events/widget", ['data' => null]); ?>
+                    </div>
+                    <?php
+                }
+                ?>
                 <div
                     class="tab-pane <?= UrlHelper::activeTab('template-tab', 'content-tab'); ?>"
                     id="template-tab"

@@ -142,10 +142,13 @@ if ($data->total_items) {
         <div id="tiles">
             <?php
             foreach ($data->getItems() as $row) {
-                $card_url = ($this->di->getConfig())->urls->cms;
+                /*$card_url = ($this->di->getConfig())->urls->cms;
                 switch ($row->type) {
                     case 'blog-post':
                         $card_url .= '/blog-posts';
+                        break;
+                    case 'portfolio':
+                        $card_url = $url;
                         break;
                     case 'portfolio':
                         $card_url .= '/portfolio';
@@ -153,12 +156,12 @@ if ($data->total_items) {
                     default:
                         $card_url .= '/pages';
                         break;
-                }
+                }*/
                 echo $this->partial(
                     'common/lists/card',
                     [
                         'data' => $row,
-                        'url' => $card_url,
+                        'url' => $url,
                         'show_url' => false
                     ]
                 );

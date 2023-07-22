@@ -1,8 +1,9 @@
 <?php
 
 /**
- * View Folders.
+ * Events traits.
  *
+ * @package     Kytschi\Izumi\Traits\Events
  * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
@@ -23,9 +24,32 @@
  * Boston, MA  02110-1301, USA.
  */
 
-$folders = array_merge(
-    [
-        $config->application->pluginsDir . 'akira/views'
-    ],
-    $folders
-);
+namespace Kytschi\Izumi\Traits;
+
+use Kytschi\Tengu\Models\Website\Pages;
+
+trait Events
+{    
+    public function findEvents($data = [])
+    {
+        $query = '';
+        $bind = [];
+
+        if (!empty($data)) {
+            if (!empty($data['where'])) {
+                if (!empty($data['where']['query'])) {
+                    $query = 'AND ' . $data['where']['query'];
+                }
+
+                if (!empty($data['where']['data'])) {
+                    $bind = $data['where']['data'];
+                }
+            }
+        }
+
+        return Pages::find([
+            'conditions' => 'type = "event" AND deleted_at IS NULL ' . $query,
+            'bind' => $bind
+        ]);
+    }
+}

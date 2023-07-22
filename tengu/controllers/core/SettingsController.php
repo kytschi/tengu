@@ -98,7 +98,7 @@ class SettingsController extends ControllerBase
 
         if (empty($model->cache_key)) {
             $model->cache_key = urlencode((new Crypt())->encrypt(
-                file_get_contents(BASE_PATH . '/tengu.pub'),
+                file_get_contents(BASE_PATH . '/secure/tengu.pub'),
                 "VlRiTGozdGFCcHl0cFZIMUxndjhYcUVEUEE5ZE9TUExvdGhtRTZCSXg0aEdLdFljTW40MTk5UWJWYWtmbEJWK3F4dGUrehgng744kDHDKFHy7t745hdy7Sh34734ksdnlsd0DHHSLDFSYDSNHd"
             ));
         }

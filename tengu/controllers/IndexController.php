@@ -44,6 +44,7 @@ use Kytschi\Tengu\Traits\Core\Pagination;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Kytschi\Tengu\Traits\Core\Validation;
 use Kytschi\Tengu\Traits\Website\OldUrls;
+use Kytschi\Tengu\Traits\Website\Shortcodes;
 use Kytschi\Tengu\Traits\Website\Stats;
 use Phalcon\Paginator\Adapter\NativeArray;
 use Phalcon\Paginator\Adapter\QueryBuilder;
@@ -56,6 +57,7 @@ class IndexController extends ControllerBase
     use Logs;
     use OldUrls;
     use Pagination;
+    use Shortcodes;
     use Stats;
     use Tags;
 
@@ -131,6 +133,7 @@ class IndexController extends ControllerBase
 
         $this->setPageTitle($page->name);
         $this->setPageTags($page);
+        $page->content = $this->parseShortcodes($page->content);
         
         if (isset($_GET['search'])) {
             return $this->frontSearch($page);
@@ -147,12 +150,16 @@ class IndexController extends ControllerBase
             );
         }
 
-        return $this->view->partial(
-            $page->template->file,
-            [
-                'page' => $page
-            ]
-        );
+        try {
+            return $this->view->partial(
+                $page->template->file,
+                [
+                    'page' => $page
+                ]
+            );
+        } catch (\Exception $err) {
+            throw new TemplateException($err->getMessage());
+        }
     }
 
     private function frontSearch($page)

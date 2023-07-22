@@ -55,6 +55,16 @@ if ($upload) {
 							aria-describedby="image_label">
 						<small>If you'd like to label the image to help easily identify it</small>
 					</div>
+					<div class="form-group mb-4">
+						<label for="image_tags">Tags</label>
+						<input
+							id="image_tags"
+							name="image_tags"
+							type="text"
+							class="tags mt-2"
+							aria-describedby="image_tags">
+						<small>If you'd like to tag the file</small>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -223,7 +233,8 @@ if ($upload) {
 											data-toggle="tooltip"
 											data-dismiss="hover"
 											data-placement="top"
-											data-label="<?= $image->label; ?>" 
+											data-label="<?= $image->label; ?>"
+											data-tags="<?= (new FormController())->tagsToString($image->tags); ?>" 
 											data-id="<?= $image->id; ?>" 
                                         	class="btn-edit-media-label">
 											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
@@ -232,6 +243,21 @@ if ($upload) {
 										</a>
 									</div>
 								</div>
+								<?php
+								if (!empty($image->tags)) {
+									?>
+									<div class="col-12 p-0 mb-4">
+									<?php
+									foreach ($image->tags as $tag) {
+										?>
+										<span class="float-left badge badge-primary mr-2 mt-2"><?= $tag->tag; ?></span>
+										<?php
+									}
+									?>
+									</div>
+									<?php
+								}
+								?>
 							</div>
 							<?php
 							if ($selects) {
@@ -381,6 +407,16 @@ if ($upload) {
 						placeholder="Please enter a label"
 						required/>
 				</div>
+				<div class="form-group mb-4">
+					<label for="media_tags" class="form-label">
+						Tags
+					</label>
+					<input
+						name="media_tags"
+						type="text"
+						class="tags mt-2"
+						value=""/>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<div class="col-12 p-0 m-0">
@@ -397,6 +433,7 @@ if ($upload) {
 $(function () {
     $(".btn-edit-media-label").click(function(event) {
         $("#modal-media-label input[name=media_label]").val($(event.currentTarget).data("label"));
+		$("#modal-media-label input[name=media_tags]").val($(event.currentTarget).data("tags"));
         $("#modal-media-label input[name=media_label_id]").val($(event.currentTarget).data("id"));
 
         $("#modal-media-label").modal("show");

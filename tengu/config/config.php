@@ -21,6 +21,10 @@ $apps = [
     'phoenix' => false
 ];
 
+if ($_ENV['APP_EVENTS'] == 'true') {
+    $apps['izumi'] = true;
+}
+
 if ($_ENV['APP_MARKETING'] == 'true') {
     $apps['makabe'] = true;
 }
@@ -45,7 +49,7 @@ $urls = [
     'cms' => '/cms',
     'pms' => '/pms',
     'fms' => '/fms',
-    'sms' => '/sms',
+    'ems' => '/ems',
     'mms' => '/mms',
     'css' => '/css',
     'hrs' => '/hrs',

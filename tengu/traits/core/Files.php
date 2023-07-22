@@ -4,12 +4,24 @@
  * Files traits.
  *
  * @package     Kytschi\Tengu\Traits\Core\Files
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright 2022 Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 namespace Kytschi\Tengu\Traits\Core;
@@ -23,6 +35,7 @@ use Kytschi\Tengu\Models\Website\PageFiles;
 use Kytschi\Tengu\Models\Website\Pages;
 use Kytschi\Tengu\Traits\Core\Json;
 use Kytschi\Tengu\Traits\Core\Security;
+use Kytschi\Tengu\Traits\Core\Tags;
 use Kytschi\Tengu\Traits\Core\User;
 use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Encryption\Security\Random;
@@ -33,6 +46,7 @@ trait Files
 {
     use Json;
     use Security;
+    use Tags;
     use User;
     
     public function addCarouselImages($resource_id, $user_id)
@@ -80,18 +94,30 @@ trait Files
                             updated_by
                         FROM page_files
                         WHERE
-                            page_id=:page_id AND file_id=:file_id
-                    );
-                UPDATE page_files SET deleted_at=NULL, deleted_by=NULL WHERE page_id=:page_id AND file_id=:file_id',
+                            page_id=:page_id_2 AND file_id=:file_id_2
+                    )',
+                    [
+                        ':id' => (new Random())->uuid(),
+                        ':page_id' => $resource_id,
+                        ':file_id' => $file_id,
+                        ':page_id_2' => $resource_id,
+                        ':file_id_2' => $file_id,
+                        ':resource' => 'carousel',
+                        ':created_at' => date('Y-m-d H:i:s'),
+                        ':created_by' => $user_id,
+                        ':updated_at' => date('Y-m-d H:i:s'),
+                        ':updated_by' => $user_id
+                    ]
+                );
+
+                $this->db->query('UPDATE page_files 
+                    SET 
+                        deleted_at=NULL, deleted_by=NULL 
+                    WHERE 
+                        page_id=:page_id AND file_id=:file_id',
                 [
-                    ':id' => (new Random())->uuid(),
                     ':page_id' => $resource_id,
-                    ':file_id' => $file_id,
-                    ':resource' => 'carousel',
-                    ':created_at' => date('Y-m-d H:i:s'),
-                    ':created_by' => $user_id,
-                    ':updated_at' => date('Y-m-d H:i:s'),
-                    ':updated_by' => $user_id
+                    ':file_id' => $file_id
                 ]
             );
         }
@@ -171,18 +197,25 @@ trait Files
 
         if ($copy) {
             if (!$compress) {
-                copy(
+                @copy(
                     $tmp_name,
                     $dir . $file_model->filename
                 );
 
-                switch ($mime_type) {
-                    case 'image/jpeg':
-                        shell_exec('jpegoptim -m 60 ' . $dir . $file_model->filename);
-                        break;
-                    case 'image/png':
-                        shell_exec('optipng ' . $dir . $file_model->filename);
-                        break;
+                try {
+                    switch ($mime_type) {
+                        case 'image/jpeg':
+                            shell_exec('jpegoptim -m 60 ' . $dir . $file_model->filename);
+                            break;
+                        case 'image/png':
+                            shell_exec('optipng ' . $dir . $file_model->filename);
+                            break;
+                    }
+                } catch (\Exception $err) {
+                    throw new SaveException(
+                        'Failed to save the file to the dump folder, 
+                        check the folder has the right permissions'
+                    );
                 }
 
                 if ($thumb) {
@@ -195,6 +228,15 @@ trait Files
             file_put_contents(
                 $dir . $file_model->filename,
                 self::encrypt(file_get_contents($tmp_name), $this->tengu->settings->compress_key)
+            );
+        }
+
+        if (!empty($_POST['image_tags'])) {
+            $this->addTags(
+                json_decode($_POST['image_tags']),
+                $file_model->id,
+                true,
+                'file'
             );
         }
 
@@ -349,16 +391,22 @@ trait Files
         $desired_height = floor($height * ($desired_width / $width));
         $save = imagecreatetruecolor($desired_width, $desired_height);
         imagecopyresampled($save, $upload, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
-
-        switch ($file['type']) {
-            case 'image/jpeg':
-                imagejpeg($save, $dir . $filename, 60);
-                shell_exec('jpegoptim -m 60 ' . $save);
-                break;
-            case 'image/png':
-                imagepng($save, $dir . $filename, 6);
-                shell_exec('optipng ' . $save);
-                break;
+        try {
+            switch ($file['type']) {
+                case 'image/jpeg':
+                    @imagejpeg($save, $dir . $filename, 60);
+                    shell_exec('jpegoptim -m 60 ' . $dir . $filename);
+                    break;
+                case 'image/png':
+                    @imagepng($save, $dir . $filename, 6);
+                    shell_exec('optipng ' . $dir . $filename);
+                    break;
+            }
+        } catch (\Exception $err) {
+            throw new SaveException(
+                'Failed to save the file to the dump folder, 
+                check the folder has the right permissions'
+            );
         }
     }
 

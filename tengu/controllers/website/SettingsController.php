@@ -170,10 +170,11 @@ class SettingsController extends ControllerBase
         $model->contact_email = !empty($_POST['contact_email']) ? $_POST['contact_email'] : '';
         $model->robots_txt = !empty($_POST['robots_txt']) ? $_POST['robots_txt'] : '';
         $model->robots = !empty($_POST['robots']) ? $_POST['robots'] : '';
+        $model->status = !empty($_POST['status']) ? 'online' : 'offline';
                 
         if (empty($model->cache_key)) {
             $model->cache_key = urlencode((new Crypt())->encrypt(
-                file_get_contents(BASE_PATH . '/tengu.pub'),
+                file_get_contents(BASE_PATH . '/secure/tengu.pub'),
                 "VlRiTGozdGFCcHl0cFZIMUxndjhYcUVEUEE5ZE9TUExvdGhtRTZCSXg0aEdLdFljTW40MTk5UWJWYWtmbEJWK3F4dGUrehgng744kDHDKFHy7t745hdy7Sh34734ksdnlsd0DHHSLDFSYDSNHd"
             ));
         }
@@ -198,7 +199,6 @@ class SettingsController extends ControllerBase
             $this->validate();
 
             $model = $this->setData($model);
-
             if ($model->update() === false) {
                 throw new SaveException(
                     'Failed to update the settings',
@@ -206,7 +206,6 @@ class SettingsController extends ControllerBase
                 );
             }
 
-            $this->addTagsFromRequest($model->id, true);
             $this->addStatsExclude();
 
             $this->addLog(
