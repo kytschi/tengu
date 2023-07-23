@@ -200,14 +200,14 @@ trait Stats
         $agent = '';
         if (!empty($_SERVER['HTTP_USER_AGENT'])) {
             $agent = $_SERVER['HTTP_USER_AGENT'];
-            
+
             foreach ($this->bots as $type => $check) {
                 if (strpos(strtolower($agent), strtolower($check)) !== false) {
                     $bot = $type;
                     break;
                 }
             }
-            
+
             $browser_obj = @get_browser($agent);
             if (!empty($browser_obj)) {
                 foreach ($this->browsers as $check) {
@@ -218,7 +218,7 @@ trait Stats
                     }
                 }
             }
-        
+
             foreach ($this->operating_systems as $type => $check) {
                 if (
                     strpos(str_replace(' ', '', strtolower($agent)), str_replace(' ', '', strtolower($check))) !== false

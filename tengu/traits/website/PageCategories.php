@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Dashboards controller.
+ * Page Categories traits.
  *
- * @package     Kytschi\Akira\Controllers\DashboardsController
+ * @package     Kytschi\Tengu\Traits\Website\PageCategories
  * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
@@ -24,21 +24,27 @@
  * Boston, MA  02110-1301, USA.
  */
 
-declare(strict_types=1);
+namespace Kytschi\Tengu\Traits\Website;
 
-namespace Kytschi\Akira\Controllers;
+use Kytschi\Tengu\Models\Website\PageCategories as Model;
 
-use Kytschi\Tengu\Controllers\ControllerBase;
-
-class DashboardsController extends ControllerBase
+trait PageCategories
 {
-    public function indexAction()
+    public function findCategory($data)
     {
-        $this->secure();
-        $this->setPageTitle('Dashboard');
+        if (empty($data)) {
+            return null;
+        }
 
-        return $this->view->partial(
-            'akira/dashboards/index'
-        );
+        if (empty($data['category'])) {
+            return null;
+        }
+
+        $binds = ['id' => $data['category']];
+
+        return Model::find([
+            'conditions' => 'id = :id:',
+            'bind' => $binds
+        ]);
     }
 }

@@ -39,7 +39,7 @@ trait Form
         } else {
             $data = $_GET;
         }
-        
+
         $splits = explode('.', $var);
 
         try {

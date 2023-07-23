@@ -484,10 +484,17 @@ class PagesController extends ControllerBase
 
         $model->url = '/' .
             trim(
-                (empty($_POST['url']) ? $this->createSlug(strip_tags($_POST['name'])) : strip_tags($_POST['url'])),
+                (
+                    empty($_POST['url']) ?
+                        $this->createSlug(strip_tags($_POST['name'])) :
+                        UrlHelper::clean($_POST['url'])
+                ),
                 '/'
             );
-        $model->canonical_url = !empty($_POST['canonical_url']) ? strip_tags($_POST['canonical_url']) : null;
+        $model->canonical_url = 
+            !empty($_POST['canonical_url']) ?
+                UrlHelper::clean($_POST['canonical_url']) :
+                null;
         $model->summary = !empty($_POST['summary']) ? $_POST['summary'] : null;
         $model->status = isset($_POST['status']) ? 'active' : 'inactive';
         $model->searchable = isset($_POST['searchable']) ? true : false;

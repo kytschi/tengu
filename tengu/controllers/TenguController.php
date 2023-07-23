@@ -45,6 +45,9 @@ use Kytschi\Tengu\Models\Website\Users;
 use Kytschi\Tengu\Traits\Core\Filters;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Kytschi\Tengu\Traits\Core\User;
+use Kytschi\Tengu\Traits\Website\PageCategories;
+use Kytschi\Tengu\Traits\Website\Pages;
+use Kytschi\Tengu\Traits\Website\Reviews;
 use Phalcon\Encryption\Security\Random;
 use Phalcon\Tag;
 
@@ -52,6 +55,9 @@ class TenguController
 {
     use Events;
     use Filters;
+    use PageCategories;
+    use Pages;
+    use Reviews;
     use Tags;
     use User;
 
@@ -60,7 +66,7 @@ class TenguController
     public $pages = null;
     public $settings = null;
     public $theme = null;
-    public $version = '0.0.3 alpha';
+    public $version = '0.0.4 alpha';
 
     public $filters = [];
 
@@ -102,7 +108,7 @@ class TenguController
             if (empty($path['path'])) {
                 return '';
             }
-            
+
             $url = (!empty($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $path['path'];
             return $url;
         } catch (\Exception $err) {

@@ -1,75 +1,147 @@
 <?php
 
 /**
- * Timesheets controller.
+ * Pages controller.
  *
- * @package     Kytschi\Mai\Controllers\TimesheetsController
- * @copyright   2022 Kytschi
+ * @package     Kytschi\Akira\Controllers\AppointmentsController
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.2
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 declare(strict_types=1);
 
-namespace Kytschi\Mai\Controllers;
+namespace Kytschi\Akira\Controllers;
 
+use Kytschi\Akira\Models\Appointments;
 use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Exceptions\RequestException;
 use Kytschi\Tengu\Exceptions\SaveException;
 use Kytschi\Tengu\Exceptions\ValidationException;
-use Kytschi\Tengu\Helpers\DateHelper;
 use Kytschi\Tengu\Helpers\UrlHelper;
-use Kytschi\Tengu\Models\Core\Projects;
+use Kytschi\Tengu\Models\Core\Files as ModelFile;
 use Kytschi\Tengu\Models\Core\Users;
 use Kytschi\Tengu\Traits\Core\Files;
 use Kytschi\Tengu\Traits\Core\Form;
 use Kytschi\Tengu\Traits\Core\Logs;
 use Kytschi\Tengu\Traits\Core\Notes;
 use Kytschi\Tengu\Traits\Core\Pagination;
+use Kytschi\Tengu\Traits\Core\Queue;
 use Kytschi\Tengu\Traits\Core\Tags;
-use Kytschi\Mai\Models\Timesheets;
-use Kytschi\Wako\Models\Invoices;
+use Kytschi\Tengu\Traits\Core\User;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
-class TimesheetsController extends ControllerBase
+class AppointmentsController extends ControllerBase
 {
     use Files;
     use Form;
     use Logs;
     use Notes;
     use Pagination;
+    use Queue;
     use Tags;
+    use User;
 
     public $access = [
         'administrator',
-        'super-user',
-        'hr-manager'
+        'super-user'
     ];
 
-    public $global_url = '/timesheets';
-    public $resource = 'timesheet';
+    public $global_url = '/appointments';
+
+    public $resource = 'appointment';
 
     public function initialize()
     {
-        $this->global_url = ($this->di->getConfig())->urls->hrs . $this->global_url;
+        $this->global_url = ($this->di->getConfig())->urls->css . $this->global_url;
     }
 
     public function addAction()
     {
-        $this->secure();
-        $this->setPageTitle('Adding a timesheet entry');
+        $this->secure($this->access);
+        $this->setPageTitle('Create an appointment');
 
         return $this->view->partial(
-            'mai/timesheets/add',
+            'akira/appointments/add',
             [
-                'projects' => Projects::find(['conditions' => 'deleted_at IS NULL'])
+                'url' => $this->global_url,
+                'resource' => $this->resource,
+                'users' => Users::find([
+                    'conditions' => 'type IN ("user") AND id != :id:',
+                    'bind' => [
+                        'id' => self::getUserId()
+                    ]
+                ])
             ]
         );
+    }
+
+    public function cancelAction()
+    {
+        $this->clearFormData();
+
+        $this->secure($this->access);
+
+        $model = (new Appointments())->findFirst([
+            'conditions' => 'id = :id:',
+            'bind' => [
+                'id' => $this->dispatcher->getParam('id')
+            ]
+        ]);
+        if (empty($model)) {
+            return $this->notFound();
+        }
+
+        try {
+            $model->status = 'cancelled';
+            if ($model->update() === false) {
+                throw new SaveException(
+                    'Failed to update the appointment',
+                    $model->getMessages()
+                );
+            }
+
+            $this->addLog(
+                $this->resource,
+                $model->id,
+                'danger',
+                'Cancelled by ' . $this->getUserFullName()
+            );
+
+            $url = $this->global_url . '/edit/' . $model->id;
+            if (!empty($_GET['from'])) {
+                $url = urldecode($_GET['from']);
+            }
+
+            $this->saveFormWarning('Appointment has been cancelled');
+            $this->redirect(
+                UrlHelper::backend(
+                    rtrim($url, '/')
+                )
+            );
+        } catch (Exception $err) {
+            throw new SaveException(
+                $err->getMessage(),
+                method_exists($err, 'getData') ? $err->getData() : null
+            );
+        }
     }
 
     public function deleteAction()
@@ -78,7 +150,7 @@ class TimesheetsController extends ControllerBase
 
         $this->secure($this->access);
 
-        $model = (new Timesheets())->findFirst([
+        $model = (new Appointments())->findFirst([
             'conditions' => 'id = :id:',
             'bind' => [
                 'id' => $this->dispatcher->getParam('id')
@@ -103,9 +175,13 @@ class TimesheetsController extends ControllerBase
                 $url = urldecode($_GET['from']);
             }
 
-            $this->saveFormDeleted('Timesheet has been deleted');
-            $this->redirect(UrlHelper::backend(rtrim($url, '/')));
-        } catch (\Exception $err) {
+            $this->saveFormDeleted('Appointment has been deleted');
+            $this->redirect(
+                UrlHelper::backend(
+                    rtrim($url, '/')
+                )
+            );
+        } catch (Exception $err) {
             throw new SaveException(
                 $err->getMessage(),
                 method_exists($err, 'getData') ? $err->getData() : null
@@ -113,11 +189,11 @@ class TimesheetsController extends ControllerBase
         }
     }
 
-    public function editAction()
+    public function editAction($id)
     {
         $this->secure($this->access);
 
-        $model = (new Timesheets())->findFirst([
+        $model = (new Appointments())->findFirst([
             'conditions' => 'id = :id:',
             'bind' => [
                 'id' => $this->dispatcher->getParam('id')
@@ -128,23 +204,24 @@ class TimesheetsController extends ControllerBase
             return $this->notFound();
         }
 
-        $this->setPageTitle($model->name);
+        $this->setPageTitle('Editing the appointment');
 
         return $this->view->partial(
-            'mai/timesheets/edit',
+            'akira/appointments/edit',
             [
                 'data' => $model,
-                'projects' => Projects::find(['conditions' => 'deleted_at IS NULL'])
+                'url' => $this->global_url,
+                'resource' => $this->resource
             ]
         );
     }
 
     public function indexAction()
     {
-        $this->clearFormData();
+        $this->setPageTitle('Our appointments');
 
+        $this->clearFormData();
         $this->secure($this->access);
-        $this->setPageTitle('My timesheets');
         $this->savePagination();
         $this->setFilters();
 
@@ -160,19 +237,18 @@ class TimesheetsController extends ControllerBase
         $builder = $this
             ->modelsManager
             ->createBuilder()
-            ->from(Timesheets::class)
+            ->from(Appointments::class)
             ->orderBy($this->orderBy . ' ' . $this->orderDir);
 
         $params = [];
 
         if (!empty($this->search)) {
             $params = [
-                'name' => '%' . $this->search . '%',
-                'search_tags' => '%' . $this->search . '%'
+                'name' => '%' . $this->search . '%'
             ];
 
             $builder
-                ->andWhere('name LIKE :name: OR search_tags LIKE :search_tags:');
+                ->andWhere('name LIKE :name:');
         }
 
         if (!empty($this->filters)) {
@@ -181,6 +257,7 @@ class TimesheetsController extends ControllerBase
                 if (empty($value)) {
                     continue;
                 }
+
                 switch ($filter) {
                     case 'status':
                         $builder->andWhere('status LIKE :status_' . $iLoop . ':');
@@ -202,12 +279,64 @@ class TimesheetsController extends ControllerBase
         );
 
         return $this->view->partial(
-            'mai/timesheets/index',
+            'akira/appointments/index',
             [
+                'url' => $this->global_url,
                 'data' => $paginator->paginate(),
                 'stats' => $this->stats()
             ]
         );
+    }
+
+    public function rebookAction()
+    {
+        $this->clearFormData();
+
+        $this->secure($this->access);
+
+        $model = (new Appointments())->findFirst([
+            'conditions' => 'id = :id:',
+            'bind' => [
+                'id' => $this->dispatcher->getParam('id')
+            ]
+        ]);
+        if (empty($model)) {
+            return $this->notFound();
+        }
+
+        try {
+            $model->status = 'booked';
+            if ($model->update() === false) {
+                throw new SaveException(
+                    'Failed to update the appointment',
+                    $model->getMessages()
+                );
+            }
+
+            $this->addLog(
+                $this->resource,
+                $model->id,
+                'info',
+                'Rebooked by ' . $this->getUserFullName()
+            );
+
+            $url = $this->global_url . '/edit/' . $model->id;
+            if (!empty($_GET['from'])) {
+                $url = urldecode($_GET['from']);
+            }
+
+            $this->saveFormUpdated('Appointment has been rebooked');
+            $this->redirect(
+                UrlHelper::backend(
+                    rtrim($url, '/')
+                )
+            );
+        } catch (Exception $err) {
+            throw new SaveException(
+                $err->getMessage(),
+                method_exists($err, 'getData') ? $err->getData() : null
+            );
+        }
     }
 
     public function recoverAction()
@@ -216,7 +345,7 @@ class TimesheetsController extends ControllerBase
 
         $this->secure($this->access);
 
-        $model = (new Timesheets())->findFirst([
+        $model = (new Appointments())->findFirst([
             'conditions' => 'id = :id:',
             'bind' => [
                 'id' => $this->dispatcher->getParam('id')
@@ -241,9 +370,11 @@ class TimesheetsController extends ControllerBase
                 $url = urldecode($_GET['from']);
             }
 
-            $this->saveFormUpdated('Timesheet has been recovered');
-            $this->redirect(UrlHelper::backend(rtrim($url, '/')));
-        } catch (\Exception $err) {
+            $this->saveFormUpdated('Appointment has been recovered');
+            $this->redirect(
+                UrlHelper::backend(rtrim($url, '/'))
+            );
+        } catch (Exception $err) {
             throw new SaveException(
                 $err->getMessage(),
                 method_exists($err, 'getData') ? $err->getData() : null
@@ -251,18 +382,18 @@ class TimesheetsController extends ControllerBase
         }
     }
 
-    public function saveAction()
+    public function saveAction($ignore = false)
     {
         $this->secure($this->access);
 
         try {
             $this->validate();
 
-            $model = $this->setData(new Timesheets());
+            $model = $this->setData(new Appointments());
 
             if ($model->save() === false) {
                 throw new SaveException(
-                    'Failed to create the timesheet',
+                    'Failed to create the appointment',
                     $model->getMessages()
                 );
             }
@@ -276,21 +407,14 @@ class TimesheetsController extends ControllerBase
                 'Created by ' . $this->getUserFullName()
             );
 
-            $this->saveFormSaved('Timesheet has been saved');
+            $this->saveFormSaved('Appointment has been saved');
             $this->clearFormData();
+
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (ValidationException $err) {
             $this->saveValidationError($err);
             $this->redirect(UrlHelper::backend($this->global_url . '/create'));
         } catch (Exception $err) {
-            if (!empty($model)) {
-                $model->delete();
-            }
-
-            if (!empty($board)) {
-                $board->delete();
-            }
-
             throw new SaveException(
                 $err->getMessage(),
                 method_exists($err, 'getData') ? $err->getData() : null
@@ -301,28 +425,33 @@ class TimesheetsController extends ControllerBase
     public function setData($model)
     {
         $model->name = $_POST['name'];
-        $model->summary = !empty($_POST['summary']) ? $_POST['summary'] : '';
-        $model->status = !empty($_POST['status']) ? $this->isValidStatus($_POST['status']) : $this->default_status;
-        $model->project_id = !empty($_POST['project_id']) ? $_POST['project_id'] : null;
-        $model->period_start = !empty($_POST['period_start']) ? DateHelper::sql($_POST['period_start'], false) : null;
-        $model->period_end = !empty($_POST['period_end']) ? DateHelper::sql($_POST['period_end'], false) : null;
-
-        $model = $this->addSearchTags($model);
+        $model->user_id = !empty($_POST['user_id']) ? $_POST['user_id'] : self::getUserId();
+        $model->status = isset($_POST['status']) ? 'free' : 'booked';
+        $model->recurring = isset($_POST['recurring']) ?
+            ($_POST['recurring'] == 'none' ? null : $_POST['recurring']) :
+            null;
 
         return $model;
     }
 
     public function stats()
     {
-        $table = (new Timesheets())->getSource();
-
+        $table = (new Appointments())->getSource();
         $query = 'SELECT ';
-        $query .= "(SELECT count(id) FROM $table WHERE status = 'active') AS active,";
-        $query .= "(SELECT count(id) FROM $table WHERE status = 'pending') AS pending,";
-        $query .= "(SELECT count(id) FROM $table WHERE status = 'rejected') AS rejected,";
-        $query .= "(SELECT count(id) FROM $table WHERE deleted_at IS NOT NULL) AS deleted,";
+        $query .= "(
+            SELECT count(id) FROM $table WHERE status = 'booked'
+        ) AS booked,";
+        $query .= "(
+            SELECT count(id) FROM $table WHERE status = 'free'
+        ) AS free,";
+        $query .= "(
+            SELECT count(id) FROM $table WHERE status = 'cancelled'
+        ) AS cancelled,";
+        $query .= "(
+            SELECT count(id) FROM $table WHERE deleted_at IS NOT NULL
+        ) AS deleted";
 
-        $model = new Timesheets();
+        $model = new Appointments();
         return (new \Phalcon\Mvc\Model\Resultset\Simple(
             null,
             $model,
@@ -330,11 +459,11 @@ class TimesheetsController extends ControllerBase
         ))->toArray()[0];
     }
 
-    public function updateAction()
+    public function updateAction($ignore = false)
     {
         $this->secure($this->access);
 
-        $model = (new Timesheets())->findFirst([
+        $model = (new Appointments())->findFirst([
             'conditions' => 'id = :id:',
             'bind' => [
                 'id' => $this->dispatcher->getParam('id')
@@ -345,14 +474,20 @@ class TimesheetsController extends ControllerBase
             return $this->notFound();
         }
 
+        $url = UrlHelper::backend($this->global_url . '/edit/' . $model->id);
+        if (!empty($_GET['from'])) {
+            $url = urldecode($_GET['from']);
+        }
+
         try {
             $this->validate();
 
             $model = $this->setData($model);
+            $this->checkURL($model);
 
             if ($model->update() === false) {
                 throw new SaveException(
-                    'Failed to update the timesheet',
+                    'Failed to update the ' . str_replace('-', ' ', $this->resource),
                     $model->getMessages()
                 );
             }
@@ -367,77 +502,18 @@ class TimesheetsController extends ControllerBase
                 'Updated by ' . $this->getUserFullName()
             );
 
-            $this->saveFormUpdated('Timesheet has been updated');
-
+            $this->saveFormUpdated('Appointment has been updated');
             $this->clearFormData();
-            $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
+
+            $this->redirect($url);
         } catch (ValidationException $err) {
             $this->saveValidationError($err);
-            $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
+            $this->redirect(UrlHelper::backend($url));
         } catch (Exception $err) {
             throw new SaveException(
                 $err->getMessage(),
                 method_exists($err, 'getData') ? $err->getData() : null
             );
-        }
-    }
-
-    public function updateAmount($id)
-    {
-        if (empty($id)) {
-            return;
-        }
-
-        $model = (new Timesheets())->findFirst([
-            'conditions' => 'id = :id:',
-            'bind' => [
-                'id' => $id
-            ]
-        ]);
-
-        if (empty($model)) {
-            return $this->notFound();
-        }
-
-        $amount = 0;
-        foreach ($model->entries as $entry) {
-            $amount += $entry->price;
-        }
-
-        $model->amount = $amount;
-        if ($model->update() === false) {
-            throw new SaveException(
-                'Failed to update the timesheet',
-                $model->getMessages()
-            );
-        }
-
-        if ($model->project_id) {
-            if (
-                $results = Invoices::find([
-                    'conditions' => 'project_id = :project_id: AND printed_at IS NULL AND emailed_at IS NULL',
-                    'bind' => [
-                        'project_id' => $model->project_id
-                    ]
-                ])
-            ) {
-                foreach ($results as $result) {
-                    $amount = 0;
-                    foreach ($result->timesheets as $timesheet) {
-                        foreach ($timesheet->entries as $entry) {
-                            $amount += $entry->price;
-                        }
-                    }
-
-                    $result->amount = $amount;
-                    if ($result->update() === false) {
-                        throw new SaveException(
-                            'Failed to update an invoice associated with this timesheet',
-                            $result->getMessages()
-                        );
-                    }
-                }
-            }
         }
     }
 
@@ -462,7 +538,10 @@ class TimesheetsController extends ControllerBase
 
         $messages = $validation->validate($_POST);
         if (count($messages)) {
-            throw new ValidationException('Form validation failed, please double check the required fields', $messages);
+            throw new ValidationException(
+                'Form validation failed, please double check the required fields',
+                $messages
+            );
         }
     }
 }

@@ -14,8 +14,8 @@
 declare(strict_types=1);
 
 //Let tengu handle the errors
-error_reporting(0);
-@ini_set('display_errors', 0);
+//error_reporting(0);
+//@ini_set('display_errors', 0);
 
 define('TENGU_START_TIME', microtime(true) * 1000);
 

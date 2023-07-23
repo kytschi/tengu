@@ -35,7 +35,7 @@ trait OldUrls
                     $model->getMessages()
                 );
             }
-            
+
             return;
         }
 
@@ -50,7 +50,7 @@ trait OldUrls
                     'resource_id' => $resource_id
                 ]
             );
-        
+
         if (empty($_POST['old_urls'])) {
             return;
         }

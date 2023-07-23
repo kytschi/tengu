@@ -66,7 +66,7 @@ class StatementItemsController extends ControllerBase
 
     public $global_url = '/statements/';
     public $resource = 'statement-item';
-   
+
     public function initialize()
     {
         $this->global_url = ($this->di->getConfig())->urls->fms . $this->global_url;

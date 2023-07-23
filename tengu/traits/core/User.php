@@ -132,13 +132,13 @@ trait User
     public function secure(array $groups = [])
     {
         $user = self::getUser();
-        
+
         if (empty($user)) {
             $this->redirect(
                 UrlHelper::backend('/login?from=' . urlencode($_SERVER['REQUEST_URI']))
             );
         }
-        
+
         if (!empty($groups)) {
             if (empty($user->group)) {
                 throw new AuthorisationException('Invalid group');

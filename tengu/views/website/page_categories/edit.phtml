@@ -67,7 +67,7 @@ echo $this->partial("common/form/messages");
     </div>
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card">
+            <div class="card p-0">
                 <div class="card-body">
                     <a
                         href="<?= UrlHelper::backend($back_url); ?>"
@@ -258,14 +258,26 @@ echo $this->partial("common/form/messages");
 									required>
                             </div>
                             <div class="form-group mb-4">
-                                <label for="summary">Summary</label>
+                                <label for="slogan">
+                                    Slogan
+                                </label>
                                 <input
+                                    id="slogan"
+                                    name="slogan"
+                                    type="text"
+                                    class="form-control mt-2"
+                                    aria-describedby="slogan"
+                                    value="<?= FormController::getFormData('slogan', $data); ?>">
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="summary">Summary</label>
+                                <textarea
                                     id="summary"
                                     name="summary"
                                     type="text"
                                     class="form-control mt-2"
-                                    aria-describedby="summary"
-                                    value="<?= FormController::getFormData('summary', $data); ?>">
+                                    rows="4"
+                                    aria-describedby="summary"><?= FormController::getFormData('summary', $data); ?></textarea>
                             </div>
                         </div>
                     </div>

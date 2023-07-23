@@ -74,7 +74,7 @@ if ($result_start) {
 					            <ul class="pagination">
 					                <li class="page-item previous <?= $data->current == $data->first ? ' disabled' : ''; ?>">
 					                    <a href="<?= UrlHelper::generate($url, ['page' => $data->current - 1 > $data->first ? $data->current - 1 : $data->first]); ?>" class="page-link">
-					                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+					                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
 					                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
 					                        </svg>
 					                    </a>
@@ -90,7 +90,7 @@ if ($result_start) {
 					                ?>
 					                <li class="page-item next <?= $data->current == $data->last ? ' disabled text-muted' : ''; ?>">
 					                    <a href="<?= UrlHelper::generate($url, ['page' => $data->current + 1 < $data->last ? $data->current + 1 : $data->last]); ?>" class="page-link">
-					                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+					                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
 					                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
 					                        </svg>
 					                    </a>

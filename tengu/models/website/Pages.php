@@ -216,7 +216,9 @@ class Pages extends Model
                 'alias'    => 'tags',
                 'reusable' => true,
                 'params'   => [
-                    'conditions' => 'deleted_at IS NULL AND (resource="page" OR resource="portfolio" OR resource="blog-post") AND type IS NULL',
+                    'conditions' => 'deleted_at IS NULL AND 
+                        (resource="page" OR resource="portfolio" OR resource="blog-post") AND 
+                        type IS NULL',
                     'order' => 'tag'
                 ]
             ]
@@ -405,7 +407,7 @@ class Pages extends Model
 
         return null;
     }
-    
+
     public function getCode()
     {
         return !empty($this->product) ? $this->product->code : '';
@@ -579,7 +581,7 @@ class Pages extends Model
                 return true;
             }
         }
-        
+
         return false;
     }
 }

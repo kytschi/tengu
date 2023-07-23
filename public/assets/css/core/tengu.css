@@ -1639,3 +1639,74 @@ select.form-control {
 .ui-timepicker-div.ui-timepicker-oneLine dl dd.ui_tpicker_microsec:before { content:'.'; display:inline-block; }
 .ui-timepicker-div.ui-timepicker-oneLine .ui_tpicker_unit_hide,
 .ui-timepicker-div.ui-timepicker-oneLine .ui_tpicker_unit_hide:before{ display: none; }
+
+/* Calendar */
+#calendar {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  border-top: 1px solid var(--border-grey-lighter);
+  border-left: 1px solid var(--border-grey-lighter);
+  margin-bottom: 20px;
+  grid-template-columns: repeat(7, 1fr);
+}
+#calendar-month {
+  width: 100%;
+  font-size: 18pt;
+  margin-bottom: 20px;
+}
+#calendar-month a, #calendar-month span {
+  float: left;
+  margin-right: 10px;
+}
+#calendar-month span {
+  padding-top: 25px !important;
+}
+#calendar-month div {
+  float: left;
+  padding-bottom: 10px !important;
+}
+#calendar-month a {
+  display: block;
+  width: 64px;
+  height: 64px;
+}
+#calendar-month a:hover {
+  text-decoration: none;
+}
+#calendar-month a:before {
+  top: 10px !important;
+  left: 0 !important;
+}
+#calendar .calendar-entry, #calendar .calendar-day, #calendar .calendar-blank {  
+  padding: 10px;
+  background-color: var(--bg-white);
+  border-bottom: 1px solid var(--border-grey-lighter);
+  border-right: 1px solid var(--border-grey-lighter);
+}
+#calendar .calendar-entry, #calendar .calendar-blank {
+  min-height: 120px;
+}
+#calendar .calendar-blank {
+  background-color: var(--bg-disabled);
+}
+#calendar .calendar-day {
+  font-weight: bold;
+}
+.calendar-today {
+  color: var(--font-blue);
+  font-weight: bold;
+}
+#calendar .calendar-entry {
+  display: flex;
+  flex-direction: column;
+}
+.calendar-event {
+  padding: 10px;
+  background-color: var(--bg-darker-blue);
+  color: var(--font-white) !important;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-weight: normal;
+  cursor: pointer;
+}

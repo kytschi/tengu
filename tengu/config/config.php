@@ -21,6 +21,10 @@ $apps = [
     'phoenix' => false
 ];
 
+if ($_ENV['APP_CUSTOMER_SUPPORT'] == 'true') {
+    $apps['akira'] = true;
+}
+
 if ($_ENV['APP_EVENTS'] == 'true') {
     $apps['izumi'] = true;
 }

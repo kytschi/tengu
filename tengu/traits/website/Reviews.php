@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Dashboards controller.
+ * Reviews traits.
  *
- * @package     Kytschi\Akira\Controllers\DashboardsController
+ * @package     Kytschi\Tengu\Traits\Website\Reviews
  * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
@@ -24,21 +24,32 @@
  * Boston, MA  02110-1301, USA.
  */
 
-declare(strict_types=1);
+namespace Kytschi\Tengu\Traits\Website;
 
-namespace Kytschi\Akira\Controllers;
+use Kytschi\Tengu\Models\Website\Pages;
 
-use Kytschi\Tengu\Controllers\ControllerBase;
-
-class DashboardsController extends ControllerBase
+trait Reviews
 {
-    public function indexAction()
+    public function findReviews($data)
     {
-        $this->secure();
-        $this->setPageTitle('Dashboard');
+        if (empty($data)) {
+            return null;
+        }
 
-        return $this->view->partial(
-            'akira/dashboards/index'
-        );
+        $binds = [];
+        if (!empty($data['page'])) {
+            $binds['id'] = $data['page'];
+        }
+
+        $order = 'rating DESC';
+        if (!empty($data['random'])) {
+            $order = ' RAND() LIMIT ' . intval($data['random']);
+        }
+
+        return Pages::find([
+            'conditions' => 'type="review"',
+            'bind' => $binds,
+            'order' => $order
+        ]);
     }
 }

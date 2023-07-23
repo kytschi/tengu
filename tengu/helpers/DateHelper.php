@@ -62,7 +62,7 @@ class DateHelper
             "nov",
             "dec"
         );
-          
+
         // Define day name
         $day_names = array(
             "monday",
@@ -83,15 +83,15 @@ class DateHelper
             "sat",
             "sun"
         );
-          
+
         // Define ordinal number
         $ordinal_number = ['st', 'nd', 'rd', 'th'];
-        
+
         $day = '';
         $month = '';
         $year = '';
         $no_year = false;
-       
+
         // Match dates: 01/01/2012 or 30-12-11 or 1 2 1985
         preg_match('/([0-9]?[0-9])[\.\-\/ ]+([0-1]?[0-9])[\.\-\/ ]+([0-9]{2,4})/', $string, $matches);
         if ($matches) {
@@ -125,20 +125,20 @@ class DateHelper
                 if (empty($day) && $matches[1]) {
                     $day = $matches[1];
                 }
-            
+
                 if (empty($month) && $matches[2]) {
                     $month = array_search(strtolower($matches[2]), $short_month_names);
                 }
-            
+
                 if (!$month) {
                     $month = array_search(strtolower($matches[2]), $month_names);
                 }
-            
+
                 $month = $month + 1;
                 $no_year = true;
             }
         }
-        
+
         if ((empty($day) || empty($month) || empty($year)) && !$no_year) {
             // Match dates: Sunday 1st March 2015; Sunday, 1 March 2015; Sun 1 Mar 2015; Sun-1-March-2015
             preg_match(
@@ -158,27 +158,29 @@ class DateHelper
                 if (empty($day) && $matches[1]) {
                     $day = $matches[1];
                 }
-            
+
                 if (empty($month) && $matches[2]) {
                     $month = array_search(strtolower($matches[2]), $short_month_names);
                 }
-            
+
                 if (!$month) {
                     $month = array_search(strtolower($matches[2]), $month_names);
                 }
-            
+
                 $month = $month + 1;
                 if (empty($year) && $matches[3]) {
                     $year = $matches[3];
                 }
             }
         }
-        
+
         if ((empty($day) || empty($month) || empty($year)) && !$no_year) {
             // Match dates: March 1st 2015; March 1 2015; March-1st-2015
             preg_match(
                 '/(' . implode('|', $month_names) . '|' .
-                implode('|', $short_month_names) . ')[ ,\-_\/]*([0-9]?[0-9])[ ,\-_\/]*(?:' . implode('|', $ordinal_number) .
+                implode('|', $short_month_names) .
+                ')[ ,\-_\/]*([0-9]?[0-9])[ ,\-_\/]*(?:' .
+                implode('|', $ordinal_number) .
                 ')?[ ,\-_\/]+([0-9]{4})/i',
                 $string,
                 $matches
@@ -186,24 +188,24 @@ class DateHelper
             if ($matches) {
                 if (empty($month) && $matches[1]) {
                     $month = array_search(strtolower($matches[1]), $short_month_names);
-                
+
                     if (!$month) {
                         $month = array_search(strtolower($matches[1]), $month_names);
                     }
-                
+
                     $month = $month + 1;
                 }
-                
+
                 if (empty($day) && $matches[2]) {
                     $day = $matches[2];
                 }
-            
+
                 if (empty($year) && $matches[3]) {
                     $year = $matches[3];
                 }
             }
         }
-        
+
         // Match month name:
         if (empty($month)) {
             preg_match('/(' . implode('|', $month_names) . ')/i', $string, $matches_month_word);
@@ -211,7 +213,7 @@ class DateHelper
             if ($matches_month_word && $matches_month_word[1]) {
                 $month = array_search(strtolower($matches_month_word[1]), $month_names);
             }
-        
+
             // Match short month names
             if (empty($month)) {
                 preg_match('/(' . implode('|', $short_month_names) . ')/i', $string, $matches_month_word);
@@ -219,12 +221,12 @@ class DateHelper
                     $month = array_search(strtolower($matches_month_word[1]), $short_month_names);
                 }
             }
-            
+
             if (!empty($month)) {
                 $month = $month + 1;
             }
         }
-        
+
         // Match 5th 1st day:
         if (empty($day)) {
             preg_match('/([0-9]?[0-9])(' . implode('|', $ordinal_number) . ')/', $string, $matches_day);
@@ -232,7 +234,7 @@ class DateHelper
                 $day = $matches_day[1];
             }
         }
-        
+
         // Match Year if not already setted:
         if (empty($year) && !$no_year) {
             preg_match('/[0-9]{4}/', $string, $matches_year);
@@ -252,12 +254,12 @@ class DateHelper
         if (intval($day) < 10) {
             $day = '0' . $day;
         }
-        
+
         // Month leading 0
         if (intval($month) < 10) {
             $month = '0' . $month;
         }
-        
+
         // Check year:
         if (2 == strlen($year) && $year > 20) {
             $year = '19' . $year;
@@ -268,13 +270,13 @@ class DateHelper
         if (empty($year)) {
             $year = $default_year;
         }
-        
+
         $date = array(
             'year'  => $year,
             'month' => $month,
             'day'   => $day
         );
-        
+
         // Return false if nothing found:
         if (!intval($year) || !intval($month) || !intval($day)) {
             return false;

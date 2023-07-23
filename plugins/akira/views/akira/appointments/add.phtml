@@ -1,33 +1,46 @@
 <?php
 /**
- * Page category add template.
+ * Appointment add template.
  *
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 use Kytschi\Tengu\Controllers\Core\FormController;
 use Kytschi\Tengu\Helpers\DateHelper;
 use Kytschi\Tengu\Helpers\UrlHelper;
-
-$path = parse_url($_SERVER['REQUEST_URI']);
-$url = '/' . ltrim(rtrim($path['path'], '/add'), UrlHelper::backend('/'));
-echo $this->partial("common/form/messages");
 ?>
-<form id="form-edit" method="post" action="<?= UrlHelper::backend($url . '/save?from=' . urlencode($url)); ?>" enctype="multipart/form-data">
+<link href="<?= $this->tengu->theme->getCSS('plugins/summernote/summernote-bs4.min.css'); ?>" rel="stylesheet">
+<script src="<?= $this->tengu->theme->getAsset('plugins/summernote/summernote-bs4.min.js'); ?>"></script>
+<?php
+    echo $this->partial("common/form/messages");
+?>
+<form id="form-edit" method="post" action="<?= UrlHelper::backend($url . '/save'); ?>" enctype="multipart/form-data">
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card p-0">
+			<div class="card p-0">
 				<div class="card-body">
 					<button
 						id="btn-save"
 						class="btn btn-blank float-right"
 						type="button"
-						title="Save the category"
+						title="Save the appointment"
 						data-toggle="tooltip"
 						data-trigger="hover"
 						data-dismiss="click"
@@ -43,10 +56,10 @@ echo $this->partial("common/form/messages");
 		                data-html="true"
 		                data-trigger="focus"
 		                data-toggle="popover"
-		                data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/add'); ?>">Yes</a>'
+		                data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/build'); ?>">Yes</a>'
 		                class="btn btn-blank float-right m-0 mr-2">
 		                <div
-		                    title="Start over with a fresh category"
+		                    title="Start over with a fresh appointment"
 		                    data-toggle="tooltip"
 		                    data-trigger="hover"
 		                    data-dismiss="click"
@@ -61,7 +74,7 @@ echo $this->partial("common/form/messages");
 					<a
 						href="<?= UrlHelper::backend($url); ?>"
 						class="btn btn-blank mr-2 text-center"
-						title="Go back to the categories list"
+						title="Go back to the appointments list"
 						data-toggle="tooltip"
 						data-trigger="hover"
 						data-dismiss="click"
@@ -84,32 +97,35 @@ echo $this->partial("common/form/messages");
                 <div class="card-body p-0 pt-4">
                     <div class="d-flex flex-wrap flex-sm-nowrap pl-3 pr-3">
                         <div class="mr-4 mb-4">
-							<div
-								class="preview-img"
-								title="I'm inactive"
-								data-toggle="tooltip"
-								data-trigger="hover"
-								data-dismiss="click"
-								data-placement="bottom">
-	                            <div class="position-relative border">
+                            <div
+                                class="preview-img"
+                                title="I'm inactive"
+                                data-toggle="tooltip"
+                                data-trigger="hover"
+                                data-dismiss="click"
+                                data-placement="bottom">
+                                <div class="position-relative border">
                                     <img 
                                         src="<?= $this->tengu->theme->getAsset('imgs/new-item.png'); ?>" 
-                                        alt="Add an entry">
-								</div>
-	                            <div class="circle border border-white bg-warning"></div>
-							</div>
+                                        alt="Create a appointment item">
+                                    <div
+                                        title="I'm inactive"
+                                        class="position-absolute circle bg-warning"
+                                        style="width: 10px;height: 10px;margin-top: -5px;"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="flex-grow-1 mb-4">
                             <div class="form-group form-check mt-0 mb-4">
-                                <label for="status">Go live</label>
+                                <label for="status">Free slot</label>
                                 <div class="checkbox switcher mt-2">
                                     <label>
                                         <input
                                             id="status"
                                             type="checkbox"
                                             name="status"
-                                            value="<?= FormController::getFormData('status', null, 'active'); ?>"
-                                            <?= FormController::getFormData('status', null, 'active') == 'active' ? ' checked="checked"' : ''; ?>>
+                                            value="<?= FormController::getFormData('status', null, 'free'); ?>"
+                                            <?= FormController::getFormData('status', null, 'free') == 'free' ? ' checked="checked"' : ''; ?>>
                                         <span>
                                             <small class="switcher-on">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
@@ -127,8 +143,8 @@ echo $this->partial("common/form/messages");
                             </div>
                             <div class="form-group mb-4">
                                 <label for="name">
-									Title
-                                    <span class="required">*</span>
+									Label
+									<span class="required">*</span>
 								</label>
                                 <input
                                     id="name"
@@ -140,27 +156,67 @@ echo $this->partial("common/form/messages");
 									required>
                             </div>
                             <div class="form-group mb-4">
-                                <label for="slogan">
-                                    Slogan
+                                <label for="event_on" class="form-label">
+                                    Date & Time<span class="required">*</span>
                                 </label>
                                 <input
-                                    id="slogan"
-                                    name="slogan"
+                                    id="appointment_at"
+                                    name="appointment_at"
                                     type="text"
-                                    class="form-control mt-2"
-                                    aria-describedby="slogan"
-                                    value="<?= FormController::getFormData('slogan'); ?>">
+                                    class="form-control datetimepicker mt-2"
+                                    value="<?= DateHelper::pretty(
+                                        FormController::getFormData('appointment_at'),
+                                        true,
+                                        true,
+                                        'Unknown',
+                                        false
+                                    ); ?>"
+                                    placeholder="Enter the appointment date and time"
+                                    required/>
                             </div>
                             <div class="form-group mb-4">
-                                <label for="summary">Summary</label>
-                                <textarea
-                                    id="summary"
-                                    name="summary"
-                                    type="text"
-                                    class="form-control mt-2"
-                                    rows="4"
-                                    aria-describedby="summary"><?= FormController::getFormData('summary'); ?></textarea>
+                                <label for="recurring" class="form-label">
+                                    Recurring
+                                </label>
+                                <?php
+                                    $selected = FormController::getFormData('recurring', null, 'none');
+                                ?>
+                                <select name="recurring" class="form-control mt-2">
+                                    <option value="none"<?= $selected == 'none' ? ' selected' : ''; ?>>none</option>
+                                    <option value="daily"<?= $selected == 'daily' ? ' selected' : ''; ?>>daily</option>
+                                    <option value="weekly"<?= $selected == 'weekly' ? ' selected' : ''; ?>>weekly</option>
+                                    <option value="monthly"<?= $selected == 'monthly' ? ' selected' : ''; ?>>monthly</option>
+                                    <option value="annually"<?= $selected == 'annually' ? ' selected' : ''; ?>>annually</option>
+                                </select>
                             </div>
+                            <?php
+                            if (FormController::isAdmin()) {
+                                ?>
+                                <div class="form-group mb-4">
+                                    <label for="user_id">
+                                        Belongs to<span class="required">*</span>
+                                    </label>
+                                    <select
+                                        name="user_id"
+                                        class="form-control mt-2">
+                                        <?php
+                                            $selected = FormController::getFormData('user_id');
+                                        ?>
+                                            <option value="<?= FormController::getUserId(); ?>">Me</option>
+                                            <?php
+                                        foreach ($users as $user) {
+                                            ?>
+                                            <option
+                                                value="<?= $user->id; ?>"
+                                                <?= $selected == $user->id ? ' selected' : ''; ?>><?= $user->full_name; ?></option>
+                                            <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <?php
+                            }
+                            ?>
                         </div>
                     </div>
                     <ul class="nav p-0 m-0">
@@ -170,25 +226,7 @@ echo $this->partial("common/form/messages");
                                 data-toggle="tab"
                                 role="tab"
                                 href="#overview-tab">
-                                Overview
-                            </a>
-                        </li>
-                        <li class="nav-item mt-2">
-                            <a
-                                class="nav-link <?= UrlHelper::activeTab('template-tab', 'overview-tab'); ?>"
-                                data-toggle="tab"
-                                role="tab"
-                                href="#template-tab">
-                                Look &amp; feel <span class="required">*</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mt-2">
-                            <a
-                                class="nav-link <?= UrlHelper::activeTab('seo-tab', 'overview-tab'); ?>"
-                                data-toggle="tab"
-                                role="tab"
-                                href="#seo-tab">
-                                SEO
+                                Details
                             </a>
                         </li>
                     </ul>
@@ -205,29 +243,11 @@ echo $this->partial("common/form/messages");
                             <?= $this->partial("common/tags"); ?>
                         </div>
                         <div class="col-12">
-                            <?= $this->partial('website/pages/sections/content'); ?>
+                            <?= $this->partial(
+                                'website/pages/sections/content'
+                            ); ?>
                         </div>
                     </div>
-                </div>
-                <div
-                    class="tab-pane <?= UrlHelper::activeTab('template-tab', 'overview-tab'); ?>"
-                    id="template-tab"
-                    role="tabpanel"
-                    aria-labelledby="template-tab">
-                    <?= $this->partial("website/templates/widget", ['data' => null]); ?>
-                </div>
-                <div
-                    class="tab-pane <?= UrlHelper::activeTab('seo-tab', 'overview-tab'); ?>"
-                    id="seo-tab"
-                    role="tabpanel"
-                    aria-labelledby="seo-tab">
-                    <?= $this->partial(
-						"website/pages/sections/seo",
-						[
-							'data' => null,
-							'add' => true
-						]
-					); ?>
                 </div>
             </div>
         </div>
