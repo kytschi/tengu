@@ -427,4 +427,23 @@ class DateHelper
             return 'Failed to render the date';
         }
     }
+
+    public static function timeOnly($datetime, $seconds = false, $unknown = 'Unknown')
+    {
+        try {
+            if (empty($datetime)) {
+                if ($today) {
+                    return $today ? date($time ? ($seconds ? 'H:i:s' : 'H:i') : 'd/m/Y') : $unknown;
+                }
+                return $unknown;
+            }
+
+            if (strtolower($datetime) == 'unknown') {
+                return $unknown;
+            }
+            return date(($seconds ? 'H:i:s' : 'H:i'), strtotime((string) $datetime));
+        } catch (\Exception $err) {
+            return 'Failed to render the date';
+        }
+    }
 }

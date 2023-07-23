@@ -33,15 +33,12 @@ use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Exceptions\RequestException;
 use Kytschi\Tengu\Exceptions\SaveException;
 use Kytschi\Tengu\Exceptions\ValidationException;
+use Kytschi\Tengu\Helpers\DateHelper;
 use Kytschi\Tengu\Helpers\UrlHelper;
-use Kytschi\Tengu\Models\Core\Files as ModelFile;
 use Kytschi\Tengu\Models\Core\Users;
-use Kytschi\Tengu\Traits\Core\Files;
 use Kytschi\Tengu\Traits\Core\Form;
 use Kytschi\Tengu\Traits\Core\Logs;
 use Kytschi\Tengu\Traits\Core\Notes;
-use Kytschi\Tengu\Traits\Core\Pagination;
-use Kytschi\Tengu\Traits\Core\Queue;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Kytschi\Tengu\Traits\Core\User;
 use Phalcon\Paginator\Adapter\QueryBuilder;
@@ -50,12 +47,9 @@ use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class AppointmentsController extends ControllerBase
 {
-    use Files;
     use Form;
     use Logs;
     use Notes;
-    use Pagination;
-    use Queue;
     use Tags;
     use User;
 
@@ -222,67 +216,39 @@ class AppointmentsController extends ControllerBase
 
         $this->clearFormData();
         $this->secure($this->access);
-        $this->savePagination();
         $this->setFilters();
 
-        $this->setIndexDefaults(
-            [
-                'name',
-                'created_by',
-                'status'
-            ],
-            'name'
-        );
-
-        $builder = $this
-            ->modelsManager
-            ->createBuilder()
-            ->from(Appointments::class)
-            ->orderBy($this->orderBy . ' ' . $this->orderDir);
-
-        $params = [];
-
-        if (!empty($this->search)) {
-            $params = [
-                'name' => '%' . $this->search . '%'
-            ];
-
-            $builder
-                ->andWhere('name LIKE :name:');
+        if (!empty($_GET['date'])) {
+            $date = $_GET['date'];
+        } else {
+            $date = date('Y-m');
         }
 
-        if (!empty($this->filters)) {
-            $iLoop = 1;
-            foreach ($this->filters as $filter => $value) {
-                if (empty($value)) {
-                    continue;
-                }
+        $results = Appointments::find([
+            'conditions' => 'appointment_at BETWEEN :start: AND :end:',
+            'bind' => [
+                'start' => $date . '-01',
+                'end' => $date . '-31'
+            ]
+        ]);
 
-                switch ($filter) {
-                    case 'status':
-                        $builder->andWhere('status LIKE :status_' . $iLoop . ':');
-                        $params['status_' . $iLoop] = $value;
-                        $iLoop++;
-                        break;
+        $data = [];
+        if ($results) {
+            foreach ($results as $result) {
+                $day = intval(date('d', strtotime($result->appointment_at)));
+                if (empty($data[$day])) {
+                    $data[$day] = [];
                 }
+                $data[$day][] = $result;
             }
         }
-
-        $builder->setBindParams($params);
-
-        $paginator = new QueryBuilder(
-            [
-                "builder" => $builder,
-                "limit" => $this->perPage,
-                "page" => $this->page,
-            ]
-        );
 
         return $this->view->partial(
             'akira/appointments/index',
             [
+                'date' => $date,
                 'url' => $this->global_url,
-                'data' => $paginator->paginate(),
+                'data' => $data,
                 'stats' => $this->stats()
             ]
         );
@@ -427,6 +393,7 @@ class AppointmentsController extends ControllerBase
         $model->name = $_POST['name'];
         $model->user_id = !empty($_POST['user_id']) ? $_POST['user_id'] : self::getUserId();
         $model->status = isset($_POST['status']) ? 'free' : 'booked';
+        $model->appointment_at = DateHelper::sql($_POST['appointment_at']);
         $model->recurring = isset($_POST['recurring']) ?
             ($_POST['recurring'] == 'none' ? null : $_POST['recurring']) :
             null;
@@ -483,11 +450,9 @@ class AppointmentsController extends ControllerBase
             $this->validate();
 
             $model = $this->setData($model);
-            $this->checkURL($model);
-
             if ($model->update() === false) {
                 throw new SaveException(
-                    'Failed to update the ' . str_replace('-', ' ', $this->resource),
+                    'Failed to update the appointment',
                     $model->getMessages()
                 );
             }
@@ -532,6 +497,15 @@ class AppointmentsController extends ControllerBase
             new PresenceOf(
                 [
                     'message' => 'The name is required',
+                ]
+            )
+        );
+
+        $validation->add(
+            'appointment_at',
+            new PresenceOf(
+                [
+                    'message' => 'The date & time at is required',
                 ]
             )
         );

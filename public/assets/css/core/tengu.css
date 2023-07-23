@@ -1094,6 +1094,11 @@ iframe {
   padding-top: 12px;
 }
 
+.pagination svg {
+  width: 16px;
+  height: 16px;
+}
+
 .page-link {
 	position: relative;
 	display: block;
@@ -1703,10 +1708,28 @@ select.form-control {
 }
 .calendar-event {
   padding: 10px;
-  background-color: var(--bg-darker-blue);
-  color: var(--font-white) !important;
   margin-top: 5px;
   margin-bottom: 5px;
   font-weight: normal;
   cursor: pointer;
+}
+
+.calendar-event.status-free {
+  background-color: var(--bg-blue);
+  color: var(--font-white);
+}
+
+.calendar-event.status-booked {
+  background-color: var(--bg-green);
+  color: var(--font-white);
+}
+
+.calendar-event.status-cancelled {
+  background-color: var(--bg-yellow);
+  color: var(--font-grey);
+}
+
+.calendar-event.status-deleted {
+  background-color: var(--bg-red);
+  color: var(--font-white);
 }

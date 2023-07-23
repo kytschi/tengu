@@ -141,19 +141,12 @@ echo $this->partial("common/form/messages");
 		</div>
 	</div>
 </div>
-<?php
-if (isset($_GET["date"])) {
-    $date = $_GET["date"];
-} else {
-    $date = date("Y-m");
-}
-?>
 <div class="card">
     <div class="row">
         <div id="calendar-month">
             <ul class="pagination">
                 <li class="page-item previous">
-                    <a href="<?= $url; ?>?date=<?= date("Y-m", strtotime("-1 months", strtotime($date . "-01")));?>#page-body" class="page-link">
+                    <a href="<?= UrlHelper::backend($url); ?>?date=<?= date("Y-m", strtotime("-1 months", strtotime($date . "-01")));?>#page-body" class="page-link">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
                         </svg>
@@ -165,7 +158,9 @@ if (isset($_GET["date"])) {
                     </p>
                 </li>
                 <li class="page-item next">
-                    <a href="<?= $url; ?>?date=<?= date("Y-m", strtotime("+1 months", strtotime($date . "-01")));?>#page-body" class="page-link">
+                    <a  
+                        href="<?= UrlHelper::backend($url); ?>?date=<?= date("Y-m", strtotime("+1 months", strtotime($date . "-01")));?>#page-body"
+                        class="page-link text-right">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
                         </svg>
@@ -218,25 +213,16 @@ if (isset($_GET["date"])) {
         ?>">
         <div class="calendar-date"><?= $iLoop; ?></div>
         <?php
-        /*$data = $DUMBDOG->appointments(
-            [
-                "where" => [
-                    'query' => "on_date BETWEEN CONCAT(:on_date, ' 00:00') AND 
-                                CONCAT(:on_date, ' 23:59') ORDER BY on_date",
-                    'data' =>
-                    [
-                        "on_date" => date($date . "-" . $iLoop)
-                    ]
-                ]
-            ]
-        );*/
-        $data = null;
-        if ($data) {
+        if (!empty($data[$iLoop])) {
+            foreach ($data[$iLoop] as $result) {
             ?>
-            <div class="calendar-event" data-date="<?= $date . "-" . $iLoop; ?>">
-                Available slots
-            </div>
+            <a  href="<?= UrlHelper::backend($url) . '/edit/' . $result->id; ?>"
+                class="calendar-event status-<?= $result->status; ?>">
+                <?= $result->name; ?><br/>
+                <?= DateHelper::timeOnly($result->appointment_at); ?><br/>
+            </a>
             <?php
+            }
         }
         ?>
         </div>
@@ -246,13 +232,4 @@ if (isset($_GET["date"])) {
     ?>
     </div>
 </div>
-<?php
-    echo $this->partial(
-        'common/lists/pagination',
-        [
-            'data' => $data,
-            'url' => UrlHelper::backend($url)
-        ]
-    );
-?>
 <script src="<?= $this->tengu->theme->getAsset('js/core/list.js'); ?>"></script>
