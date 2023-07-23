@@ -56,8 +56,7 @@ class EventsController extends PagesController
     {
         $this->subValidate();
 
-        $model->event_on = DateHelper::sql($_POST['event_on']);
-        $model->event_length = $_POST['event_length'];
+        $model = $this->setSubData($model);
 
         if ($model->update() === false) {
             throw new SaveException(
@@ -65,6 +64,14 @@ class EventsController extends PagesController
                 $model->getMessages()
             );
         }
+    }
+
+    private function setSubData($model)
+    {
+        $model->event_on = DateHelper::sql($_POST['event_on']);
+        $model->event_length = $_POST['event_length'];
+        $model->event_location = !empty($_POST['event_location']) ? $_POST['event_location'] : null;
+        return $model;
     }
 
     public function subValidate()
@@ -105,8 +112,7 @@ class EventsController extends PagesController
     {
         $this->subValidate();
 
-        $model->event_on = DateHelper::sql($_POST['event_on']);
-        $model->event_length = $_POST['event_length'];
+        $model = $this->setSubData($model);
 
         if ($model->update() === false) {
             throw new SaveException(

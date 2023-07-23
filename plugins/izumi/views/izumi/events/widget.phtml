@@ -33,7 +33,7 @@ use Kytschi\Tengu\Helpers\DateHelper;
             </div>
             <div class="card-body p-3 pt-0">
                 <div class="form-group mb-4">
-                    <label for="url" class="form-label">
+                    <label for="event_on" class="form-label">
                         When it's on<span class="required">*</span>
                     </label>
                     <input
@@ -52,7 +52,7 @@ use Kytschi\Tengu\Helpers\DateHelper;
                         required/>
                 </div>
                 <div class="form-group mb-4">
-                    <label for="url" class="form-label">
+                    <label for="event_length" class="form-label">
                         How long for<span class="required">*</span>
                     </label>
                     <?php
@@ -68,6 +68,25 @@ use Kytschi\Tengu\Helpers\DateHelper;
                         <option value="monthly"<?= $selected == 'monthly' ? ' selected' : ''; ?>>monthly</option>
                         <option value="annually"<?= $selected == 'annually' ? ' selected' : ''; ?>>annually</option>
                     </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header mb-2">
+				<span class="card-title">Location</span>
+            </div>
+            <div class="card-body p-3 pt-0">
+                <div class="form-group mb-4">
+                    <label for="event_location" class="form-label">
+                        Where the event is held
+                    </label>
+                    <textarea
+                        id="event_location"
+                        name="event_location"
+                        rows="9"
+                        class="form-control mt-2"><?= FormController::getFormData('event_location', $data); ?></textarea>
                 </div>
             </div>
         </div>
