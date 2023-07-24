@@ -2,12 +2,24 @@
 /**
  * Page edit template.
  *
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 use Kytschi\Tengu\Controllers\Core\FormController;
@@ -16,55 +28,71 @@ use Kytschi\Tengu\Helpers\StringHelper;
 use Kytschi\Tengu\Helpers\UrlHelper;
 
 echo $this->partial("common/form/messages");
+$back_url = $url;
+if (!empty($_GET['back-url'])) {
+    $back_url = $_GET['back-url'];
+}
 ?>
 <script src="<?= $this->tengu->theme->getAsset('js/plugins/chartjs.min.js'); ?>"></script>
 <script src="<?= $this->tengu->theme->getAsset('js/core/edit.js'); ?>"></script>
-<form id="form-edit" method="post" action="<?= UrlHelper::backend($url . '/update/' . $data->id, 'here'); ?>" enctype="multipart/form-data">
-    <div class="row mb-3">
-        <div class="col-3">
-            <div class="card bg-primary">
-                <div class="card-body">
-                    <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M4 16s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H4Zm4-5.95a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
-                        <path d="M2 1a2 2 0 0 0-2 2v9.5A1.5 1.5 0 0 0 1.5 14h.653a5.373 5.373 0 0 1 1.066-2H1V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9h-2.219c.554.654.89 1.373 1.066 2h.653a1.5 1.5 0 0 0 1.5-1.5V3a2 2 0 0 0-2-2H2Z"/>
-                    </svg>
-                    <div class="h3 text-white mt-3 mb-1">
-                        <strong><?= $data->stats['total']; ?></strong> visits
+<form 
+    id="form-edit" 
+    method="post" 
+    action="<?= UrlHelper::backend($url . '/update/' . $data->id, 'here'); ?>" 
+    enctype="multipart/form-data">
+    <?php
+    if ($resource == 'product') {
+        echo $this->partial("phoenix/products/summary");
+    } else {
+        ?>
+        <div class="row mb-3">
+            <div class="col-3">
+                <div class="card bg-primary">
+                    <div class="card-body">
+                        <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 16s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H4Zm4-5.95a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                            <path d="M2 1a2 2 0 0 0-2 2v9.5A1.5 1.5 0 0 0 1.5 14h.653a5.373 5.373 0 0 1 1.066-2H1V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9h-2.219c.554.654.89 1.373 1.066 2h.653a1.5 1.5 0 0 0 1.5-1.5V3a2 2 0 0 0-2-2H2Z"/>
+                        </svg>
+                        <div class="h3 text-white mt-3 mb-1">
+                            <strong><?= $data->stats['total']; ?></strong> visits
+                        </div>
+                        <div class="text-white">
+                            Lookie loos
+                        </div>
                     </div>
-                    <div class="text-white">
-                        Lookie loos
+                </div>
+            </div>
+            <div class="col-3">
+                <div
+                    class="card <?= $data->spinnable ? 'bg-info' : 'bg-warning'; ?>"
+                    data-toggle="tooltip"
+                    data-dismiss="hover"
+                    data-placement="top"
+                    title="Spin support <?= $data->spinnable ? 'enabled' : 'disabled'; ?>">
+                    <div class="card-body">
+                        <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 9.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                            <path d="M9.5 2c-.9 0-1.75.216-2.501.6A5 5 0 0 1 13 7.5a6.5 6.5 0 1 1-13 0 .5.5 0 0 1 1 0 5.5 5.5 0 0 0 8.001 4.9A5 5 0 0 1 3 7.5a6.5 6.5 0 0 1 13 0 .5.5 0 0 1-1 0A5.5 5.5 0 0 0 9.5 2zM8 3.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+                        </svg>
+                        <div class="h3 text-white mt-2 mb-2">
+                            <strong><?= $data->spins; ?></strong> content spins
+                        </div>
+                        <div class="text-white">
+                            Spins
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-		<div class="col-3">
-            <div
-				class="card <?= $data->spinnable ? 'bg-info' : 'bg-warning'; ?>"
-				data-toggle="tooltip"
-				data-dismiss="hover"
-				data-placement="top"
-				title="Spin support <?= $data->spinnable ? 'enabled' : 'disabled'; ?>">
-                <div class="card-body">
-                    <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 9.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
-                        <path d="M9.5 2c-.9 0-1.75.216-2.501.6A5 5 0 0 1 13 7.5a6.5 6.5 0 1 1-13 0 .5.5 0 0 1 1 0 5.5 5.5 0 0 0 8.001 4.9A5 5 0 0 1 3 7.5a6.5 6.5 0 0 1 13 0 .5.5 0 0 1-1 0A5.5 5.5 0 0 0 9.5 2zM8 3.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
-                    </svg>
-                    <div class="h3 text-white mt-2 mb-2">
-                        <strong><?= $data->spins; ?></strong> content spins
-					</div>
-                    <div class="text-white">
-                        Spins
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        <?php
+    }
+    ?>
     <div class="row mb-3">
         <div class="col-12">
             <div class="card p-0">
                 <div class="card-body">
                     <a
-                        href="<?= UrlHelper::backend($url); ?>"
+                        href="<?= UrlHelper::backend($back_url); ?>"
                         class="btn btn-blank mr-2 text-center"
                         title="Go back to the <?= str_replace('-', ' ', $data->type); ?>s list"
                         data-toggle="tooltip"
@@ -90,6 +118,25 @@ echo $this->partial("common/form/messages");
                         </svg><br/>
                         save
                     </button>
+                    <?php
+                    if ($resource == 'product') {
+                        ?>
+                        <a
+                            href="<?= UrlHelper::backend(($this->di->getConfig())->urls->sales . '/basket/add/' . $data->id, 'here'); ?>"
+                            class="btn btn-blank float-right"
+                            title="Add to the basket"
+                            data-toggle="tooltip"
+                            data-trigger="hover"
+                            data-dismiss="click"
+                            data-placement="top">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6h1.717L5.07 1.243a.5.5 0 0 1 .686-.172zM3.394 15l-1.48-6h-.97l1.525 6.426a.75.75 0 0 0 .729.574h9.606a.75.75 0 0 0 .73-.574L15.056 9h-.972l-1.479 6h-9.21z"/>
+                            </svg><br/>
+                            purchase
+                        </a>
+                        <?php
+                    }
+                    ?>
                     <a
                         href="<?= $data->url; ?>"
                         target="_blank"
@@ -105,7 +152,7 @@ echo $this->partial("common/form/messages");
                         view
                     </a>
                     <a
-                        href="<?= UrlHelper::backend($url . '/create'); ?>"
+                        href="<?= UrlHelper::backend($add_url); ?>"
                         class="btn btn-blank float-right"
                         title="Build a new <?= str_replace('-', ' ', $data->type); ?>"
                         data-toggle="tooltip"
@@ -271,6 +318,32 @@ echo $this->partial("common/form/messages");
                                     rows="4"
                                     aria-describedby="summary"><?= FormController::getFormData('summary', $data); ?></textarea>
                             </div>
+                            <div class="form-group mb-4">
+                                <label for="summary">Parent</label>
+                                <select name="parent_id" class="form-control">
+                                    <?php
+                                    $selected = FormController::getFormData('parent_id', $data);
+                                    if ($parents->count()) {
+                                        ?>
+                                        <option value="">No parent</option>
+                                        <?php
+                                        foreach ($parents as $parent) {
+                                            ?>
+                                            <option 
+                                                value="<?= $parent->id; ?>"
+                                                <?= $selected == $parent->id ? ' selected' : ''; ?>>
+                                                <?= $parent->name; ?>
+                                            </option>
+                                            <?php
+                                        }
+                                    } else {
+                                        ?>
+                                        <option value="0" disabled>No parents available</option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <ul class="nav p-0 m-0">
@@ -293,6 +366,21 @@ echo $this->partial("common/form/messages");
                                     role="tab"
                                     href="#event-tab">
                                     Event <span class="required">*</span>
+                                </a>
+                            </li>
+                            <?php
+                        }
+                        ?>
+                        <?php
+                        if ($resource == 'product') {
+                            ?>
+                            <li class="nav-item mt-2">
+                                <a
+                                    class="nav-link <?= UrlHelper::activeTab('product-tab', 'content-tab'); ?>"
+                                    data-toggle="tab"
+                                    role="tab"
+                                    href="#product-tab">
+                                    Product <span class="required">*</span>
                                 </a>
                             </li>
                             <?php
@@ -467,7 +555,7 @@ echo $this->partial("common/form/messages");
                                 [
                                     'data' => $data->categories,
                                     'categories' => $categories,
-                                    'url' => $url . '/categories',
+                                    'url' => $category_url,
                                     'back_url' => $url . '/edit/' . $data->id
                                 ]
                             ); ?>
@@ -505,6 +593,67 @@ echo $this->partial("common/form/messages");
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <span class="card-title">Children</span>
+                                </div>
+                                <div class="card-body pl-0 pr-0">
+                                    <div class="form-group">
+                                    <?php
+                                    if ($data->children) {
+                                        ?>
+                                        <table class="table tablesorter">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>URL</th>
+                                                    <th width="90px">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                foreach ($data->children as $row) {
+                                                    switch ($row->status) {
+                                                        case 'live':
+                                                            $bg_colour = 'badge-success';
+                                                            break;
+                                                        default:
+                                                            $bg_colour = 'badge-warning';
+                                                            break;
+                                                    }
+                                                    ?>
+                                                    <tr>
+                                                        <td>
+                                                            <?= $row->name; ?>
+                                                        </td>
+                                                        <td>
+                                                            <a href="<?= $row->url ?>"><?= $row->url ?></a>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge <?= $bg_colour; ?>">
+                                                                <?= $row->status ?>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </tbody>
+                                        </table>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <p class="h6 pt-3 pb-3 m-0">No children</p>
+                                        <?php
+                                    }
+                                    ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
                             <div class="card">
                                 <div class="card-header">
                                     <span class="card-title">Marketing Campaign</span>
@@ -634,7 +783,20 @@ echo $this->partial("common/form/messages");
                         id="event-tab"
                         role="tabpanel"
                         aria-labelledby="event-tab">
-                        <?= $this->partial("izumi/events/widget", ['data' => $data]); ?>
+                        <?= $this->partial("izumi/events/widget"); ?>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if ($resource == 'product') {
+                    ?>
+                    <div
+                        class="tab-pane <?= UrlHelper::activeTab('product-tab', 'content-tab'); ?>"
+                        id="product-tab"
+                        role="tabpanel"
+                        aria-labelledby="product-tab">
+                        <?= $this->partial("phoenix/products/widget"); ?>
                     </div>
                     <?php
                 }
@@ -644,7 +806,7 @@ echo $this->partial("common/form/messages");
                     id="template-tab"
                     role="tabpanel"
                     aria-labelledby="template-tab">
-                    <?= $this->partial("website/templates/widget", ['data' => $data]); ?>
+                    <?= $this->partial("website/templates/widget"); ?>
                 </div>
                 <div
                     class="tab-pane <?= UrlHelper::activeTab('seo-tab', 'content-tab'); ?>"
@@ -659,7 +821,6 @@ echo $this->partial("common/form/messages");
                     <?= $this->partial(
 						"website/pages/sections/seo",
 						[
-							'data' => $data,
 							'add' => false,
 							'url' => $url . '/edit/' . $data->id
 						]
@@ -673,7 +834,6 @@ echo $this->partial("common/form/messages");
                     <?= $this->partial(
 						"common/media",
 						[
-							'data' => $data,
 							'url' => $url . '/edit/' . $data->id
 						]
 					); ?>
@@ -716,7 +876,6 @@ echo $this->partial("common/form/messages");
                         <?= $this->partial(
                             "makabe/personas/widget",
                             [
-                                'data' => $data,
                                 'url' => $url . '/edit/' . $data->id
                             ]
                         ); ?>
@@ -729,7 +888,6 @@ echo $this->partial("common/form/messages");
                         <?= $this->partial(
                             "makabe/spinner/widget",
                             [
-                                'data' => $data,
                                 'url' => $url
                             ]); ?>
                     </div>

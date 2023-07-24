@@ -48,7 +48,7 @@ trait Files
     use Security;
     use Tags;
     use User;
-    
+
     public function addCarouselImages($resource_id, $user_id)
     {
         $this
@@ -96,25 +96,26 @@ trait Files
                         WHERE
                             page_id=:page_id_2 AND file_id=:file_id_2
                     )',
-                    [
-                        ':id' => (new Random())->uuid(),
-                        ':page_id' => $resource_id,
-                        ':file_id' => $file_id,
-                        ':page_id_2' => $resource_id,
-                        ':file_id_2' => $file_id,
-                        ':resource' => 'carousel',
-                        ':created_at' => date('Y-m-d H:i:s'),
-                        ':created_by' => $user_id,
-                        ':updated_at' => date('Y-m-d H:i:s'),
-                        ':updated_by' => $user_id
-                    ]
-                );
+                [
+                    ':id' => (new Random())->uuid(),
+                    ':page_id' => $resource_id,
+                    ':file_id' => $file_id,
+                    ':page_id_2' => $resource_id,
+                    ':file_id_2' => $file_id,
+                    ':resource' => 'carousel',
+                    ':created_at' => date('Y-m-d H:i:s'),
+                    ':created_by' => $user_id,
+                    ':updated_at' => date('Y-m-d H:i:s'),
+                    ':updated_by' => $user_id
+                ]
+            );
 
-                $this->db->query('UPDATE page_files 
-                    SET 
-                        deleted_at=NULL, deleted_by=NULL 
-                    WHERE 
-                        page_id=:page_id AND file_id=:file_id',
+            $this->db->query(
+                'UPDATE page_files 
+                SET 
+                    deleted_at=NULL, deleted_by=NULL 
+                WHERE 
+                    page_id=:page_id AND file_id=:file_id',
                 [
                     ':page_id' => $resource_id,
                     ':file_id' => $file_id
@@ -254,7 +255,7 @@ trait Files
             ) {
                 return;
             }
-            
+
             if (!is_array($_FILES['file']['name'])) {
                 $this->addFile(
                     $resource_id,
@@ -290,13 +291,13 @@ trait Files
     public function addImage($resource_id)
     {
         $file = null;
-        
+
         if (!empty($_FILES['image']['name'])) {
             $label = $_FILES['image']['name'];
             if (!empty($_POST['image_label'])) {
                 $label = $_POST['image_label'];
             }
-            
+
             $file = $this->addFile(
                 $resource_id,
                 $_FILES['image'],
@@ -329,7 +330,10 @@ trait Files
 
             $messages = $validation->validate($_POST);
             if (count($messages)) {
-                throw new ValidationException('Form validation failed, please double check the required fields', $messages);
+                throw new ValidationException(
+                    'Form validation failed, please double check the required fields',
+                    $messages
+                );
             }
 
             $obj = new \stdClass();
@@ -375,7 +379,7 @@ trait Files
         $filename = 'thumb-' . $model->filename;
         list($width, $height) = getimagesize($file['tmp_name']);
         $desired_width = 400;
-        
+
         switch ($file['type']) {
             case 'image/jpeg':
                 $upload = imagecreatefromjpeg($file['tmp_name']);
@@ -416,7 +420,7 @@ trait Files
         header('Content-Disposition: attachment; filename=' . $model->filename);
         header('Content-Transfer-Encoding: binary');
         header('Connection: Keep-Alive');
-        
+
         $this->outputFile($model);
 
         (new FileDownloadHistory([

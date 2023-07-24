@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Menu controller.
+ * Page categories controller.
  *
  * @package     Kytschi\Tengu\Controllers\Website\PageCategoriesController
  * @copyright   2023 Mike Welsh <mike@kytschi.com>
@@ -29,19 +29,11 @@ declare(strict_types=1);
 namespace Kytschi\Tengu\Controllers\Website;
 
 use Kytschi\Tengu\Controllers\Website\PagesController;
-use Kytschi\Tengu\Exceptions\RequestException;
 use Kytschi\Tengu\Exceptions\SaveException;
 use Kytschi\Tengu\Exceptions\ValidationException;
 use Kytschi\Tengu\Helpers\UrlHelper;
 use Kytschi\Tengu\Models\Website\PageCategories;
 use Kytschi\Tengu\Models\Website\Pages;
-use Kytschi\Tengu\Traits\Core\Files;
-use Kytschi\Tengu\Traits\Core\Form;
-use Kytschi\Tengu\Traits\Core\Logs;
-use Kytschi\Tengu\Traits\Core\Pagination;
-use Kytschi\Tengu\Traits\Core\Queue;
-use Kytschi\Tengu\Traits\Core\Tags;
-use Kytschi\Tengu\Traits\Website\OldUrls;
 use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Encryption\Security\Random;
 use Phalcon\Filter\Validation;
@@ -49,44 +41,25 @@ use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class PageCategoriesController extends PagesController
 {
-    use Files;
-    use Form;
-    use Logs;
-    use OldUrls;
-    use Pagination;
-    use Queue;
-    use Tags;
-
     public $access = [
         'administrator',
         'super-user'
     ];
 
     public $global_url = '/page-categories';
+    public $global_add_url = '';
+
     public $resource = 'page-category';
 
     public function initialize()
     {
         $this->global_url = ($this->di->getConfig())->urls->cms . $this->global_url;
+        $this->global_add_url = $this->global_url . '/add';
     }
 
-    public function addAction($template = '')
+    public function addAction($title = 'Add a category', $template = 'website/pages/add')
     {
-        $this->secure($this->access);
-        $this->setPageTitle('Add a category');
-
-        if (!$template) {
-            $this->setResource($this->dispatcher->getParam('type'));
-        }
-
-        return $this->view->partial(
-            'website/page_categories/add',
-            [
-                'statuses' => $this->defaultStatuses(),
-                'templates' => PagesController::getTemplates(),
-                'type' => $this->resource
-            ]
-        );
+        parent::addAction($title, $template);
     }
 
     public function addCategories($page_id, $user_id)
@@ -108,13 +81,14 @@ class PageCategoriesController extends PagesController
         }
 
         $table = (new PageCategories())->getSource();
-        
+
         foreach ($_POST['category_id'] as $key => $id) {
             if (empty($id)) {
                 continue;
             }
 
-            $this->db->query('INSERT INTO ' . $table . ' 
+            $this->db->query(
+                'INSERT INTO ' . $table . ' 
                 (id, category_id, page_id, created_at, created_by, updated_at, updated_by)
                 SELECT
                     :id_' . $key . ',
@@ -130,18 +104,20 @@ class PageCategoriesController extends PagesController
                     FROM ' . $table . '
                     WHERE page_id=:page_id_2 AND category_id=:category_id_' . $key . '_2 
                 )',
-            [
-                ':id_' . $key => (new Random())->uuid(),
-                ':category_id_' . $key => $id,
-                ':category_id_' . $key . '_2' => $id,
-                ':page_id' => $page_id,
-                ':page_id_2' => $page_id,
-                ':created_at' => date('Y-m-d H:i:s'),
-                ':created_by' => $user_id,
-                ':updated_at' => date('Y-m-d H:i:s'),
-                ':updated_by' => $user_id
-            ]);
-            $this->db->query('UPDATE ' . $table . '
+                [
+                    ':id_' . $key => (new Random())->uuid(),
+                    ':category_id_' . $key => $id,
+                    ':category_id_' . $key . '_2' => $id,
+                    ':page_id' => $page_id,
+                    ':page_id_2' => $page_id,
+                    ':created_at' => date('Y-m-d H:i:s'),
+                    ':created_by' => $user_id,
+                    ':updated_at' => date('Y-m-d H:i:s'),
+                    ':updated_by' => $user_id
+                ]
+            );
+            $this->db->query(
+                'UPDATE ' . $table . '
                 SET deleted_at=NULL, deleted_by=NULL 
                 WHERE page_id=:page_id AND category_id=:category_id_' . $key,
                 [
@@ -152,74 +128,40 @@ class PageCategoriesController extends PagesController
         }
     }
 
-    public static function all($type = '')
+    public static function all($type = '', $exclude = '')
     {
+        $binds = [];
         $query = 'deleted_at IS NULL AND status = "active"';
         if ($type) {
-            $query .= ' AND type="' . $type . '"';
+            $query .= ' AND type=:type:';
+            $binds['type'] = $type;
         }
-        
+
+        if ($exclude) {
+            $query .= ' AND id!=:id:';
+            $binds['id'] = $exclude;
+        }
+
         return (new Pages())->find([
             'conditions' => $query,
+            'bind' => $binds,
             'order' => 'sort ASC'
         ]);
     }
 
-    public function editAction($id, $template = '')
+    public function editAction($id, $title = 'Edit the category', $template = 'website/pages/edit')
     {
-        $this->secure($this->access);
-
-        if (!$template) {
-            $this->setResource($this->dispatcher->getParam('type'));
-        }
-
-        $this->setPageTitle('Edit the category');
-
-        $model = (new Pages())->findFirst([
-            'conditions' => 'id = :id:',
-            'bind' => [
-                'id' => $this->dispatcher->getParam('id')
-            ]
-        ]);
-
-        if (empty($model)) {
-            return $this->notFound();
-        }
-
-        return $this->view->partial(
-            'website/page_categories/edit',
-            [
-                'data' => $model,
-                'statuses' => $this->defaultStatuses(),
-                'templates' => PagesController::getTemplates()
-            ]
-        );
+        parent::editAction($id, $title, $template);
     }
 
-    public function indexAction($template = '')
+    public function indexAction($title = 'Our categories', $template = 'website/page_categories/index')
     {
         $this->clearFormData();
         $this->secure($this->access);
         $this->savePagination();
         $this->setFilters();
 
-        if ($template) {
-            $this->resource = $template;
-            switch ($template) {
-                case 'blog-posts':
-                    $title = 'Blog post categories';
-                    break;
-                case 'portfolio':
-                    $title = 'Portfolio categories';
-                    break;
-                default:
-                    $title = 'Categories';
-                    break;
-            }
-
-            $this->setResource($this->dispatcher->getParam('type'));
-            $this->setPageTitle($title);
-        }
+        $this->setPageTitle(str_replace('-', ' ', strtolower($this->resource)) . ' categories');
 
         $params = [
             'type' => $this->resource
@@ -234,7 +176,6 @@ class PageCategoriesController extends PagesController
 
         if (!empty($this->search)) {
             $params['name'] = '%' . $this->search . '%';
-
             $builder->andWhere('name LIKE :name:');
         }
 
@@ -249,7 +190,7 @@ class PageCategoriesController extends PagesController
         );
 
         return $this->view->partial(
-            'website/page_categories/index',
+            $template,
             [
                 'data' => $paginator->paginate(),
                 'stats' => $this->stats()
@@ -259,10 +200,6 @@ class PageCategoriesController extends PagesController
 
     public function saveAction($ignore = false)
     {
-        if (!$ignore || is_string($ignore)) {
-            $this->setResource($this->dispatcher->getParam('type'));
-        }
-
         parent::saveAction($ignore);
     }
 
@@ -284,23 +221,6 @@ class PageCategoriesController extends PagesController
                 'Failed to update the category',
                 $model->getMessages()
             );
-        }
-    }
-
-    private function setResource($type)
-    {
-        switch ($type) {
-            case 'blog-posts':
-                $this->resource = 'blog-post-category';
-                $this->global_url = ($this->di->getConfig())->urls->cms . '/blog-posts/categories';
-                break;
-            case 'portfolio':
-                $this->resource = 'portfolio-category';
-                $this->global_url = ($this->di->getConfig())->urls->cms . '/portfolio/categories';
-                break;
-            default:
-                $this->resource = 'page-category';
-                break;
         }
     }
 
@@ -351,10 +271,6 @@ class PageCategoriesController extends PagesController
 
     public function updateAction($ignore = false)
     {
-        if (!$ignore || is_string($ignore)) {
-            $this->setResource($this->dispatcher->getParam('type'));
-        }
-        
         parent::updateAction($ignore);
     }
 }

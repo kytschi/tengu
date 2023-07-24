@@ -94,13 +94,17 @@ class UrlHelper
                 $url = self::append($url, 'from=' . $from);
             }
         }
-        
+
         return $url;
     }
 
     public static function clean(string $url)
     {
-        return str_replace([' '], '-', strtolower(strip_tags($_POST['url'])));
+        return str_replace(
+            ['!'],
+            '',
+            str_replace([' '], '-', strtolower(strip_tags($_POST['url'])))
+        );
     }
 
     public static function contains(string $url)
@@ -108,7 +112,7 @@ class UrlHelper
         $parsed = parse_url($_SERVER['REQUEST_URI']);
 
         $path = '/' . trim(ltrim($parsed['path'], $_ENV['APP_TENGU_URL']), '/');
-        
+
         if ($url == '/') {
             return  ($path == $url) ? true : false;
         }
@@ -124,7 +128,7 @@ class UrlHelper
         $path = '/' . trim($parsed['path'], '/');
 
         $url .= '?from=' . $path;
-        
+
         return $url;
     }
 
@@ -239,7 +243,7 @@ class UrlHelper
         if (empty($parsed['path'])) {
             return false;
         }
-        
+
         $path = '/' . trim(ltrim($parsed['path'], $_ENV['APP_TENGU_URL']), '/');
 
         if ($url == '/') {

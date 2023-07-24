@@ -4,12 +4,24 @@
  * Surveys controller.
  *
  * @package     Kytschi\Makabe\Controllers\SurveysController
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.2
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 declare(strict_types=1);
@@ -18,31 +30,14 @@ namespace Kytschi\Makabe\Controllers;
 
 use Kytschi\Makabe\Models\Surveys;
 use Kytschi\Tengu\Controllers\Website\PagesController;
-use Kytschi\Tengu\Exceptions\RequestException;
 use Kytschi\Tengu\Exceptions\SaveException;
 use Kytschi\Tengu\Exceptions\ValidationException;
-use Kytschi\Tengu\Helpers\StringHelper;
-use Kytschi\Tengu\Helpers\UrlHelper;
 use Kytschi\Tengu\Models\Website\Pages;
-use Kytschi\Tengu\Traits\Core\Files;
-use Kytschi\Tengu\Traits\Core\Form;
-use Kytschi\Tengu\Traits\Core\Logs;
-use Kytschi\Tengu\Traits\Core\Notes;
-use Kytschi\Tengu\Traits\Core\Pagination;
-use Kytschi\Tengu\Traits\Core\Tags;
-use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Encryption\Security\Random;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class SurveysController extends PagesController
 {
-    use Files;
-    use Form;
-    use Logs;
-    use Notes;
-    use Pagination;
-
     public $access = [
         'administrator',
         'super-user',
@@ -62,32 +57,30 @@ class SurveysController extends PagesController
     public function initialize()
     {
         $this->global_url = ($this->di->getConfig())->urls->mms . $this->global_url;
+        $this->global_add_url = $this->global_url . '/create';
     }
 
-    public function addAction($template = 'makabe/surveys/add')
+    public function addAction($title = 'Creating a survey', $template = 'website/pages/add')
     {
-        $this->setPageTitle('Creating a survey');
         $this->view->setVar('pages', (new Pages())->find([
             'conditions' => 'deleted_at IS NULL',
             'order' => 'name ASC'
         ]));
-        return parent::addAction($template);
+        return parent::addAction($title, $template);
     }
 
-    public function editAction($id, $template = 'makabe/surveys/edit')
+    public function editAction($id, $title = 'Editing the survey', $template = 'makabe/surveys/edit')
     {
-        $this->setPageTitle('Editing the survey');
         $this->view->setVar('pages', (new Pages())->find([
             'conditions' => 'deleted_at IS NULL AND type IN ("page")',
             'order' => 'name ASC'
         ]));
-        return parent::editAction($id, $template);
+        return parent::editAction($id, $title, $template);
     }
 
-    public function indexAction($template = 'makabe/surveys/index')
+    public function indexAction($title = 'Our surveys', $template = 'makabe/surveys/index')
     {
-        $this->setPageTitle('Our surveys');
-        return parent::indexAction($template);
+        return parent::indexAction($title, $template);
     }
 
     public function saveSubAction($model)
@@ -108,7 +101,7 @@ class SurveysController extends PagesController
     public function updateSubAction($model)
     {
         $model->survey->complete_page_id = $_POST['complete_page_id'];
-    
+
         if ($model->survey->update() === false) {
             throw new SaveException(
                 'Failed to create the ' . str_replace('-', ' ', $this->resource),
@@ -120,7 +113,7 @@ class SurveysController extends PagesController
     public function validate()
     {
         parent::validate();
-        
+
         $validation = new Validation();
 
         $validation->add(
@@ -134,7 +127,10 @@ class SurveysController extends PagesController
 
         $messages = $validation->validate($_POST);
         if (count($messages)) {
-            throw new ValidationException('Form validation failed, please double check the required fields', $messages);
+            throw new ValidationException(
+                'Form validation failed, please double check the required fields',
+                $messages
+            );
         }
     }
 }

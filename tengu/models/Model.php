@@ -76,7 +76,7 @@ class Model extends PhalconModel
     {
         $this->updated_at = date('Y-m-d H:i:s');
         $this->updated_by = self::getUserId();
-        
+
         foreach ($this->encrypted as $key) {
             if (!property_exists($this, $key)) {
                 continue;
@@ -93,7 +93,7 @@ class Model extends PhalconModel
             $this->keepSnapshots(true);
         }
     }
-    
+
     public function clone($data = [])
     {
         $tmp = [];

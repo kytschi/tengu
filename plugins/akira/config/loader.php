@@ -25,7 +25,8 @@
 
 $akira_namespaces = [
     'Kytschi\Akira\Controllers' => $config->application->pluginsDir . 'akira/controllers',
-    'Kytschi\Akira\Models' => $config->application->pluginsDir . 'akira/models'
+    'Kytschi\Akira\Models' => $config->application->pluginsDir . 'akira/models',
+    'Kytschi\Akira\Traits' => $config->application->pluginsDir . 'akira/traits'
 ];
 
 $namespaces = array_merge($akira_namespaces, $namespaces);

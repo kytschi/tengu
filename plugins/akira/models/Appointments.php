@@ -34,8 +34,11 @@ use Kytschi\Tengu\Models\Model;
 
 class Appointments extends Model
 {
+    public $user_id;
     public $name;
     public $status = 'free';
+    public $appointment_at;
+    public $appointment_end;
 
     public function initialize()
     {
@@ -51,6 +54,16 @@ class Appointments extends Model
                 'params'   => [
                     'order' => 'created_at DeSC'
                 ]
+            ]
+        );
+
+        $this->hasOne(
+            'user_id',
+            Users::class,
+            'id',
+            [
+                'alias'    => 'user',
+                'reusable' => true,
             ]
         );
 

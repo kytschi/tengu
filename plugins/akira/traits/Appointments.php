@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Page Categories traits.
+ * Events traits.
  *
- * @package     Kytschi\Tengu\Traits\Website\PageCategories
+ * @package     Kytschi\Akira\Traits\Appointments
  * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
@@ -24,27 +24,32 @@
  * Boston, MA  02110-1301, USA.
  */
 
-namespace Kytschi\Tengu\Traits\Website;
+namespace Kytschi\Akira\Traits;
 
-use Kytschi\Tengu\Models\Website\PageCategories as Model;
+use Kytschi\Akira\Models\Appointments as Model;
 
-trait PageCategories
+trait Appointments
 {
-    public function findCategory($data)
+    public function findAppointments($data = [])
     {
-        if (empty($data)) {
-            return null;
-        }
+        $query = '';
+        $bind = [];
 
-        if (empty($data['category'])) {
-            return null;
-        }
+        if (!empty($data)) {
+            if (!empty($data['where'])) {
+                if (!empty($data['where']['query'])) {
+                    $query = 'AND ' . $data['where']['query'];
+                }
 
-        $binds = ['id' => $data['category']];
+                if (!empty($data['where']['data'])) {
+                    $bind = $data['where']['data'];
+                }
+            }
+        }
 
         return Model::find([
-            'conditions' => 'category_id = :id:',
-            'bind' => $binds
+            'conditions' => 'deleted_at IS NULL ' . $query,
+            'bind' => $bind
         ]);
     }
 }

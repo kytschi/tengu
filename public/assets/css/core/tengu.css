@@ -1473,7 +1473,7 @@ select.form-control {
 }
 
 .tile-item {
-  display: inline-block;
+  display: inline-block;  
   break-inside: avoid-column;
   margin: 0 0 2.5em 0;
   width: 100%;

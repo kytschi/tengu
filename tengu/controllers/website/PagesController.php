@@ -70,41 +70,37 @@ class PagesController extends ControllerBase
     ];
 
     public $global_url = '/pages';
+    public $global_add_url = '';
+    public $global_category_url = '';
 
     public $resource = 'page';
+    public $resource_category = 'page-category';
 
     public function initialize()
     {
         $this->global_url = ($this->di->getConfig())->urls->cms . $this->global_url;
+        $this->global_add_url = $this->global_url . '/create';
+        $this->global_category_url = $this->global_url . '/categories';
     }
 
-    public function addAction($template = 'website/pages/add')
+    public function addAction($title = 'Build a page', $template = 'website/pages/add')
     {
         $this->secure($this->access);
-
-        switch ($this->resource) {
-            case 'blog-post':
-                $this->setPageTitle('Write a blog post');
-                break;
-            case 'event':
-                $this->setPageTitle('Create an event');
-                break;
-            case 'page':
-                $this->setPageTitle('Build a page');
-                break;
-            case 'portfolio':
-                $this->setPageTitle('Build a portfolio piece');
-                break;
-        }
+        $this->setPageTitle($title);
 
         return $this->view->partial(
             $template,
             [
                 'campaigns' => Campaigns::find(['conditions' => 'deleted_at IS NULL AND type="seo"']),
-                'categories' => PageCategoriesController::all($this->resource . '-category'),
+                'categories' => PageCategoriesController::all($this->resource_category),
+                'parents' => Pages::find([
+                    'conditions' => 'type=:type:',
+                    'bind' => ['type' => $this->resource]
+                ]),
                 'statuses' => $this->defaultStatuses(),
                 'templates' => self::getTemplates(),
                 'url' => $this->global_url,
+                'add_url' => $this->global_add_url,
                 'resource' => $this->resource
             ]
         );
@@ -180,7 +176,7 @@ class PagesController extends ControllerBase
         }
     }
 
-    public function editAction($id, $template = 'website/pages/edit')
+    public function editAction($id, $title = 'Managing the page', $template = 'website/pages/edit')
     {
         $this->secure($this->access);
 
@@ -195,30 +191,26 @@ class PagesController extends ControllerBase
             return $this->notFound();
         }
 
-        switch ($this->resource) {
-            case 'blog-post':
-                $this->setPageTitle('Editing the blog post');
-                break;
-            case 'event':
-                $this->setPageTitle('Editing the event');
-                break;
-            case 'page':
-                $this->setPageTitle('Managing the page');
-                break;
-            case 'portfolio':
-                $this->setPageTitle('Managing the portfolio piece');
-                break;
-        }
-        
+        $this->setPageTitle($title);
+
         return $this->view->partial(
             $template,
             [
                 'campaigns' => Campaigns::find(['conditions' => 'deleted_at IS NULL AND type="seo"']),
-                'categories' => PageCategoriesController::all($this->resource . '-category'),
+                'categories' => PageCategoriesController::all($this->resource_category, $model->id),
                 'data' => $model,
+                'parents' => Pages::find([
+                    'conditions' => 'type=:type: AND id!=:id:',
+                    'bind' => [
+                        'type' => $this->resource,
+                        'id' => $model->id
+                    ]
+                ]),
                 'statuses' => $this->defaultStatuses(),
                 'templates' => self::getTemplates(),
                 'url' => $this->global_url,
+                'add_url' => $this->global_add_url,
+                'category_url' => $this->global_category_url,
                 'resource' => $this->resource
             ]
         );
@@ -290,26 +282,9 @@ class PagesController extends ControllerBase
         ]);
     }
 
-    public function indexAction($template = 'website/pages/index')
+    public function indexAction($title = 'Our pages', $template = 'website/pages/index')
     {
-        if ($template == 'website/pages/index') {
-            $this->setPageTitle('Our pages');
-        }
-
-        switch ($this->resource) {
-            case 'blog-post':
-                $this->setPageTitle('Blog posts');
-                break;
-            case 'event':
-                $this->setPageTitle('Our events');
-                break;
-            case 'page':
-                $this->setPageTitle('Our pages');
-                break;
-            case 'portfolio':
-                $this->setPageTitle('Portfolio pieces');
-                break;
-        }
+        $this->setPageTitle($title);
 
         $this->clearFormData();
         $this->secure($this->access);
@@ -464,11 +439,11 @@ class PagesController extends ControllerBase
             if (method_exists($this, 'saveSubAction')) {
                 $this->saveSubAction($model);
             }
-            
+
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (ValidationException $err) {
             $this->saveValidationError($err);
-            $this->redirect(UrlHelper::backend($this->global_url . '/create'));
+            $this->redirect(UrlHelper::backend($this->global_add_url));
         } catch (Exception $err) {
             throw new SaveException(
                 $err->getMessage(),
@@ -480,6 +455,7 @@ class PagesController extends ControllerBase
     public function setData($model)
     {
         $model->template_id = $_POST['template_id'];
+        $model->parent_id = !empty($_POST['parent_id']) ? $_POST['parent_id'] : null;
         $model->type = $this->resource;
 
         $model->url = '/' .
@@ -491,14 +467,15 @@ class PagesController extends ControllerBase
                 ),
                 '/'
             );
-        $model->canonical_url = 
+        $model->canonical_url =
             !empty($_POST['canonical_url']) ?
                 UrlHelper::clean($_POST['canonical_url']) :
                 null;
         $model->summary = !empty($_POST['summary']) ? $_POST['summary'] : null;
         $model->status = isset($_POST['status']) ? 'active' : 'inactive';
         $model->searchable = isset($_POST['searchable']) ? true : false;
-        $model->meta_description = !empty($_POST['meta_description']) ? strip_tags($_POST['meta_description']) : null;
+        $model->meta_description =
+            !empty($_POST['meta_description']) ? strip_tags($_POST['meta_description']) : null;
         $model->meta_author = !empty($_POST['meta_author']) ? strip_tags($_POST['meta_author']) : null;
         $model->cover_image_id = !empty($_POST['cover_image']) ? $_POST['cover_image'] : null;
         $model->banner_image_id = !empty($_POST['banner_image']) ? $_POST['banner_image'] : null;
@@ -543,18 +520,38 @@ class PagesController extends ControllerBase
         }
 
         $model->slogan = !empty($_POST['slogan']) ? $_POST['slogan'] : null;
-        
+
         return $model;
     }
 
     public function stats()
     {
         $query = 'SELECT ';
-        $query .= "(SELECT count(id) FROM pages WHERE type = '" . $this->resource . "' AND status = 'active') AS active,";
-        $query .= "(SELECT count(id) FROM pages WHERE type = '" . $this->resource . "' AND status = 'pending') AS pending,";
-        $query .= "(SELECT count(id) FROM pages WHERE type = '" . $this->resource . "' AND status = 'inactive') AS inactive,";
-        $query .= "(SELECT count(id) FROM pages WHERE type = '" . $this->resource . "' AND status = 'rejected') AS rejected,";
-        $query .= "(SELECT count(id) FROM pages WHERE type = '" . $this->resource . "' AND deleted_at IS NOT NULL) AS deleted,";
+        $query .= "(
+            SELECT count(id)
+            FROM pages
+            WHERE type = '" . $this->resource . "' AND status = 'active'
+        ) AS active,";
+        $query .= "(
+            SELECT count(id) 
+            FROM pages 
+            WHERE type = '" . $this->resource . "' AND status = 'pending'
+        ) AS pending,";
+        $query .= "(
+            SELECT count(id) 
+            FROM pages 
+            WHERE type = '" . $this->resource . "' AND status = 'inactive'
+        ) AS inactive,";
+        $query .= "(
+            SELECT count(id) 
+            FROM pages 
+            WHERE type = '" . $this->resource . "' AND status = 'rejected'
+        ) AS rejected,";
+        $query .= "(
+            SELECT count(id) 
+            FROM pages 
+            WHERE type = '" . $this->resource . "' AND deleted_at IS NOT NULL
+        ) AS deleted,";
 
         $model = new Pages();
         return (new \Phalcon\Mvc\Model\Resultset\Simple(
@@ -660,7 +657,7 @@ class PagesController extends ControllerBase
             if (method_exists($this, 'updateSubAction')) {
                 $this->updateSubAction($model);
             }
-            
+
             $this->redirect($url);
         } catch (ValidationException $err) {
             $this->saveValidationError($err);
@@ -703,7 +700,10 @@ class PagesController extends ControllerBase
 
         $messages = $validation->validate($_POST);
         if (count($messages)) {
-            throw new ValidationException('Form validation failed, please double check the required fields', $messages);
+            throw new ValidationException(
+                'Form validation failed, please double check the required fields',
+                $messages
+            );
         }
     }
 }

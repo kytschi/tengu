@@ -24,7 +24,7 @@ trait Security
         if (!is_string($string)) {
             return $string;
         }
-        
+
         $ext = ['extensions' => ['basic']];
         if ($full) {
             $ext = ['extensions' => [

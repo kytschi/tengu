@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Page Categories traits.
+ * Products traits.
  *
- * @package     Kytschi\Tengu\Traits\Website\PageCategories
+ * @package     Kytschi\Phoenix\Traits\Products
  * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
@@ -24,27 +24,32 @@
  * Boston, MA  02110-1301, USA.
  */
 
-namespace Kytschi\Tengu\Traits\Website;
+namespace Kytschi\Phoenix\Traits;
 
-use Kytschi\Tengu\Models\Website\PageCategories as Model;
+use Kytschi\Tengu\Models\Website\Pages;
 
-trait PageCategories
+trait Products
 {
-    public function findCategory($data)
+    public function findProducts($data = [])
     {
-        if (empty($data)) {
-            return null;
+        $query = '';
+        $bind = [];
+
+        if (!empty($data)) {
+            if (!empty($data['where'])) {
+                if (!empty($data['where']['query'])) {
+                    $query = 'AND ' . $data['where']['query'];
+                }
+
+                if (!empty($data['where']['data'])) {
+                    $bind = $data['where']['data'];
+                }
+            }
         }
 
-        if (empty($data['category'])) {
-            return null;
-        }
-
-        $binds = ['id' => $data['category']];
-
-        return Model::find([
-            'conditions' => 'category_id = :id:',
-            'bind' => $binds
+        return Pages::find([
+            'conditions' => 'type = "product" AND deleted_at IS NULL ' . $query,
+            'bind' => $bind
         ]);
     }
 }

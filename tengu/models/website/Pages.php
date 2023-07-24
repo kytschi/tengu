@@ -55,6 +55,7 @@ use Kytschi\Tengu\Models\Website\Templates;
 class Pages extends Model
 {
     public $template_id;
+    public $parent_id;
     public $name;
     public $url;
     public $summary;
@@ -132,6 +133,29 @@ class Pages extends Model
             [
                 'alias'    => 'campaign',
                 'reusable' => true
+            ]
+        );
+
+        $this->hasOne(
+            'parent_id',
+            self::class,
+            'id',
+            [
+                'alias'    => 'parent',
+                'reusable' => true
+            ]
+        );
+
+        $this->hasMany(
+            'id',
+            self::class,
+            'parent_id',
+            [
+                'alias'    => 'children',
+                'reusable' => true,
+                'params'   => [
+                    'conditions' => 'deleted_at IS NULL'
+                ]
             ]
         );
 

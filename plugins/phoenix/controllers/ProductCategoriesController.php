@@ -1,39 +1,34 @@
 <?php
 
 /**
- * Products controller.
+ * Product categories controller.
  *
  * @package     Kytschi\Phoenix\Controllers\ProductCategoriesController
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 declare(strict_types=1);
 
 namespace Kytschi\Phoenix\Controllers;
 
-use Kytschi\Makabe\Controllers\PersonasController;
-use Kytschi\Phoenix\Models\Products;
 use Kytschi\Tengu\Controllers\Website\PageCategoriesController;
-use Kytschi\Tengu\Exceptions\RequestException;
-use Kytschi\Tengu\Exceptions\SaveException;
-use Kytschi\Tengu\Exceptions\ValidationException;
-use Kytschi\Tengu\Helpers\UrlHelper;
-use Kytschi\Tengu\Models\Website\Pages;
-use Kytschi\Tengu\Models\Website\Templates;
-use Kytschi\Tengu\Traits\Core\Files;
-use Kytschi\Tengu\Traits\Core\Form;
-use Kytschi\Tengu\Traits\Core\Logs;
-use Kytschi\Tengu\Traits\Core\Notes;
-use Kytschi\Tengu\Traits\Website\OldUrls;
-use Kytschi\Tengu\Traits\Core\Pagination;
-use Kytschi\Tengu\Traits\Core\Queue;
-use Kytschi\Tengu\Traits\Core\Tags;
-use Phalcon\Paginator\Adapter\QueryBuilder;
 
 class ProductCategoriesController extends PageCategoriesController
 {
@@ -53,19 +48,19 @@ class ProductCategoriesController extends PageCategoriesController
     public function addAction($template = 'true')
     {
         $this->setPageTitle('Adding a product category');
-        return parent::addAction($template);
+        return parent::addAction();
     }
 
     public function editAction($id, $template = 'true')
     {
         $this->setPageTitle('Managing the product category');
-        return parent::editAction($id, $template);
+        return parent::editAction($id);
     }
 
     public function indexAction($template = 'true')
     {
         $this->setPageTitle('Product categories');
-        return parent::indexAction($template);
+        return parent::indexAction();
     }
 
     public function saveAction($ignore = true)

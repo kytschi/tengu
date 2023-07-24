@@ -394,8 +394,8 @@ class AppointmentsController extends ControllerBase
         $model->user_id = !empty($_POST['user_id']) ? $_POST['user_id'] : self::getUserId();
         $model->status = isset($_POST['status']) ? 'free' : 'booked';
         $model->appointment_at = DateHelper::sql($_POST['appointment_at']);
-        $model->recurring = isset($_POST['recurring']) ?
-            ($_POST['recurring'] == 'none' ? null : $_POST['recurring']) :
+        $model->appointment_end = !empty($_POST['appointment_at']) ?
+            ($_POST['appointment_at'] == 'Unknown' ? DateHelper::sql($_POST['appointment_at']) : null) :
             null;
 
         return $model;

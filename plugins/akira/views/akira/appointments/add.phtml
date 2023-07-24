@@ -175,19 +175,22 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                                     required/>
                             </div>
                             <div class="form-group mb-4">
-                                <label for="recurring" class="form-label">
-                                    Recurring
+                                <label for="appointment_end" class="form-label">
+                                    End
                                 </label>
-                                <?php
-                                    $selected = FormController::getFormData('recurring', null, 'none');
-                                ?>
-                                <select name="recurring" class="form-control mt-2">
-                                    <option value="none"<?= $selected == 'none' ? ' selected' : ''; ?>>none</option>
-                                    <option value="daily"<?= $selected == 'daily' ? ' selected' : ''; ?>>daily</option>
-                                    <option value="weekly"<?= $selected == 'weekly' ? ' selected' : ''; ?>>weekly</option>
-                                    <option value="monthly"<?= $selected == 'monthly' ? ' selected' : ''; ?>>monthly</option>
-                                    <option value="annually"<?= $selected == 'annually' ? ' selected' : ''; ?>>annually</option>
-                                </select>
+                                <input
+                                    id="appointment_end"
+                                    name="appointment_end"
+                                    type="text"
+                                    class="form-control datetimepicker mt-2"
+                                    value="<?= DateHelper::pretty(
+                                        FormController::getFormData('appointment_end'),
+                                        true,
+                                        true,
+                                        'Unknown',
+                                        false
+                                    ); ?>"
+                                    placeholder="Enter the appointment end date and time if needed"/>
                             </div>
                             <?php
                             if (FormController::isAdmin()) {

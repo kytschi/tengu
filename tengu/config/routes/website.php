@@ -3,78 +3,85 @@
 /**
  * Website routes.
  *
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 use Kytschi\Tengu\Helpers\UrlHelper;
 
 /*
- * Categories
+ * Blog post Categories
  */
 $router->add(
-    UrlHelper::backend($config->urls->cms . '/{type}/categories'),
+    UrlHelper::backend($config->urls->cms . '/blog-posts/categories'),
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
-        'controller' => 'PageCategories',
-        'action'     => 'index',
-        'type' => 1
+        'controller' => 'BlogPostCategories',
+        'action'     => 'index'
     ]
 );
 
 $router->add(
-    UrlHelper::backend($config->urls->cms . '/{type}/categories/add'),
+    UrlHelper::backend($config->urls->cms . '/blog-posts/categories/add'),
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
-        'controller' => 'PageCategories',
-        'action'     => 'add',
-        'type' => 1
+        'controller' => 'BlogPostCategories',
+        'action'     => 'add'
     ]
 );
 
 $router->add(
-    UrlHelper::backend($config->urls->cms . '/{type}/categories/delete/{id}'),
+    UrlHelper::backend($config->urls->cms . '/blog-posts/categories/delete/{id}'),
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
-        'controller' => 'PageCategories',
+        'controller' => 'BlogPostCategories',
         'action'     => 'delete',
         'id' => 1
     ]
 );
 
 $router->add(
-    UrlHelper::backend($config->urls->cms . '/{type}/categories/edit/{id}'),
+    UrlHelper::backend($config->urls->cms . '/blog-posts/categories/edit/{id}'),
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
-        'controller' => 'PageCategories',
+        'controller' => 'BlogPostCategories',
         'action'     => 'edit',
-        'type' => 1,
-        'id' => 2
+        'id' => 1
     ]
 );
 
 $router->add(
-    UrlHelper::backend($config->urls->cms . '/{type}/categories/save'),
+    UrlHelper::backend($config->urls->cms . '/blog-posts/categories/save'),
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
-        'controller' => 'PageCategories',
-        'action'     => 'save',
-        'type' => 1
+        'controller' => 'BlogPostCategories',
+        'action'     => 'save'
     ]
 );
 
 $router->add(
-    UrlHelper::backend($config->urls->cms . '/{type}/categories/update/{id}'),
+    UrlHelper::backend($config->urls->cms . '/blog-posts/categories/update/{id}'),
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
-        'controller' => 'PageCategories',
+        'controller' => 'BlogPostCategories',
         'action'     => 'update',
-        'type' => 1,
-        'id' => 2
+        'id' => 1
     ]
 );
 
@@ -295,6 +302,66 @@ $router->add(
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
         'controller' => 'Pages',
+        'action'     => 'update',
+        'id' => 1
+    ]
+);
+
+/*
+ * Page Categories
+ */
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/pages/categories'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PageCategories',
+        'action'     => 'index'
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/pages/categories/add'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PageCategories',
+        'action'     => 'add'
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/pages/categories/delete/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PageCategories',
+        'action'     => 'delete',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/pages/categories/edit/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PageCategories',
+        'action'     => 'edit',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/page-categories/save'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PageCategories',
+        'action'     => 'save'
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/page-categories/update/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PageCategories',
         'action'     => 'update',
         'id' => 1
     ]

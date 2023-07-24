@@ -44,12 +44,22 @@ class EventsController extends PagesController
     ];
 
     public $global_url  = '/events';
-
     public $resource = 'event';
 
     public function initialize()
     {
         $this->global_url = ($this->di->getConfig())->urls->ems . $this->global_url;
+        $this->global_add_url = $this->global_url . '/create';
+    }
+
+    public function addAction($title = 'Add an event')
+    {
+        parent::addAction($title);
+    }
+
+    public function editAction($id, $title = 'Editing the event')
+    {
+        parent::editAction($id, $title);
     }
 
     public function saveSubAction($model)

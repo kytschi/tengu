@@ -160,7 +160,11 @@ class GroupsController extends ControllerBase
     {
         if (!empty(($this->di->getConfig())->apps)) {
             foreach (($this->di->getConfig())->apps as $app) {
-                if (file_exists($file = ($this->di->getConfig())->application->pluginsDir . $app . '/config/groups.php')) {
+                if (
+                    file_exists(
+                        $file = ($this->di->getConfig())->application->pluginsDir . $app . '/config/groups.php'
+                    )
+                ) {
                     include $file;
                     self::$system = array_merge(self::$system, $groups);
                 }

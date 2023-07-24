@@ -342,6 +342,15 @@ echo $this->partial("common/form/messages");
                             <?php
                         }
                         ?>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link text-active-primary <?= UrlHelper::activeTab('activity-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#activity-tab">
+                                Activity
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -355,13 +364,21 @@ echo $this->partial("common/form/messages");
                         <div class="col-12">
                             <?= $this->partial("common/tags", ['data' => $data->tags]); ?>
                         </div>
+                        <div class="col-12">
+                            <?= $this->partial('website/pages/sections/content'); ?>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <?= $this->partial('website/pages/sections/content', ['data' => $data]); ?>
-                        </div>
                         <div class="col-6">
-                            <?= $this->partial('common/logs', ['data' => $data->logs]); ?>
+                            <?= $this->partial(
+                                'website/page_categories/widget',
+                                [
+                                    'data' => $data->categories,
+                                    'categories' => $categories,
+                                    'url' => $url . '/categories',
+                                    'back_url' => $url . '/edit/' . $data->id
+                                ]
+                            ); ?>
                         </div>
                     </div>
                 </div>
@@ -370,7 +387,7 @@ echo $this->partial("common/form/messages");
                     id="template-tab"
                     role="tabpanel"
                     aria-labelledby="template-tab">
-                    <?= $this->partial('website/templates/widget', ['data' => $data]); ?>
+                    <?= $this->partial('website/templates/widget'); ?>
                 </div>
                 <div
                     class="tab-pane <?= UrlHelper::activeTab('seo-tab', 'overview-tab'); ?>"
@@ -380,7 +397,6 @@ echo $this->partial("common/form/messages");
                     <?= $this->partial(
 						'website/pages/sections/seo',
 						[
-							'data' => $data,
 							'add' => false,
 							'url' => $url . '/edit/' . $data->id
 						]
@@ -394,7 +410,6 @@ echo $this->partial("common/form/messages");
                     <?= $this->partial(
 						'common/media',
 						[
-							'data' => $data,
 							'url' => $url . '/edit/' . $data->id
 						]
 					); ?>
@@ -417,13 +432,23 @@ echo $this->partial("common/form/messages");
                         <?= $this->partial(
                             'makabe/spinner/widget',
                             [
-                                'data' => $data,
                                 'url' => $url
                             ]); ?>
                     </div>
                     <?php
 				}
                 ?>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('activity-tab', 'content-tab'); ?>"
+                    id="activity-tab"
+                    role="tabpanel"
+                    aria-labelledby="activity-tab">
+                    <div class="row">
+                        <div class="col-6">
+                            <?= $this->partial("common/logs", ['data' => $data->logs]); ?>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

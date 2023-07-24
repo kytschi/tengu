@@ -181,7 +181,7 @@ class TemplatesController extends ControllerBase
             if (empty($_POST['name'])) {
                 throw new RequestException('Missing required data');
             }
-    
+
             if (!is_array($_POST['name'])) {
                 throw new RequestException('Invalid data');
             }

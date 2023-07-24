@@ -56,7 +56,7 @@ class LoginController extends ControllerBase
         if (self::isLoggedIn()) {
             $this->redirect(UrlHelper::backend('/dashboard'));
         }
-        
+
         try {
             if (empty($_POST)) {
                 $this->clearFormData();
@@ -69,7 +69,7 @@ class LoginController extends ControllerBase
                 if (!$this->tengu->captchaValidate($_POST['captcha'])) {
                     throw new AuthorisationException('Invalid captcha');
                 }
-                
+
                 $this->validTSC($_POST['_TSC']);
 
                 $model = Users::findFirst(
@@ -80,7 +80,7 @@ class LoginController extends ControllerBase
                         ]
                     ]
                 );
-                
+
                 if (empty($model)) {
                     throw new AuthorisationException(
                         'Failed to login',
@@ -101,12 +101,13 @@ class LoginController extends ControllerBase
                         $model->id
                     );
                 }
-                
+
                 $data = new \stdClass();
                 $data->group = $model->group->slug;
                 $data->full_name = $model->full_name;
                 $data->first_name = $model->first_name;
                 $data->id = $model->id;
+                $data->profile_image = $model->profile_image;
 
                 $model->login_attempts += 1;
                 if ($model->update() === false) {
@@ -143,17 +144,15 @@ class LoginController extends ControllerBase
                 $model->last_login = date('Y-m-d H:i:s');
                 $model->login_attempts = 0;
 
-                
-
                 if ($model->update() === false) {
                     throw new SaveException(
                         'Failed to update the user',
                         $model->getMessages()
                     );
                 }
-                
+
                 $this->session->set('user', $data);
-                
+
                 $this->redirect($url);
             }
         } catch (\Exception $err) {

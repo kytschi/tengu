@@ -4,12 +4,24 @@
  * Users model.
  *
  * @package     Kytschi\Tengu\Models\Core\Users
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi- All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 namespace Kytschi\Tengu\Models\Core;
@@ -30,7 +42,7 @@ use Kytschi\Wako\Traits\TaxYear;
 class Users extends Model
 {
     use TaxYear;
-    
+
     public $group_id;
     public $email;
     public $first_name;
@@ -270,7 +282,7 @@ class Users extends Model
             'end' => $tax_year->tax_year_end,
             'shareholder_id' => $this->id
         ];
-        
+
         $statement_items = new StatementItems();
         $statement_items_table = $statement_items->getSource();
 
@@ -302,7 +314,7 @@ class Users extends Model
             'end' => $tax_year->tax_year_end,
             'expenses_employee_id' => $this->id
         ];
-        
+
         $statement_items = new StatementItems();
         $statement_items_table = $statement_items->getSource();
 
@@ -337,7 +349,7 @@ class Users extends Model
         $string .= "\n" . $this->county;
         $string .= "\n" . $this->country;
         $string .= "\n" . $this->postcode;
-        
+
         return $string;
     }
 
@@ -406,7 +418,7 @@ class Users extends Model
             'end' => $tax_year->tax_year_end,
             'shareholder_id' => $this->id
         ];
-        
+
         $statement_items = new StatementItems();
         $statement_items_table = $statement_items->getSource();
 
@@ -440,7 +452,7 @@ class Users extends Model
             'end' => $tax_year->tax_year_end,
             'expenses_employee_id' => $this->id
         ];
-        
+
         $statement_items = new StatementItems();
         $statement_items_table = $statement_items->getSource();
 
@@ -474,7 +486,7 @@ class Users extends Model
             'end' => $tax_year->tax_year_end,
             'employee_id' => $this->id
         ];
-        
+
         $statement_items = new StatementItems();
         $statement_items_table = $statement_items->getSource();
 
@@ -506,7 +518,7 @@ class Users extends Model
             'end' => $tax_year->tax_year_end,
             'employee_id' => $this->id
         ];
-        
+
         $statement_items = new StatementItems();
         $statement_items_table = $statement_items->getSource();
 

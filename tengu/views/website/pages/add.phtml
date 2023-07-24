@@ -53,7 +53,7 @@ echo $this->partial("common/form/messages");
 		                data-html="true"
 		                data-trigger="focus"
 		                data-toggle="popover"
-		                data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/build'); ?>">Yes</a>'
+		                data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($add_url); ?>">Yes</a>'
 		                class="btn btn-blank float-right m-0 mr-2">
 		                <div
 		                    title="Start over with a fresh page"
@@ -171,6 +171,32 @@ echo $this->partial("common/form/messages");
                                     rows="4"
                                     aria-describedby="summary"><?= FormController::getFormData('summary'); ?></textarea>
                             </div>
+                            <div class="form-group mb-4">
+                                <label for="summary">Parent</label>
+                                <select name="parent_id" class="form-control">
+                                    <?php
+                                    $selected = FormController::getFormData('parent_id');
+                                    if ($parents->count()) {
+                                        ?>
+                                        <option value="">No parent</option>
+                                        <?php
+                                        foreach ($parents as $parent) {
+                                            ?>
+                                            <option 
+                                                value="<?= $parent->id; ?>"
+                                                <?= $selected == $parent->id ? ' selected' : ''; ?>>
+                                                <?= $parent->name; ?>
+                                            </option>
+                                            <?php
+                                        }
+                                    } else {
+                                        ?>
+                                        <option value="" disabled>No parents available</option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <ul class="nav p-0 m-0">
@@ -193,6 +219,21 @@ echo $this->partial("common/form/messages");
                                     role="tab"
                                     href="#event-tab">
                                     Event <span class="required">*</span>
+                                </a>
+                            </li>
+                            <?php
+                        }
+                        ?>
+                        <?php
+                        if ($resource == 'product') {
+                            ?>
+                            <li class="nav-item mt-2">
+                                <a
+                                    class="nav-link <?= UrlHelper::activeTab('product-tab', 'content-tab'); ?>"
+                                    data-toggle="tab"
+                                    role="tab"
+                                    href="#product-tab">
+                                    Product <span class="required">*</span>
                                 </a>
                             </li>
                             <?php
@@ -317,6 +358,19 @@ echo $this->partial("common/form/messages");
                         role="tabpanel"
                         aria-labelledby="event-tab">
                         <?= $this->partial("izumi/events/widget", ['data' => null]); ?>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if ($resource == 'product') {
+                    ?>
+                    <div
+                        class="tab-pane <?= UrlHelper::activeTab('product-tab', 'content-tab'); ?>"
+                        id="product-tab"
+                        role="tabpanel"
+                        aria-labelledby="product-tab">
+                        <?= $this->partial("phoenix/products/widget"); ?>
                     </div>
                     <?php
                 }

@@ -106,7 +106,7 @@ class UsersController extends ControllerBase
                 ]
             );
         }
-        
+
         return $this->view->partial(
             $template,
             $data
@@ -116,10 +116,10 @@ class UsersController extends ControllerBase
     public function addProfileImage($model)
     {
         $this->clearFiles('profile-image', $model->id);
-                    
+
         list($width, $height) = getimagesize($_FILES['upload_picture']['tmp_name']);
         $desired_width = 400;
-        
+
         switch ($_FILES['upload_picture']['type']) {
             case 'image/jpeg':
                 $upload = imagecreatefromjpeg($_FILES['upload_picture']['tmp_name']);
@@ -135,7 +135,8 @@ class UsersController extends ControllerBase
             $model->id,
             [
                 'name' => $model->id . '-profile',
-                'type' => $_FILES['upload_picture']['type']
+                'type' => $_FILES['upload_picture']['type'],
+                'tmp_name' => $_FILES['upload_picture']['tmp_name']
             ],
             'profile-image',
             'profile-image',
@@ -153,11 +154,11 @@ class UsersController extends ControllerBase
         switch ($_FILES['upload_picture']['type']) {
             case 'image/jpeg':
                 imagejpeg($save, ($this->di->getConfig())->application->dumpDir . $file->filename, 60);
-                shell_exec('jpegoptim -m 60 ' . $save);
+                @shell_exec('jpegoptim -m 60 ' . ($this->di->getConfig())->application->dumpDir . $file->filename);
                 break;
             case 'image/png':
                 imagepng($save, ($this->di->getConfig())->application->dumpDir . $file->filename, 6);
-                shell_exec('optipng ' . $save);
+                @shell_exec('optipng ' . ($this->di->getConfig())->application->dumpDir . $file->filename);
                 break;
         }
     }
@@ -336,7 +337,7 @@ class UsersController extends ControllerBase
             ->orderBy($this->orderBy . ' ' . $this->orderDir);
 
         $params = [];
-        
+
         $group_exclude = true;
         if ($group) {
             $builder->andWhere('group_id = :group_id:');
@@ -462,8 +463,16 @@ class UsersController extends ControllerBase
                 $this->addProfileImage($model);
             }
 
-            $model->password = null;
-            $this->session->set('user', $model);
+            $model->decryptData();
+
+            $data = new \stdClass();
+            $data->group = $model->group->slug;
+            $data->full_name = $model->full_name;
+            $data->first_name = $model->first_name;
+            $data->id = $model->id;
+            $data->profile_image = $model->profile_image;
+
+            $this->session->set('user', $data);
 
             $this->saveFormUpdated("Nice one, you've updated your profile");
             $this->redirect(UrlHelper::backend($this->global_url . '/profile'));
@@ -552,7 +561,8 @@ class UsersController extends ControllerBase
             if ($model->temp_password) {
                 (new EmailController())->send(
                     !empty($this->tengu->settings->name) ? $this->tengu->settings->name : $_ENV['APP_NAME'],
-                    !empty($this->tengu->settings->contact_email) ? $this->tengu->settings->contact_email : $_ENV['SMTP_USERNAME'],
+                    !empty($this->tengu->settings->contact_email) ?
+                        $this->tengu->settings->contact_email : $_ENV['SMTP_USERNAME'],
                     'Welcome to ' . $_ENV['APP_NAME'],
                     "We have set you a temporary password <strong>" . $password . "</strong>",
                     $model->full_name,
@@ -784,15 +794,6 @@ class UsersController extends ControllerBase
         );
 
         $validation->add(
-            'type',
-            new PresenceOf(
-                [
-                    'message' => 'The type is required',
-                ]
-            )
-        );
-
-        $validation->add(
             'first_name',
             new PresenceOf(
                 [
@@ -811,6 +812,14 @@ class UsersController extends ControllerBase
         );
 
         if (!$profile) {
+            $validation->add(
+                'type',
+                new PresenceOf(
+                    [
+                        'message' => 'The type is required',
+                    ]
+                )
+            );
             $validation->add(
                 'group_id',
                 new PresenceOf(
