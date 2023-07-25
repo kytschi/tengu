@@ -227,7 +227,7 @@ class Pages extends Model
                 'reusable' => true,
                 'params'   => [
                     'conditions' => Pages::class . '.deleted_at IS NULL',
-                    'order' => PageCategories::class . '.created_at DESC'
+                    'order' => PageCategories::class . '.sort ASC, ' . PageCategories::class . '.created_at DESC'
                 ]
             ]
         );

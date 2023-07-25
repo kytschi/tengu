@@ -26,7 +26,7 @@
 
 namespace Kytschi\Tengu\Traits\Website;
 
-use Kytschi\Tengu\Models\Website\PageCategories as Model;
+use Kytschi\Tengu\Models\Website\Pages;
 
 trait PageCategories
 {
@@ -42,8 +42,8 @@ trait PageCategories
 
         $binds = ['id' => $data['category']];
 
-        return Model::find([
-            'conditions' => 'category_id = :id:',
+        return Pages::find([
+            'conditions' => 'id = :id:',
             'bind' => $binds
         ]);
     }

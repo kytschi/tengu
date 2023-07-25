@@ -349,7 +349,7 @@ $router->add(
 );
 
 $router->add(
-    UrlHelper::backend($config->urls->cms . '/page-categories/save'),
+    UrlHelper::backend($config->urls->cms . '/pages/categories/save'),
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
         'controller' => 'PageCategories',
@@ -358,7 +358,7 @@ $router->add(
 );
 
 $router->add(
-    UrlHelper::backend($config->urls->cms . '/page-categories/update/{id}'),
+    UrlHelper::backend($config->urls->cms . '/pages/categories/update/{id}'),
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
         'controller' => 'PageCategories',
@@ -432,6 +432,66 @@ $router->add(
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
         'controller' => 'Portfolio',
+        'action'     => 'update',
+        'id' => 1
+    ]
+);
+
+/*
+ * Portfolio Categories
+ */
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/portfolio/categories'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PortfolioCategories',
+        'action'     => 'index'
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/portfolio/categories/add'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PortfolioCategories',
+        'action'     => 'add'
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/portfolio/categories/delete/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PortfolioCategories',
+        'action'     => 'delete',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/portfolio/categories/edit/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PortfolioCategories',
+        'action'     => 'edit',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/portfolio/categories/save'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PortfolioCategories',
+        'action'     => 'save'
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/portfolio/categories/update/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PortfolioCategories',
         'action'     => 'update',
         'id' => 1
     ]

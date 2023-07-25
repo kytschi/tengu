@@ -553,7 +553,6 @@ if (!empty($_GET['back-url'])) {
                             <?= $this->partial(
                                 'website/page_categories/widget',
                                 [
-                                    'data' => $data->categories,
                                     'categories' => $categories,
                                     'url' => $category_url,
                                     'back_url' => $url . '/edit/' . $data->id

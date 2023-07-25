@@ -66,15 +66,15 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                 <table id="widget-categories-table" class="table table-sorter">
                     <thead>
                         <tr>
-                            <th>Category</th>
+                            <th>Belongs to category</th>
                             <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        if ($data) {
-                            if ($data->count()) {
-                                foreach ($data as $result) {
+                        if (!empty($data)) {
+                            if ($data->categories->count()) {
+                                foreach ($data->categories as $result) {
                                     $edit_url = $url . '/edit/' . $result->id;
                                     if (!empty($back_url)) {
                                         $edit_url .= '?back-url=' . urlencode($back_url);
@@ -112,6 +112,12 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                                 </tr>
                                 <?php
                             }
+                        } else {
+                            ?>
+                            <tr>
+                                <td colspan="2">No categories</td>
+                            </tr>
+                            <?php
                         }
                         ?>
                     </tbody>
@@ -131,6 +137,59 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                             </td>
                         </tr>
                     </tfoot>
+                </table>
+            </div>
+            <div class="col-12">
+                <table class="table table-sorter">
+                    <thead>
+                        <tr>
+                            <th>Category items</th>
+                            <th width="80px">Sort</th>
+                            <th width="80px">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if (!empty($data)) {
+                            if ($data->category_items->count()) {
+                                foreach ($data->category_items as $key => $result) {
+                                    $edit_url = $url . '/edit/' . $result->id;
+                                    if (!empty($back_url)) {
+                                        $edit_url .= '?back-url=' . urlencode($back_url);
+                                    }
+                                    ?>
+                                    <tr id="category-<?= $result->id; ?>">
+                                        <td class="widget-category-name">
+                                            <?= $result->name; ?>
+                                        </td>
+                                        <td class="widget-category-sort">
+                                            <input
+                                                class="form-control"
+                                                name="category_sort[<?= $result->id; ?>]"
+                                                value="<?= $key+1; ?>">
+                                        </td>
+                                        <td class="widget-category-button">
+                                            <a
+                                                href="<?= UrlHelper::backend($edit_url); ?>"
+                                                class="btn btn-blank float-right m-0 p-0 mr-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+                                                </svg>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                            } else {
+                                ?>
+                                <tr>
+                                    <td colspan="2">No category items</td>
+                                </tr>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </tbody>
                 </table>
             </div>
         </div>

@@ -46,7 +46,7 @@ class PageCategoriesController extends PagesController
         'super-user'
     ];
 
-    public $global_url = '/page-categories';
+    public $global_url = '/pages/categories';
     public $global_add_url = '';
 
     public $resource = 'page-category';
@@ -55,6 +55,7 @@ class PageCategoriesController extends PagesController
     {
         $this->global_url = ($this->di->getConfig())->urls->cms . $this->global_url;
         $this->global_add_url = $this->global_url . '/add';
+        $this->global_category_url = $this->global_url;
     }
 
     public function addAction($title = 'Add a category', $template = 'website/pages/add')
@@ -76,55 +77,74 @@ class PageCategoriesController extends PagesController
                 ]
             );
 
-        if (empty($_POST['category_id'])) {
-            return;
+        if (!empty($_POST['category_id'])) {
+            $table = (new PageCategories())->getSource();
+
+            foreach ($_POST['category_id'] as $key => $id) {
+                if (empty($id)) {
+                    continue;
+                }
+
+                $this->db->query(
+                    'INSERT INTO ' . $table . ' 
+                    (id, category_id, page_id, created_at, created_by, updated_at, updated_by)
+                    SELECT
+                        :id_' . $key . ',
+                        :category_id_' . $key . ',
+                        :page_id,
+                        :created_at,
+                        :created_by,
+                        :updated_at,
+                        :updated_by
+                    FROM DUAL WHERE NOT EXISTS
+                    (
+                        SELECT id, page_id, category_id, created_at, created_by, updated_at, updated_by
+                        FROM ' . $table . '
+                        WHERE page_id=:page_id_2 AND category_id=:category_id_' . $key . '_2 
+                    )',
+                    [
+                        ':id_' . $key => (new Random())->uuid(),
+                        ':category_id_' . $key => $id,
+                        ':category_id_' . $key . '_2' => $id,
+                        ':page_id' => $page_id,
+                        ':page_id_2' => $page_id,
+                        ':created_at' => date('Y-m-d H:i:s'),
+                        ':created_by' => $user_id,
+                        ':updated_at' => date('Y-m-d H:i:s'),
+                        ':updated_by' => $user_id
+                    ]
+                );
+                $this->db->query(
+                    'UPDATE ' . $table . '
+                    SET deleted_at=NULL, deleted_by=NULL 
+                    WHERE page_id=:page_id AND category_id=:category_id_' . $key,
+                    [
+                        ':category_id_' . $key => $id,
+                        ':page_id' => $page_id
+                    ]
+                );
+            }
         }
 
-        $table = (new PageCategories())->getSource();
+        if (!empty($_POST['category_sort'])) {
+            $iLoop = 0;
+            foreach ($_POST['category_sort'] as $id => $sort) {
+                if (empty($id)) {
+                    continue;
+                }
 
-        foreach ($_POST['category_id'] as $key => $id) {
-            if (empty($id)) {
-                continue;
+                $this->db->query(
+                    'UPDATE ' . $table . '
+                    SET sort=:sort 
+                    WHERE page_id=:page_id_' . $iLoop . ' AND category_id=:category_id',
+                    [
+                        ':category_id' => $page_id,
+                        ':page_id_' . $iLoop => $id,
+                        ':sort' => $sort
+                    ]
+                );
+                $iLoop++;
             }
-
-            $this->db->query(
-                'INSERT INTO ' . $table . ' 
-                (id, category_id, page_id, created_at, created_by, updated_at, updated_by)
-                SELECT
-                    :id_' . $key . ',
-                    :category_id_' . $key . ',
-                    :page_id,
-                    :created_at,
-                    :created_by,
-                    :updated_at,
-                    :updated_by
-                FROM DUAL WHERE NOT EXISTS
-                (
-                    SELECT id, page_id, category_id, created_at, created_by, updated_at, updated_by
-                    FROM ' . $table . '
-                    WHERE page_id=:page_id_2 AND category_id=:category_id_' . $key . '_2 
-                )',
-                [
-                    ':id_' . $key => (new Random())->uuid(),
-                    ':category_id_' . $key => $id,
-                    ':category_id_' . $key . '_2' => $id,
-                    ':page_id' => $page_id,
-                    ':page_id_2' => $page_id,
-                    ':created_at' => date('Y-m-d H:i:s'),
-                    ':created_by' => $user_id,
-                    ':updated_at' => date('Y-m-d H:i:s'),
-                    ':updated_by' => $user_id
-                ]
-            );
-            $this->db->query(
-                'UPDATE ' . $table . '
-                SET deleted_at=NULL, deleted_by=NULL 
-                WHERE page_id=:page_id AND category_id=:category_id_' . $key,
-                [
-                    ':category_id_' . $key => $id,
-                    ':page_id' => $page_id
-                ]
-            );
         }
     }
 
