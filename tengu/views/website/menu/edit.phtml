@@ -21,7 +21,7 @@ echo $this->partial("common/form/messages");
 <form id="form-edit" method="post" action="<?= UrlHelper::backend($url . '/update/' . $data->id); ?>">
     <div class="row mb-3">
 		<div class="col-12">
-			<div class="card">
+			<div class="card p-0">
 				<div class="card-body">
 					<a
 						href="<?= UrlHelper::backend($url); ?>"
@@ -200,27 +200,18 @@ echo $this->partial("common/form/messages");
                                     aria-describedby="tooltip"
                                     value="<?= FormController::getFormData('tooltip', $data); ?>"
                                     required>
-                            </div>                        
+                            </div>
                             <div class="form-group mb-4">
-                                <label for="target">
-                                    Target
-                                    <span class="required">*</span>
+                                <label for="slug">
+                                    Slug
                                 </label>
-                                <select
-                                    id="target"
-                                    name="target"
+                                <input
+                                    id="slug"
+                                    name="slug"
+                                    type="text"
                                     class="form-control mt-2"
-                                    aria-describedby="target"
-                                    required>
-                                    <?php
-                                    foreach ($targets as $target) {
-                                        $selected = FormController::getFormData('target', $data);
-                                        ?>
-                                        <option value="<?= $target; ?>"<?= $selected == $target ? ' selected' :'';?>><?= $target; ?></option>
-                                        <?php
-                                    }
-                                    ?>
-                                </select>
+                                    aria-describedby="slug"
+                                    value="<?= FormController::getFormData('slug', $data); ?>">
                             </div>
                         </div>
                     </div>
@@ -232,6 +223,15 @@ echo $this->partial("common/form/messages");
                                 role="tab"
                                 href="#overview-tab">
                                 Link to
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link text-active-primary <?= UrlHelper::activeTab('activity-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#activity-tab">
+                                Activity
                             </a>
                         </li>
                     </ul>
@@ -308,6 +308,26 @@ echo $this->partial("common/form/messages");
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <?= $this->partial(
+                                'website/page_categories/widget',
+                                [
+                                    'categories' => $categories,
+                                    'url' => $url . '/categories',
+                                    'back_url' => $url . '/edit/' . $data->id
+                                ]
+                            ); ?>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('activity-tab', 'content-tab'); ?>"
+                    id="activity-tab"
+                    role="tabpanel"
+                    aria-labelledby="activity-tab">
+                    <div class="row">
                         <div class="col-6">
                             <?= $this->partial("common/logs", ['data' => $data->logs]); ?>
                         </div>

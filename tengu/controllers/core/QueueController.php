@@ -4,7 +4,7 @@
  * Queue controller.
  *
  * @package     Kytschi\Tengu\Controllers\Core\QueueController
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
  * Copyright Kytschi - All Rights Reserved.
@@ -42,7 +42,7 @@ class QueueController extends ControllerBase
     public $resource = 'queue';
     private $job_id = null;
 
-    public function clearAction()
+    public function clearAction($status)
     {
         $this->clearFormData();
 
@@ -51,7 +51,10 @@ class QueueController extends ControllerBase
         try {
             $this
                 ->modelsManager
-                ->executeQuery('DELETE FROM ' . Queue::class . ' WHERE status = "complete"');
+                ->executeQuery(
+                    'DELETE FROM ' . Queue::class . ' WHERE status = :status:',
+                    ['status' => $status]
+                );
 
             $this->saveFormDeleted('Queue have been cleared');
             $this->redirect(UrlHelper::backend($this->global_url));
@@ -199,7 +202,7 @@ class QueueController extends ControllerBase
     private function purge()
     {
         $date = date('Y-m-d 00:00:00', strtotime("-7 days"));
-        
+
         $this
             ->modelsManager
             ->executeQuery('DELETE FROM ' . Queue::class .
@@ -241,7 +244,7 @@ class QueueController extends ControllerBase
                     return;
                 }
             }
-            
+
             $results = (new Queue())->find([
                 'conditions' => 'status = "pending" AND deleted_at IS NULL',
                 'order' => 'priority DESC',
@@ -250,7 +253,7 @@ class QueueController extends ControllerBase
             if (empty($results->count())) {
                 return;
             }
-            
+
             $running = null;
 
             foreach ($results as $key => $result) {
@@ -260,7 +263,7 @@ class QueueController extends ControllerBase
                 }
 
                 $job = (new $class());
-                
+
                 $result->status = 'running';
                 $result->started_at = date('Y-m-d H:i:s');
                 if ($result->update() === false) {

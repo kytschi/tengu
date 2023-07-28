@@ -20,7 +20,7 @@ echo $this->partial("common/form/messages");
 <form id="form-edit" method="post" action="<?= UrlHelper::backend($url . '/save'); ?>">
     <div class="row mb-3">
 		<div class="col-12">
-			<div class="card">
+			<div class="card p-0">
 				<div class="card-body">
 					<button
 						id="btn-save"
@@ -156,25 +156,16 @@ echo $this->partial("common/form/messages");
                                     required>
                             </div>
                             <div class="form-group mb-4">
-                                <label for="target">
-                                    Target
-                                    <span class="required">*</span>
+                                <label for="slug">
+                                    Slug
                                 </label>
-                                <select
-                                    id="target"
-                                    name="target"
+                                <input
+                                    id="slug"
+                                    name="slug"
+                                    type="text"
                                     class="form-control mt-2"
-                                    aria-describedby="target"
-                                    required>
-                                    <?php
-                                    foreach ($targets as $target) {
-                                        $selected = FormController::getFormData('target');
-                                        ?>
-                                        <option value="<?= $target; ?>"<?= $selected == $target ? ' selected' :'';?>><?= $target; ?></option>
-                                        <?php
-                                    }
-                                    ?>
-                                </select>
+                                    aria-describedby="slug"
+                                    value="<?= FormController::getFormData('slug'); ?>">
                             </div>
                         </div>
                     </div>
@@ -261,6 +252,18 @@ echo $this->partial("common/form/messages");
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <?= $this->partial(
+                                'website/page_categories/widget',
+                                [
+                                    'categories' => $categories,
+                                    'url' => $url . '/categories',
+                                    'back_url' => $url . '/add'
+                                ]
+                            ); ?>
                         </div>
                     </div>
                 </div>

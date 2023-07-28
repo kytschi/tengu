@@ -19,7 +19,8 @@
         "vlucas/phpdotenv": "^5.3",
         "chrome-php/chrome": "^1.6",
         "tgalopin/html-sanitizer": "^1.5",
-        "mpdf/mpdf": "^8.1"        
+        "mpdf/mpdf": "^8.1",
+        "sabre/dav": "~3.2.0"        
     },
     "config": {
         "platform": {

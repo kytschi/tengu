@@ -29,6 +29,12 @@ sudo chmod -R 755 public/dump
 
 Make sure your webserver never serves the `secure` folder and feel free to backup the files generated. Even move the private key `tengu` if you like.
 
+### CRON
+Tengu has a CRON it runs in the background to help it out, here's how to set it up.
+```bash
+* * * * * php -f /var/www/website/tengu/crons/Tengu.php > /dev/null 2>&1
+```
+
 ## Migrations
 
 ### Create

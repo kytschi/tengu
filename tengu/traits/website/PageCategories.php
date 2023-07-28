@@ -27,6 +27,7 @@
 namespace Kytschi\Tengu\Traits\Website;
 
 use Kytschi\Tengu\Models\Website\Pages;
+use Kytschi\Tengu\Models\Website\PageCategories as Model;
 
 trait PageCategories
 {
@@ -36,15 +37,39 @@ trait PageCategories
             return null;
         }
 
-        if (empty($data['category'])) {
+        if (empty($data['id'])) {
             return null;
         }
 
-        $binds = ['id' => $data['category']];
+        $binds = ['id' => $data['id']];
 
         return Pages::find([
             'conditions' => 'id = :id:',
             'bind' => $binds
+        ]);
+    }
+
+    public function findCategoryItems($data)
+    {
+        if (empty($data)) {
+            return null;
+        }
+
+        if (empty($data['category_id'])) {
+            return null;
+        }
+
+        $binds = ['category_id' => $data['category_id']];
+
+        $order = 'sort ASC, created_at DESC';
+        if (!empty($data['order'])) {
+            $order = $data['order'];
+        }
+
+        return Model::find([
+            'conditions' => 'category_id = :category_id:',
+            'bind' => $binds,
+            'order' => $order
         ]);
     }
 }

@@ -238,6 +238,76 @@ $router->add(
 );
 
 /*
+ * Menu categories
+ */
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/menu/categories'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'MenuCategories',
+        'action'     => 'index',
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/menu/categories/add'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'MenuCategories',
+        'action'     => 'add',
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/menu/categories/delete/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'MenuCategories',
+        'action'     => 'delete',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/menu/categories/edit/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'MenuCategories',
+        'action'     => 'edit',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/menu/categories/recover/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'MenuCategories',
+        'action'     => 'recover',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/menu/categories/save'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'MenuCategories',
+        'action'     => 'save',
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/menu/categories/update/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'MenuCategories',
+        'action'     => 'update',
+        'id' => 1
+    ]
+);
+
+/*
  * Pages.
  */
 $router->add(

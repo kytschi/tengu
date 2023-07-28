@@ -98,7 +98,14 @@ class PageCategoriesController extends PagesController
                         :updated_by
                     FROM DUAL WHERE NOT EXISTS
                     (
-                        SELECT id, page_id, category_id, created_at, created_by, updated_at, updated_by
+                        SELECT
+                            id,
+                            page_id,
+                            category_id,
+                            created_at,
+                            created_by,
+                            updated_at,
+                            updated_by
                         FROM ' . $table . '
                         WHERE page_id=:page_id_2 AND category_id=:category_id_' . $key . '_2 
                     )',

@@ -92,7 +92,7 @@ if (!empty($_GET['back-url'])) {
             <div class="card p-0">
                 <div class="card-body">
                     <a
-                        href="<?= UrlHelper::backend($back_url); ?>"
+                        href="<?= UrlHelper::generate(UrlHelper::backend($back_url)); ?>"
                         class="btn btn-blank mr-2 text-center"
                         title="Go back to the <?= str_replace('-', ' ', $data->type); ?>s list"
                         data-toggle="tooltip"

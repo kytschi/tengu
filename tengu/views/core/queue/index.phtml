@@ -71,7 +71,7 @@ echo $this->partial("common/form/messages");
         </a>
     </div>
     <div class="col-3">
-        <a href="<?= UrlHelper::backend($url . '?filters[status]=deleted'); ?>" class="card bg-danger">
+        <a href="<?= UrlHelper::backend($url . '?filters[status]=failed'); ?>" class="card bg-danger">
             <div class="card-body">
                 <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
@@ -101,17 +101,49 @@ if ($stats['complete']) {
                         data-html="true"
                         data-trigger="focus"
                         data-toggle="popover"
-                        data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/clear'); ?>">Yes</a>'>
+                        data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/clear-complete'); ?>">Yes</a>'>
                         <div
                             data-toggle="tooltip"
                             data-dismiss="hover"
                             data-placement="top"
-                            title="Clear the queue">
+                            title="Clear the completed">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" class="pb-2">
                                 <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
                                 <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
                             </svg><br/>
-                            clear
+                            clear complete
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+if ($stats['failed']) {
+    ?>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card p-0">
+                <div class="card-body">
+                    <button
+                        class="btn btn-blank float-right"
+                        type="button"
+                        data-original-title="Are you sure?"
+                        data-html="true"
+                        data-trigger="focus"
+                        data-toggle="popover"
+                        data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/clear-failed'); ?>">Yes</a>'>
+                        <div
+                            data-toggle="tooltip"
+                            data-dismiss="hover"
+                            data-placement="top"
+                            title="Clear the failed">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" class="pb-2">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                            </svg><br/>
+                            clear failed
                         </div>
                     </button>
                 </div>

@@ -50,21 +50,18 @@ class ReviewsController extends PagesController
         $this->global_url = ($this->di->getConfig())->urls->cms . $this->global_url;
     }
 
-    public function addAction($template = 'website/reviews/add')
+    public function addAction($title = 'Build a review', $template = 'website/reviews/add')
     {
-        $this->setPageTitle('Build a review');
-        return parent::addAction($template);
+        return parent::addAction($title, $template);
     }
 
-    public function editAction($id, $template = 'website/reviews/edit')
+    public function editAction($id, $title = 'Managing the review', $template = 'website/reviews/edit')
     {
-        $this->setPageTitle('Managing the review');
-        return parent::editAction($id, $template);
+        return parent::editAction($id, $title, $template);
     }
 
-    public function indexAction($template = 'website/reviews/index')
+    public function indexAction($title = 'Reviews', $template = 'website/reviews/index')
     {
-        $this->setPageTitle('Reviews');
-        return parent::indexAction($template);
+        return parent::indexAction($title, $template);
     }
 }

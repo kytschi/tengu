@@ -139,6 +139,27 @@ trait Files
             $type = $this->resource;
         }
 
+        if (!empty($file['error'])) {
+            switch ($file['error']) {
+                case UPLOAD_ERR_INI_SIZE:
+                    throw new SaveException('Failed to create the file entry, exceeds max size');
+                    break;
+                case UPLOAD_ERR_PARTIAL:
+                    throw new SaveException('Failed to create the file entry, exceeds max form size');
+                    break;
+                case UPLOAD_ERR_NO_FILE:
+                    throw new SaveException('Failed to create the file entry, no file was uploaded');
+                    break;
+                case UPLOAD_ERR_NO_TMP_DIR:
+                    throw new SaveException('Failed to create the file entry, unable to write to tmp');
+                    break;
+                case UPLOAD_ERR_CANT_WRITE:
+                    throw new SaveException('Failed to create the file entry, unable to write to disk');
+                    break;
+            }
+        }
+
+        var_dump($file);
         if (is_string($file)) {
             $splits = explode("\\", $file);
             $name = end($splits);
@@ -148,6 +169,9 @@ trait Files
             $name = $file['name'];
             $tmp_name = $file['tmp_name'];
             $mime_type = $file['type'];
+            if (empty($mime_type)) {
+                $mime_type = mime_content_type($file['tmp_name']);
+            }
         }
 
         if (empty($label)) {

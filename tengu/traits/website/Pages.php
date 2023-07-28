@@ -30,6 +30,24 @@ use Kytschi\Tengu\Models\Website\Pages as Model;
 
 trait Pages
 {
+    public function findPage($data)
+    {
+        if (empty($data)) {
+            return null;
+        }
+
+        if (empty($data['id'])) {
+            return null;
+        }
+
+        $binds = ['id' => $data['id']];
+
+        return Model::findFirst([
+            'conditions' => 'id = :id:',
+            'bind' => $binds
+        ]);
+    }
+
     public function findPagesByTag($data)
     {
         if (empty($data)) {

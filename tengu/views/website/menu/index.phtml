@@ -2,12 +2,24 @@
 /**
  * Menu index template.
  *
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 use Kytschi\Tengu\Controllers\Core\FormController;
@@ -15,11 +27,8 @@ use Kytschi\Tengu\Controllers\Website\MenuController;
 use Kytschi\Tengu\Helpers\DateHelper;
 use Kytschi\Tengu\Helpers\UrlHelper;
 
-$url = ($this->di->getConfig())->urls->cms . '/menu';
-
 $filter_status = $this->tengu->getFilters('status');
 
-$stats = (new MenuController())->stats();
 echo $this->partial("common/form/messages");
 ?>
 <div class="row mb-3">
@@ -72,13 +81,16 @@ echo $this->partial("common/form/messages");
 </div>
 <div class="row mb-3">
 	<div class="col-12">
-		<div class="card">
+		<div class="card p-0">
 			<div class="card-body">
 				<?php
 				    $this->partial('common/lists/search', ['url' => $url]);
 				?>
 				<a href="<?= UrlHelper::backend($url . '/add'); ?>" class="btn btn-primary float-right">
 		            Add
+		        </a>
+                <a href="<?= UrlHelper::backend($url . '/categories'); ?>" class="btn btn-default float-right mr-3">
+		            Categories
 		        </a>
 		        <div class="float-right dropdown mr-3">
 		            <a
@@ -129,7 +141,6 @@ echo $this->partial("common/form/messages");
                             <tr>
                                 <th width="70px">&nbsp;</th>
                                 <th>Name</th>
-                                <th width="100px">Target</th>
                                 <th width="100px">Status</th>
                                 <th width="180px">&nbsp;</th>
                             </tr>
@@ -171,11 +182,6 @@ echo $this->partial("common/form/messages");
                                     <td>
                                         <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
                                             <?= $row->name; ?>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
-                                            <?= $row->target; ?>
                                         </a>
                                     </td>
                                     <td>

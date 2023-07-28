@@ -41,8 +41,8 @@ trait Shortcodes
         preg_match_all('/%(.*?)%/si', $content, $matches);
         if (!empty($matches[1])) {
             foreach ($matches[1] as $key => $match) {
-                if (substr($match, 0, strlen('imgByTag')) == 'imgByTag') {
-                    if ($file = $this->findFileByTag(str_replace(['imgByTag(\'', '\')'], '', $match))) {
+                if (strtolower(substr($match, 0, strlen('imgbytag'))) == 'imgbytag') {
+                    if ($file = $this->findFileByTag(str_replace(['imgbytag(\'', '\')'], '', strtolower($match)))) {
                         $content = str_replace(
                             $matches[0][$key],
                             '<img src="' . $file->file->url .

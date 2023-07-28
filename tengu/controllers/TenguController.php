@@ -47,6 +47,7 @@ use Kytschi\Tengu\Models\Website\Users;
 use Kytschi\Tengu\Traits\Core\Filters;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Kytschi\Tengu\Traits\Core\User;
+use Kytschi\Tengu\Traits\Website\Menu;
 use Kytschi\Tengu\Traits\Website\PageCategories;
 use Kytschi\Tengu\Traits\Website\Pages;
 use Kytschi\Tengu\Traits\Website\Reviews;
@@ -58,6 +59,7 @@ class TenguController
     use Appointments;
     use Events;
     use Filters;
+    use Menu;
     use PageCategories;
     use Pages;
     use Products;

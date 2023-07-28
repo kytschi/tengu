@@ -3,7 +3,7 @@
 /**
  * Core routes.
  *
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
  * Copyright Kytschi - All Rights Reserved.
@@ -404,11 +404,12 @@ $router->add(
 );
 
 $router->add(
-    UrlHelper::backend('/queue/clear'),
+    UrlHelper::backend('/queue/clear-{status}'),
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Core',
         'controller' => 'Queue',
-        'action'     => 'clear'
+        'action'     => 'clear',
+        'status' => 1
     ]
 );
 

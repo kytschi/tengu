@@ -4,12 +4,24 @@
  * Menu controller.
  *
  * @package     Kytschi\Tengu\Controllers\Website\MenuController
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 declare(strict_types=1);
@@ -17,6 +29,7 @@ declare(strict_types=1);
 namespace Kytschi\Tengu\Controllers\Website;
 
 use Kytschi\Tengu\Controllers\ControllerBase;
+use Kytschi\Tengu\Controllers\Website\MenuCategoriesController;
 use Kytschi\Tengu\Exceptions\RequestException;
 use Kytschi\Tengu\Exceptions\SaveException;
 use Kytschi\Tengu\Exceptions\ValidationException;
@@ -42,23 +55,23 @@ class MenuController extends ControllerBase
     ];
 
     public $global_url = '/menu';
-    public $resource = 'menu';
-
-    private $targets = [
-        'main',
-        'footer',
-        'both'
-    ];
+    public $resource = 'menu-item';
 
     public function initialize()
     {
         $this->global_url = ($this->di->getConfig())->urls->cms . $this->global_url;
     }
 
-    public function addAction()
+    /**
+     * Add action
+     *
+     * @param string $title The window title
+     * @return HTML
+     */
+    public function addAction($title = 'Add a menu item')
     {
         $this->secure($this->access);
-        $this->setPageTitle('Add a menu item');
+        $this->setPageTitle($title);
 
         $pages = (new Pages())->find([
             'conditions' => 'deleted_at IS NULL',
@@ -70,18 +83,27 @@ class MenuController extends ControllerBase
             [
                 'statuses' => $this->defaultStatuses(),
                 'pages' => $pages,
-                'targets' => $this->targets
+                'url' => $this->global_url,
+                'categories' => Menu::find([
+                    'conditions' => 'type="menu-category"',
+                    'order' => 'sort ASC'
+                ])
             ]
         );
     }
 
-    public function deleteAction()
+    /**
+     * Delete action
+     *
+     * @param string $id The id of the entry
+     * @return void
+     * @throws SaveException
+     */
+    public function deleteAction($id)
     {
         $this->clearFormData();
 
         $this->secure($this->access);
-
-        $id = $this->dispatcher->getParam('id');
 
         if ($id == 'all') {
             if (!empty($_POST['selected'])) {
@@ -90,7 +112,12 @@ class MenuController extends ControllerBase
                     ->executeQuery(
                         'UPDATE ' .
                         Menu::class .
-                        ' SET deleted_at=NOW(), deleted_by=:deleted_by:, status="deleted" WHERE id IN (:ids:)',
+                        ' SET
+                            deleted_at=NOW(),
+                            deleted_by=:deleted_by:,
+                            status="deleted" 
+                        WHERE 
+                            id IN (:ids:)',
                         [
                             'deleted_by' => self::getUserId(),
                             'ids' => implode(',', $_POST['selected'])
@@ -138,15 +165,21 @@ class MenuController extends ControllerBase
         }
     }
 
-    public function editAction()
+    /**
+     * Edit action
+     *
+     * @param string $id The id of the entry
+     * @return HTML
+     */
+    public function editAction($id, $title = 'Edit the menu item')
     {
         $this->secure($this->access);
-        $this->setPageTitle('Edit the menu item');
+        $this->setPageTitle($title);
 
         $model = (new Menu())->findFirst([
             'conditions' => 'id = :id:',
             'bind' => [
-                'id' => $this->dispatcher->getParam('id')
+                'id' => $id
             ]
         ]);
 
@@ -165,7 +198,12 @@ class MenuController extends ControllerBase
                 'data' => $model,
                 'statuses' => $this->defaultStatuses(),
                 'pages' => $pages,
-                'targets' => $this->targets
+                'url' => $this->global_url,
+                'categories' => Menu::find([
+                    'conditions' => 'type="menu-category" AND id != :id:',
+                    'bind' => ['id' => $model->id],
+                    'order' => 'sort ASC'
+                ])
             ]
         );
     }
@@ -173,37 +211,45 @@ class MenuController extends ControllerBase
     public static function get($target = 'both')
     {
         return (new Menu())->find([
-            'conditions' => 'deleted_at IS NULL AND status = "active" AND (target = :target: OR target = "both")',
-            'order' => 'sort ASC',
-            'bind' => ['target' => $target]
+            'conditions' => 'deleted_at IS NULL AND status = "active"',
+            'order' => 'sort ASC'
         ]);
     }
 
-    public function indexAction()
+    /**
+     * Index action
+     *
+     * @param $title The window title
+     * @param $template The template to be used
+     * @return HTML
+     */
+    public function indexAction($title = 'Menu', $template = 'website/menu/index')
     {
         $this->clearFormData();
 
         $this->secure($this->access);
-        $this->setPageTitle('Menu');
+        $this->setPageTitle($title);
         $this->savePagination();
         $this->setFilters();
+
+        $binds = [
+            'type' => $this->resource
+        ];
 
         $builder = $this
             ->modelsManager
             ->createBuilder()
             ->from(Menu::class)
-            ->where('id != ""')
+            ->where('type = :type:')
             ->orderBy('sort ASC');
 
         if (!empty($this->search)) {
+            $binds['name'] = '%' . $this->search . '%';
             $builder
-                ->andWhere('name LIKE :name:')
-                ->setBindParams(
-                    [
-                        'name' => '%' . $this->search . '%'
-                    ]
-                );
+                ->andWhere('name LIKE :name:');
         }
+
+        $builder->setBindParams($binds);
 
         $paginator = new QueryBuilder(
             [
@@ -214,13 +260,22 @@ class MenuController extends ControllerBase
         );
 
         return $this->view->partial(
-            'website/menu/index',
+            $template,
             [
-                'data' => $paginator->paginate()
+                'data' => $paginator->paginate(),
+                'stats' => $this->stats(),
+                'url' => $this->global_url
             ]
         );
     }
 
+    /**
+     * Recover action
+     *
+     * @param string $id The id of the entry
+     * @return void
+     * @throws SaveException
+     */
     public function recoverAction()
     {
         $this->clearFormData();
@@ -263,6 +318,14 @@ class MenuController extends ControllerBase
         }
     }
 
+    /**
+     * Save action
+     *
+     * @param string $id The id of the entry
+     * @return void
+     * @throws ValidationException
+     * @throws SaveException
+     */
     public function saveAction()
     {
         $this->secure($this->access);
@@ -289,6 +352,8 @@ class MenuController extends ControllerBase
                 );
             }
 
+            (new MenuCategoriesController())->addCategories($model->id);
+
             $this->addLog(
                 $this->resource,
                 $model->id,
@@ -310,15 +375,22 @@ class MenuController extends ControllerBase
         }
     }
 
+    /**
+     * Set data
+     *
+     * @param Kytschi\Tengu\Models\Website\Menu $model The menu model
+     * @return Kytschi\Tengu\Models\Website\Menu $model
+     */
     private function setData($model)
     {
         $model->page_id = !empty($_POST['page_id']) ? $_POST['page_id'] : '';
+        $model->slug = !empty($_POST['slug']) ? $_POST['slug'] : '';
         $model->name = strip_tags($_POST['name']);
         $model->tooltip = strip_tags($_POST['tooltip']);
         $model->external_link = !empty($_POST['external_link']) ? $_POST['external_link'] : '';
         $model->new_window = isset($_POST['new_window']) ? true : false;
         $model->status = isset($_POST['status']) ? 'active' : 'inactive';
-        $model->target = $_POST['target'];
+        $model->type = $this->resource;
 
         if ($model->status != 'deleted') {
             $model->deleted_at = null;
@@ -328,34 +400,49 @@ class MenuController extends ControllerBase
         return $model;
     }
 
-    public function sortAction()
+    /**
+     * Sort action
+     *
+     * @param string $id The menu ID
+     * @param string $dir The direction either up or down
+     * @param int $sort The sort number
+     * @return void
+     * @throws ValidationException
+     * @throws SaveException
+     */
+    public function sortAction($id, $dir, $sort)
     {
         $this->clearFormData();
-
         $this->secure($this->access);
 
         try {
-            $sort = intval($this->dispatcher->getParam('sort'));
+            $sort = intval($sort);
             if ($sort < 0) {
                 $sort *= -1;
             }
 
-            $dir = $this->dispatcher->getParam('dir');
             if ($dir == 'up') {
                 $query = 'UPDATE menu SET sort = sort + 1 WHERE sort=:sort AND id != :id';
             } else {
                 $query = 'UPDATE menu SET sort = sort - 1 WHERE sort=:sort AND id != :id';
             }
-
-            $query .= '; UPDATE menu SET sort = :sort WHERE id = :id';
-
             $this
                 ->db
                 ->query(
                     $query,
                     [
                         ':sort' => $sort,
-                        ':id' => $this->dispatcher->getParam('id')
+                        ':id' => $id
+                    ]
+                );
+
+            $this
+                ->db
+                ->query(
+                    'UPDATE menu SET sort = :sort WHERE id = :id',
+                    [
+                        ':sort' => $sort,
+                        ':id' => $id
                     ]
                 );
 
@@ -372,12 +459,26 @@ class MenuController extends ControllerBase
         }
     }
 
+    /**
+     * Stats
+     *
+     * @return Phalcon\Mvc\Model\Resultset\Simple
+     */
     public function stats()
     {
         $query = 'SELECT ';
-        $query .= "(SELECT count(id) FROM menu WHERE status = 'active') AS active,";
-        $query .= "(SELECT count(id) FROM menu WHERE status = 'inactive') AS inactive,";
-        $query .= "(SELECT count(id) FROM menu WHERE deleted_at IS NOT NULL) AS deleted,";
+        $query .= "(
+            SELECT count(id) 
+            FROM menu 
+            WHERE status = 'active' AND type='" . $this->resource . "') AS active,";
+        $query .= "(
+            SELECT count(id) 
+            FROM menu 
+            WHERE status = 'inactive' AND type='" . $this->resource . "') AS inactive,";
+        $query .= "(
+            SELECT count(id) 
+            FROM menu 
+            WHERE deleted_at IS NOT NULL AND type='" . $this->resource . "') AS deleted,";
 
         $model = new Menu();
         return (new \Phalcon\Mvc\Model\Resultset\Simple(
@@ -387,14 +488,22 @@ class MenuController extends ControllerBase
         ))->toArray()[0];
     }
 
-    public function updateAction()
+    /**
+     * Update action
+     *
+     * @param string $id ID of the entry
+     * @return void
+     * @throws ValidationException
+     * @throws SaveException
+     */
+    public function updateAction($id)
     {
         $this->secure($this->access);
 
         $model = (new Menu())->findFirst([
             'conditions' => 'id = :id:',
             'bind' => [
-                'id' => $this->dispatcher->getParam('id')
+                'id' => $id
             ]
         ]);
 
@@ -413,6 +522,8 @@ class MenuController extends ControllerBase
                     $model->getMessages()
                 );
             }
+
+            (new MenuCategoriesController())->addCategories($model->id);
 
             $this->addLog(
                 $this->resource,
@@ -435,6 +546,13 @@ class MenuController extends ControllerBase
         }
     }
 
+    /**
+     * Validate
+     *
+     * @return void
+     * @throws ValidationException
+     * @throws RequestException
+     */
     private function validate()
     {
         if (empty($_POST)) {
@@ -463,18 +581,12 @@ class MenuController extends ControllerBase
             )
         );
 
-        $validation->add(
-            'target',
-            new PresenceOf(
-                [
-                    'message' => 'The target is required',
-                ]
-            )
-        );
-
         $messages = $validation->validate($_POST);
         if (count($messages)) {
-            throw new ValidationException('Form validation failed, please double check the required fields', $messages);
+            throw new ValidationException(
+                'Form validation failed, please double check the required fields',
+                $messages
+            );
         }
     }
 }

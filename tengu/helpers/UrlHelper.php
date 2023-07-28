@@ -77,7 +77,11 @@ class UrlHelper
 
             return rtrim($url, '&');
         }
-        return $url . $string;
+
+        if (strpos($url, $string) === false) {
+            $url .= $string;
+        }
+        return $url;
     }
 
     public static function backend(string $url, string $from = '')

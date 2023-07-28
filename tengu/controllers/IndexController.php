@@ -106,13 +106,13 @@ class IndexController extends ControllerBase
                 ]
             ]
         );
-                    
+
         if (empty($page)) {
             if ($page = $this->checkOldUrl($url, true, true)) {
                 $this->redirect($page->url);
             } else {
                 $this->setPageTitle('Page not found');
-   
+
                 Tag::setDefault('page_updated', date('Y-m-d H:i:s'));
                 Tag::setDefault('meta_description', $this->tengu->settings->meta_description);
                 Tag::setDefault('meta_keywords', $this->tagsToString($this->tengu->settings->tags));
@@ -134,7 +134,7 @@ class IndexController extends ControllerBase
         $this->setPageTitle($page->name);
         $this->setPageTags($page);
         $page->content = $this->parseShortcodes($page->content);
-        
+
         if (isset($_GET['search'])) {
             return $this->frontSearch($page);
         }
@@ -166,8 +166,6 @@ class IndexController extends ControllerBase
     {
         $this->clearFormData();
         $this->savePagination();
-
-        
 
         $this->setIndexDefaults(
             [
@@ -517,7 +515,7 @@ class IndexController extends ControllerBase
             ]);
             $this->pageSpin($page, $spun);
         }
-        
+
         if ($this->add_stat) {
             $this->addStat(
                 $spun->id,

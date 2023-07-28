@@ -29,6 +29,7 @@ declare(strict_types=1);
 namespace Kytschi\Akira\Controllers;
 
 use Kytschi\Akira\Models\Appointments;
+use Kytschi\Akira\Models\Settings;
 use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Exceptions\RequestException;
 use Kytschi\Tengu\Exceptions\SaveException;
@@ -44,6 +45,7 @@ use Kytschi\Tengu\Traits\Core\User;
 use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Filter\Validation;
 use Phalcon\Filter\Validation\Validator\PresenceOf;
+use Sabre\DAV\Client;
 
 class AppointmentsController extends ControllerBase
 {
@@ -210,6 +212,30 @@ class AppointmentsController extends ControllerBase
         );
     }
 
+    private function hasWebdav($data)
+    {
+        $settings = (new Settings())->findFirst([
+            'id IS NOT NULL'
+        ]);
+        if (empty($settings)) {
+            return $data;
+        }
+
+        if (!empty($settings->webdav_url)) {
+            $client = new Client([
+                'baseUri' => $settings->webdav_url,
+                'userName' => $settings->webdav_auth,
+                'password' => $settings->webdav_auth_two
+            ]);
+
+            $client->addCurlSetting(CURLOPT_SSL_VERIFYHOST, 0);
+            $client->addCurlSetting(CURLOPT_SSL_VERIFYPEER, 0);
+
+            $features = $client->options();
+            var_dump($features);
+        }
+    }
+
     public function indexAction()
     {
         $this->setPageTitle('Our appointments');
@@ -242,6 +268,8 @@ class AppointmentsController extends ControllerBase
                 $data[$day][] = $result;
             }
         }
+
+        $data = $this->hasWebdav($data);
 
         return $this->view->partial(
             'akira/appointments/index',

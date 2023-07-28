@@ -458,12 +458,12 @@ class PagesController extends ControllerBase
         $model->parent_id = !empty($_POST['parent_id']) ? $_POST['parent_id'] : null;
         $model->type = $this->resource;
 
-        $model->url = '/' .
+        $model->url =
             trim(
                 (
                     empty($_POST['url']) ?
-                        $this->createSlug(strip_tags($_POST['name'])) :
-                        UrlHelper::clean($_POST['url'])
+                        '/' . $this->createSlug(strip_tags($_POST['name'])) :
+                        UrlHelper::clean($_POST['url']) . '/'
                 ),
                 '/'
             );

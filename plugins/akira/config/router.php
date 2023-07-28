@@ -117,6 +117,27 @@ $router->add(
 );
 
 /*
+ * Appointment settings.
+ */
+$router->add(
+    UrlHelper::backend($config->urls->css . '/appointments/settings'),
+    [
+        'namespace'  => 'Kytschi\Akira\Controllers',
+        'controller' => 'Settings',
+        'action'     => 'index'
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->css . '/appointments/settings/update'),
+    [
+        'namespace'  => 'Kytschi\Akira\Controllers',
+        'controller' => 'Settings',
+        'action'     => 'update'
+    ]
+);
+
+/*
  * Dashboard.
  */
 $router->add(

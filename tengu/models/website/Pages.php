@@ -209,7 +209,7 @@ class Pages extends Model
                 'alias'    => 'categories',
                 'reusable' => true,
                 'params'   => [
-                    'conditions' => Pages::class . '.deleted_at IS NULL',
+                    'conditions' => PageCategories::class . '.deleted_at IS NULL',
                     'order' => PageCategories::class . '.sort ASC'
                 ]
             ]
@@ -226,7 +226,7 @@ class Pages extends Model
                 'alias'    => 'category_items',
                 'reusable' => true,
                 'params'   => [
-                    'conditions' => Pages::class . '.deleted_at IS NULL',
+                    'conditions' => PageCategories::class . '.deleted_at IS NULL',
                     'order' => PageCategories::class . '.sort ASC, ' . PageCategories::class . '.created_at DESC'
                 ]
             ]
