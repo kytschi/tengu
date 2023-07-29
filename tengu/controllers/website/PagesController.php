@@ -459,7 +459,7 @@ class PagesController extends ControllerBase
         $model->type = $this->resource;
 
         $model->url =
-            trim(
+            rtrim(
                 (
                     empty($_POST['url']) ?
                         '/' . $this->createSlug(strip_tags($_POST['name'])) :

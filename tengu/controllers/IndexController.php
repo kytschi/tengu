@@ -99,7 +99,9 @@ class IndexController extends ControllerBase
         Tag::setDefault('robots', $this->tengu->settings->robots);
         $page = Pages::findFirst(
             [
-                'conditions' => 'deleted_at IS NULL AND (url = :url: OR canonical_url = :canonical_url:) AND status = "active"',
+                'conditions' => 'deleted_at IS NULL AND 
+                    (url = :url: OR canonical_url = :canonical_url:) AND 
+                    status = "active"',
                 'bind' => [
                     'url' => $url,
                     'canonical_url' => $url
