@@ -45,22 +45,19 @@ class ProductCategoriesController extends PageCategoriesController
         $this->global_url = ($this->di->getConfig())->urls->sales . $this->global_url;
     }
 
-    public function addAction($template = 'true')
+    public function addAction($title = 'Adding a product category', $template = 'website/pages/add')
     {
-        $this->setPageTitle('Adding a product category');
-        return parent::addAction();
+        return parent::addAction($title, $template);
     }
 
-    public function editAction($id, $template = 'true')
+    public function editAction($id, $title = 'Managing the product category', $template = 'website/pages/edit')
     {
-        $this->setPageTitle('Managing the product category');
-        return parent::editAction($id);
+        return parent::editAction($id, $title, $template);
     }
 
-    public function indexAction($template = 'true')
+    public function indexAction($title = 'Product categories', $template = 'website/page_categories/index')
     {
-        $this->setPageTitle('Product categories');
-        return parent::indexAction();
+        return parent::indexAction($title, $template);
     }
 
     public function saveAction($ignore = true)

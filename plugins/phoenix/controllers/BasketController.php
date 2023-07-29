@@ -4,12 +4,24 @@
  * Basket controller.
  *
  * @package     Kytschi\Phoenix\Controllers\BasketController
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 declare(strict_types=1);
@@ -64,7 +76,7 @@ class BasketController extends ControllerBase
                 'page_id' => $id
             ]
         ]);
-        
+
         if (empty($product)) {
             return $this->notFound();
         }
@@ -81,7 +93,7 @@ class BasketController extends ControllerBase
         if (!empty($_GET['from'])) {
             $url = urldecode($_GET['from']);
         }
-        
+
         try {
             $found = false;
             if (!empty($basket->items)) {
@@ -115,7 +127,7 @@ class BasketController extends ControllerBase
                     }
                 }
             }
-            
+
             if (!$found) {
                 $quantity = 1;
                 if (!empty($_POST['quantity'])) {
@@ -133,7 +145,7 @@ class BasketController extends ControllerBase
                         throw new StockException('The product is out of stock');
                     }
                 }
-                
+
                 $sub_total = $quantity * $product->price;
                 $vat = $sub_total * (!empty($product->vat) ? ($product->vat / 100) : 0);
 
@@ -239,7 +251,7 @@ class BasketController extends ControllerBase
         }
 
         $this->setPageTitle('Checkout');
-        
+
         return $this->view->partial(
             $template,
             [
@@ -323,7 +335,7 @@ class BasketController extends ControllerBase
     private function createBasket($customer_id = null)
     {
         $user_id = self::getUserId();
-        
+
         $basket = new Orders([
             'customer_id' => $customer_id,
             'number' => OrdersController::getNumber(),
@@ -411,7 +423,7 @@ class BasketController extends ControllerBase
         }
 
         $this->setPageTitle('Complete');
-        
+
         return $this->view->partial(
             $template
         );
@@ -425,7 +437,7 @@ class BasketController extends ControllerBase
                 'updated_by' => self::getUserId()
             ]
         ]);
-        
+
         return $basket;
     }
 
@@ -449,7 +461,7 @@ class BasketController extends ControllerBase
             }
 
             $page = Pages::query()
-                ->where('deleted_at IS NULL AND (url = :url: OR canonical_url = :url:) AND status = "active"')
+                ->where('deleted_at IS NULL AND (url = :url: OR canonical_url = :canonical_url:) AND status = "active"')
                 ->bind([
                     'url' => $url,
                     'canonical_url' => $url
@@ -457,7 +469,7 @@ class BasketController extends ControllerBase
                 ->limit(1)
                 ->execute()
                 ->getFirst();
-            
+
             if (empty($page)) {
                 $page = new Pages([
                     'name' => 'Basket',
@@ -473,7 +485,7 @@ class BasketController extends ControllerBase
 
             $this->setPageTags($page);
         }
-        
+
         return $this->view->partial(
             $template,
             [
@@ -595,7 +607,7 @@ class BasketController extends ControllerBase
         } else {
             $url = '/basket';
         }
-        
+
         $basket = self::get();
         if (empty($basket)) {
             throw new SaveException('Failed due to empty basket');
@@ -636,7 +648,7 @@ class BasketController extends ControllerBase
                 } else {
                     $url = '/basket/checkout/complete';
                 }
-                
+
                 $this->validateAddress();
                 $this->saveAddresses($basket);
 

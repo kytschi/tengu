@@ -66,10 +66,8 @@ class ProductsController extends PagesController
         $this->global_url = ($this->di->getConfig())->urls->sales . $this->global_url;
     }
 
-    public function addAction($template = 'website/pages/add')
+    public function addAction($title = 'Adding a product', $template = 'website/pages/add')
     {
-        $this->setPageTitle('Adding a product');
-
         $settings = Settings::findFirst([
             'id IS NOT NULL'
         ]);
@@ -83,13 +81,11 @@ class ProductsController extends PagesController
             ]
         );
 
-        return parent::addAction($template);
+        return parent::addAction($title, $template);
     }
 
-    public function editAction($id, $template = 'website/pages/edit')
+    public function editAction($id, $title = 'Managing the product', $template = 'website/pages/edit')
     {
-        $this->setPageTitle('Managing the product');
-
         $settings = Settings::findFirst([
             'id IS NOT NULL'
         ]);
@@ -103,14 +99,12 @@ class ProductsController extends PagesController
             ]
         );
 
-        return parent::editAction($id, $template);
+        return parent::editAction($id, $title, $template);
     }
 
-    public function indexAction($template = 'phoenix/products/index')
+    public function indexAction($title = 'Products', $template = 'phoenix/products/index')
     {
-        $this->setPageTitle('Products');
-
-        return parent::indexAction($template);
+        return parent::indexAction($title, $template);
     }
 
     public function saveSubAction($model)

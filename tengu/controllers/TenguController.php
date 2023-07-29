@@ -32,6 +32,7 @@ use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\ClientException;
 use Kytschi\Akira\Traits\Appointments;
 use Kytschi\Izumi\Traits\Events;
+use Kytschi\Phoenix\Traits\Basket;
 use Kytschi\Phoenix\Traits\Products;
 use Kytschi\Tengu\Controllers\Core\FormController;
 use Kytschi\Tengu\Controllers\Website\BlogPostsController;
@@ -57,6 +58,7 @@ use Phalcon\Tag;
 class TenguController
 {
     use Appointments;
+    use Basket;
     use Events;
     use Filters;
     use Menu;
