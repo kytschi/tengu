@@ -33,6 +33,7 @@ use GuzzleHttp\Exception\ClientException;
 use Kytschi\Akira\Traits\Appointments;
 use Kytschi\Izumi\Traits\Events;
 use Kytschi\Phoenix\Traits\Basket;
+use Kytschi\Phoenix\Traits\PaymentGateways;
 use Kytschi\Phoenix\Traits\Products;
 use Kytschi\Tengu\Controllers\Core\FormController;
 use Kytschi\Tengu\Controllers\Website\BlogPostsController;
@@ -64,6 +65,7 @@ class TenguController
     use Menu;
     use PageCategories;
     use Pages;
+    use PaymentGateways;
     use Products;
     use Reviews;
     use Tags;

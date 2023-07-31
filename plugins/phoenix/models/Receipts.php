@@ -50,7 +50,7 @@ class Receipts extends Model
                 'reusable' => true
             ]
         );
-        
+
         $this->hasOne(
             'deleted_by',
             Users::class,

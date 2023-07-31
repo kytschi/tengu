@@ -1,20 +1,32 @@
 <?php
 
 /**
- * Receipts controller.
+ * Payments controller.
  *
- * @package     Kytschi\Phoenix\Controllers\ReceiptsController
- * @copyright   2022 Kytschi
+ * @package     Kytschi\Phoenix\Controllers\Payments\PaymentsController
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.2
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 declare(strict_types=1);
 
-namespace Kytschi\Phoenix\Controllers;
+namespace Kytschi\Phoenix\Controllers\Payments;
 
 use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Exceptions\RequestException;
@@ -33,7 +45,7 @@ use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
 
-class ReceiptsController extends ControllerBase
+class PaymentsController extends ControllerBase
 {
     use Files;
     use Form;
@@ -48,12 +60,12 @@ class ReceiptsController extends ControllerBase
         'finance-manager'
     ];
 
-    public $global_url = '/receipts';
-    public $resource = 'receipt';
+    public $global_url = '/payments';
+    public $resource = 'payment';
 
     public function initialize()
     {
-        $this->global_url = ($this->di->getConfig())->urls->fms . $this->global_url;
+        $this->global_url = ($this->di->getConfig())->urls->sales . $this->global_url;
     }
 
     public function addAction()
@@ -149,7 +161,6 @@ class ReceiptsController extends ControllerBase
             ],
             'name'
         );
-
 
         $builder = $this
             ->modelsManager

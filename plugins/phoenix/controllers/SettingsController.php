@@ -29,6 +29,7 @@ declare(strict_types=1);
 namespace Kytschi\Phoenix\Controllers;
 
 use Kytschi\Phoenix\Controllers\ShippingCompaniesController;
+use Kytschi\Phoenix\Models\PaymentGateway;
 use Kytschi\Phoenix\Models\Settings;
 use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Exceptions\RequestException;
@@ -78,6 +79,7 @@ class SettingsController extends ControllerBase
             [
                 'data' => $model,
                 'shipping_companies' => (new ShippingCompaniesController())->get(),
+                'payment_gateways' => PaymentGateway::find(['conditions' => 'deleted_at IS NULL']),
                 'url' => $this->global_url
             ]
         );
@@ -95,6 +97,7 @@ class SettingsController extends ControllerBase
         $model->zero_stock = !empty($_POST['zero_stock']) ? intval($_POST['zero_stock']) : 0;
         $model->onscreen_keyboard = !empty($_POST['onscreen_keyboard']) ? intval($_POST['onscreen_keyboard']) : 0;
         $model->default_shipping = !empty($_POST['default_shipping']) ? $_POST['default_shipping'] : '';
+        $model->default_payment_gateway = !empty($_POST['default_payment_gateway']) ? $_POST['default_payment_gateway'] : '';
 
         return $model;
     }
@@ -136,6 +139,37 @@ class SettingsController extends ControllerBase
                 'info',
                 'Updated by ' . $this->getUserFullName()
             );
+
+            $this
+                ->modelsManager
+                ->executeQuery('UPDATE ' . PaymentGateway::class . ' SET status="inactive", default=0');
+
+            if (!empty($_POST['payment_gateways'])) {
+                foreach ($_POST['payment_gateways'] as $id => $value) {
+                    $default = 0;
+                    if ($id == $model->default_payment_gateway) {
+                        $default = 1;
+                    }
+                    $payment = PaymentGateway::findFirst([
+                        'conditions' => 'id=:id:',
+                        'bind' => [
+                            'id' => $id
+                        ]
+                    ]);
+                    if (empty($payment)) {
+                        continue;
+                    }
+
+                    $payment->status = 'active';
+                    $payment->default = $default;
+                    if ($payment->update() === false) {
+                        throw new SaveException(
+                            'Failed to update the payment gateway',
+                            $payment->getMessages()
+                        );
+                    }
+                }
+            }
 
             $this->saveFormUpdated('Settings have been updated');
             $this->redirect(UrlHelper::backend($this->global_url));

@@ -25,6 +25,7 @@
 
 include __DIR__ . '/../crons/Cron.php';
 
+use Kytschi\Phoenix\Models\PaymentGateway;
 use Kytschi\Tengu\Controllers\Core\GroupsController;
 use Kytschi\Tengu\Helpers\StringHelper;
 use Kytschi\Tengu\Models\Core\Users;
@@ -76,11 +77,39 @@ if (empty($users)) {
     $model->last_name = readline(' Please enter your last name: ');
     $model->type = 'user';
     $model->status = 'active';
-    
+
     if ($model->save() === false) {
         echo 'Failed to install, ' . implode(", ", $model->getMessages());
         die();
     }
 
     echo " Go to your website and add /tengu to the URL to login\n";
+}
+
+$gateways = ['Paypal' => 'Paypal', 'Stripe' => 'Credit/Debit cards'];
+foreach ($gateways as $name => $description) {
+    $payment = PaymentGateway::findFirst(
+        [
+            'conditions' => 'name=:name:',
+            'bind' => ['name' => $name],
+            'reusable' => true,
+        ]
+    );
+    if (!empty($payment)) {
+        continue;
+    }
+
+    $model = new PaymentGateway([
+        'name' => $name,
+        'description' => $description,
+        'created_at' => date('Y-m-d H:i:s'),
+        'created_by' => '00000000-0000-0000-0000-000000000000',
+        'updated_at' => date('Y-m-d H:i:s'),
+        'updated_by' => '00000000-0000-0000-0000-000000000000'
+    ]);
+
+    if ($model->save() === false) {
+        echo 'Failed to install, ' . implode(", ", $model->getMessages());
+        die();
+    }
 }
