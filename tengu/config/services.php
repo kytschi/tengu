@@ -57,7 +57,7 @@ $di->setShared('view', function () {
                 $config->application->viewsDir,
                 $config->application->genericViewsDir
             ];
-            
+
             foreach ($config->apps as $app => $status) {
                 if (
                     file_exists(
@@ -127,31 +127,32 @@ if ($_ENV['APP_ENV'] == 'production') {
 /*
  * Start the session the first time some component request the session service
  */
-if (TENGU_BACKEND) {
-    $di->setShared('session', function () {
-        $config = $this->getConfig();
+$di->setShared('session', function () {
+    $config = $this->getConfig();
 
-        $session = new SessionManager();
-        $serializerFactory = new SerializerFactory();
-        $factory = new AdapterFactory($serializerFactory);
-        if ($_ENV['APP_ENV'] == 'production') {
-            $options = [
-                'host'  => $config->redis->host,
-                'port'  => $config->redis->port,
-                'index' => '1',
-            ];
-            $redis = new Redis($factory, $options);
-            $session
-                ->setAdapter($redis)
-                ->start();
-        } else {
-            $files = new Stream(
-                [
-                    'savePath' => '/tmp',
-                ]
-            );
-            $session->setAdapter($files)->start();
-        }
-        return $session;
-    });
-}
+    $session = new SessionManager();
+    $serializerFactory = new SerializerFactory();
+    $factory = new AdapterFactory($serializerFactory);
+    if ($_ENV['APP_ENV'] == 'production') {
+        $options = [
+            'host'  => $config->redis->host,
+            'port'  => $config->redis->port,
+            'index' => '1',
+        ];
+        $redis = new Redis($factory, $options);
+        $session
+            ->setAdapter($redis)
+            ->start();
+    } else {
+        $files = new Stream(
+            [
+                'savePath' => '/tmp',
+            ]
+        );
+        $session
+            ->setAdapter($files)
+            ->setId('tengu')
+            ->start();
+    }
+    return $session;
+});

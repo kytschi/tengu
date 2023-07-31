@@ -32,12 +32,12 @@ trait Basket
 {
     public function getBasket()
     {
-        return BasketController::get();
+        return (new BasketController())->get();
     }
 
     public function getBasketCount()
     {
-        if ($basket = BasketController::get()) {
+        if ($basket = (new BasketController())->get()) {
             return $basket->quantity;
         }
 

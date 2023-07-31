@@ -48,6 +48,7 @@ use Kytschi\Tengu\Traits\Core\Logs;
 use Kytschi\Tengu\Traits\Core\Notes;
 use Kytschi\Tengu\Traits\Core\Security;
 use Kytschi\Tengu\Traits\Core\Tags;
+use Phalcon\Encryption\Security\Random;
 use Phalcon\Tag;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
@@ -81,7 +82,7 @@ class BasketController extends ControllerBase
             return $this->notFound();
         }
 
-        if (empty($basket = self::get())) {
+        if (empty($basket = $this->get())) {
             $basket = $this->createBasket();
         }
 
@@ -182,7 +183,7 @@ class BasketController extends ControllerBase
         $this->clearFormData();
         $this->secure();
 
-        $basket = self::get();
+        $basket = $this->get();
         if (empty($basket)) {
             throw new SaveException('Failed due to no basket');
         }
@@ -228,6 +229,7 @@ class BasketController extends ControllerBase
 
     public function checkoutAction()
     {
+        $page = null;
         if (TENGU_BACKEND) {
             $this->secure();
             $template = 'phoenix/basket/checkout/address';
@@ -255,7 +257,8 @@ class BasketController extends ControllerBase
         return $this->view->partial(
             $template,
             [
-                'data' => $basket
+                'basket' => $basket,
+                'page' => $page
             ]
         );
     }
@@ -265,7 +268,7 @@ class BasketController extends ControllerBase
         $this->clearFormData();
         $this->secure();
 
-        $basket = self::get();
+        $basket = $this->get();
         if (empty($basket)) {
             throw new SaveException('Failed due to no basket');
         }
@@ -314,7 +317,7 @@ class BasketController extends ControllerBase
 
     public function createAction($id)
     {
-        if (empty($basket = self::get())) {
+        if (empty($basket = $this->get())) {
             $this->createBasket($id);
         } elseif ($basket->customer_id != $id) {
             $this->createBasket($id);
@@ -336,9 +339,17 @@ class BasketController extends ControllerBase
     {
         $user_id = self::getUserId();
 
+        if ($user_id == '00000000-0000-0000-0000-000000000000') {
+            if (empty($this->session->basket)) {
+                $this->session->set('basket', (new Random())->uuid());
+            }
+            $user_id = $this->session->basket;
+        }
+
         $basket = new Orders([
             'customer_id' => $customer_id,
             'number' => OrdersController::getNumber(),
+            'status' => 'in progress',
             'created_by' => $user_id,
             'updated_by' => $user_id,
         ]);
@@ -360,7 +371,7 @@ class BasketController extends ControllerBase
             $this->secure();
         }
 
-        $basket = self::get();
+        $basket = $this->get();
         if (empty($basket)) {
             throw new SaveException('Failed due to empty basket');
         }
@@ -429,13 +440,28 @@ class BasketController extends ControllerBase
         );
     }
 
-    public static function get()
+    public function get()
     {
+        $user_id = self::getUserId();
+
+        if ($user_id == '00000000-0000-0000-0000-000000000000') {
+            if (!empty($this->session->basket)) {
+                $user_id = $this->session->basket;
+            } else {
+                $user_id = null;
+            }
+        }
+
+        if (empty($user_id)) {
+            return null;
+        }
+
         $basket = (new Orders())->findFirst([
-            'conditions' => 'updated_by = :updated_by: AND status="active"',
+            'conditions' => 'created_by = :created_by: AND status="in progress"',
             'bind' => [
-                'updated_by' => self::getUserId()
-            ]
+                'created_by' => $user_id
+            ],
+            'order' => 'created_at DESC'
         ]);
 
         return $basket;
@@ -489,7 +515,7 @@ class BasketController extends ControllerBase
         return $this->view->partial(
             $template,
             [
-                'data' => $this->get(),
+                'basket' => $this->get(),
                 'page' => $page
             ]
         );
@@ -608,7 +634,7 @@ class BasketController extends ControllerBase
             $url = '/basket';
         }
 
-        $basket = self::get();
+        $basket = $this->get();
         if (empty($basket)) {
             throw new SaveException('Failed due to empty basket');
         }

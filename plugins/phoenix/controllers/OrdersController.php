@@ -184,7 +184,7 @@ class OrdersController extends ControllerBase
         }
 
         $this->setPageTitle('Order view');
-                
+
         return $this->view->partial(
             'phoenix/orders/edit',
             [
@@ -196,7 +196,7 @@ class OrdersController extends ControllerBase
     public static function getNumber()
     {
         $model = (new Orders())->findFirst(['order' => 'number desc']);
-        
+
         if (empty($model)) {
             return 1;
         }
@@ -373,7 +373,7 @@ class OrdersController extends ControllerBase
 
         $query = 'SELECT ';
         $query .= "(SELECT count(id) FROM $table WHERE status = 'complete') AS complete,";
-        $query .= "(SELECT count(id) FROM $table WHERE status = 'active') AS active,";
+        $query .= "(SELECT count(id) FROM $table WHERE status = 'in progress') AS in_progress,";
         $query .= "(SELECT count(id) FROM $table WHERE status = 'inactive') AS inactive,";
         $query .= "(SELECT count(id) FROM $table WHERE status = 'deleted' AND deleted_at IS NOT NULL) AS deleted,";
 
@@ -427,7 +427,7 @@ class OrdersController extends ControllerBase
 
         try {
             (new BasketController())->saveAddresses($model);
-            
+
             $this->addTagsFromRequest($model->id, true);
             $this->addNoteFromRequest($model->id);
 

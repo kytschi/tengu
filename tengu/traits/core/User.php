@@ -17,10 +17,13 @@ namespace Kytschi\Tengu\Traits\Core;
 use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Exceptions\AuthorisationException;
 use Kytschi\Tengu\Helpers\UrlHelper;
+use Kytschi\Tengu\Traits\Core\Security;
 use Phalcon\Encryption\Crypt;
 
 trait User
 {
+    use Security;
+
     public static function getUserIp()
     {
         $splits = explode('.', $_SERVER['REMOTE_ADDR']);
@@ -28,7 +31,7 @@ trait User
         foreach ($splits as $split) {
             $key .= dechex(intval($split));
         }
-        return urlencode((new Crypt())->encrypt($key, $_ENV['APP_KEY']));
+        return self::encrypt($key);
     }
 
     public static function getUser($var = '')
@@ -57,11 +60,7 @@ trait User
     public static function getUserId()
     {
         if (!TENGU_BACKEND) {
-            if (empty($_SERVER)) {
-                return self::getUserIp();
-            } else {
-                return '00000000-0000-0000-0000-000000000000';
-            }
+            return '00000000-0000-0000-0000-000000000000';
         }
         if ($id = self::getUser('id')) {
             return $id;

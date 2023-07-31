@@ -58,7 +58,7 @@ trait Validation
         if (!in_array($status, $this->valid_status)) {
             return $this->default_status;
         }
-        
+
         return $status;
     }
 
@@ -74,11 +74,11 @@ trait Validation
     public function notFound(string $message = 'Entry not found')
     {
         header("HTTP/1.0 404 Not Found");
-        
+
         if (!file_exists(($this->di->getConfig())->application->siteViewsDir . '/errors/not_found.phtml')) {
             (new ErrorsController())->display($message);
         }
-        
+
         return (new ControllerBase())->view->partial(
             'errors/not_found',
             [
