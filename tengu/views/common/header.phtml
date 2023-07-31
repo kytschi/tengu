@@ -17,7 +17,7 @@ use Phalcon\Tag;
 
 $user = UsersController::getUser();
 $notifications = UsersController::getNotifications();
-$basket = BasketController::get();
+$basket = (new BasketController())->get();
 ?>
 <nav class="navbar">
 	<div class="container-fluid">

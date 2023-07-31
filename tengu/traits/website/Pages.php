@@ -48,6 +48,24 @@ trait Pages
         ]);
     }
 
+    public function findPageByTag($data)
+    {
+        if (empty($data)) {
+            return null;
+        }
+
+        if (empty($data['tag'])) {
+            return null;
+        }
+
+        $binds = ['search_tags' => '%' . $data['tag'] . ',%'];
+
+        return Model::findFirst([
+            'conditions' => 'search_tags LIKE :search_tags:',
+            'bind' => $binds
+        ]);
+    }
+
     public function findPagesByTag($data)
     {
         if (empty($data)) {

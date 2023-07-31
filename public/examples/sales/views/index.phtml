@@ -17,7 +17,7 @@ use Kytschi\Tengu\Helpers\UrlHelper;
 use Phalcon\Tag;
 
 $title = Tag::getTitle();
-$basket = BasketController::get();
+$basket = (new BasketController())->get();
 ?>
 <!DOCTYPE html>
 <html lang="en">
