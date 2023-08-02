@@ -315,11 +315,11 @@ class ThemesController extends ControllerBase
     {
         if (TENGU_BACKEND) {
             $theme = 'default';
-            
+
             if (!empty($settings)) {
                 $theme = !empty($settings->tengu_theme) ? $settings->tengu_theme : 'default';
             }
-                        
+
             $this->current_theme = new Themes([
                 'name' => $theme,
                 'slug' => $theme,

@@ -44,6 +44,7 @@ Thumbs.db
 *.wmv
 
 *~
+*.kra
 vendor
 .env
 composer.lock
