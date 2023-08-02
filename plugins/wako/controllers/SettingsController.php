@@ -29,8 +29,8 @@ use Kytschi\Tengu\Traits\Core\Form;
 use Kytschi\Tengu\Traits\Core\Logs;
 use Kytschi\Wako\Controllers\DividendsController;
 use Kytschi\Wako\Models\Settings;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class SettingsController extends ControllerBase
 {

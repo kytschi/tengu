@@ -33,8 +33,8 @@ use Kytschi\Tengu\Traits\Website\Stats;
 use Kytschi\Umi\Models\Boards;
 use Kytschi\Umi\Models\BoardColumns;
 use Kytschi\Umi\Models\BoardEntries;
-use Phalcon\Validation as PhalconValidation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation as PhalconValidation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class MyBoardController extends ControllerBase
 {

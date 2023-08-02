@@ -52,14 +52,19 @@ class EventsController extends PagesController
         $this->global_add_url = $this->global_url . '/create';
     }
 
-    public function addAction($title = 'Add an event')
+    public function addAction($title = 'Add an event', $template = 'website/pages/add')
     {
-        parent::addAction($title);
+        parent::addAction($title, $template);
     }
 
-    public function editAction($id, $title = 'Editing the event')
+    public function editAction($id, $title = 'Editing the event', $template = 'website/pages/edit')
     {
-        parent::editAction($id, $title);
+        parent::editAction($id, $title, $template);
+    }
+
+    public function indexAction($title = 'Our events', $template = 'website/pages/index')
+    {
+        return parent::indexAction($title, $template);
     }
 
     public function saveSubAction($model)

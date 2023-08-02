@@ -34,8 +34,8 @@ use Kytschi\Wako\Models\Invoices;
 use Kytschi\Wako\Models\InvoiceTimesheets;
 use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Encryption\Security\Random;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class InvoicesController extends ControllerBase
 {

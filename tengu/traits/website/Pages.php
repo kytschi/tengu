@@ -26,10 +26,16 @@
 
 namespace Kytschi\Tengu\Traits\Website;
 
+use Kytschi\Tengu\Controllers\Website\BlogPostsController;
 use Kytschi\Tengu\Models\Website\Pages as Model;
 
 trait Pages
 {
+    public function findSimilarBlogPosts($count = 3, $exclude = null)
+    {
+        return (new BlogPostsController())->get($count, $exclude, true);
+    }
+
     public function findPage($data)
     {
         if (empty($data)) {

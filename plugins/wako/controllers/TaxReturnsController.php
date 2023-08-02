@@ -41,8 +41,8 @@ use Kytschi\Wako\PDFs\EmploymentBuilder;
 use Kytschi\Wako\PDFs\SelfAssessmentBuilder;
 use Kytschi\Wako\Traits\TaxYear;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class TaxReturnsController extends ControllerBase
 {

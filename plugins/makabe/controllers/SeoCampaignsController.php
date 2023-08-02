@@ -35,8 +35,8 @@ use Kytschi\Tengu\Traits\Core\Queue;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Encryption\Security\Random;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 use simplehtmldom\HtmlDocument;
 
 class SeoCampaignsController extends ControllerBase

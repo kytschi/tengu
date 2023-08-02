@@ -32,9 +32,8 @@ use Kytschi\Tengu\Traits\Core\Pagination;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Encryption\Security\Random;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
-use simplehtmldom\HtmlDocument;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class PersonasController extends ControllerBase
 {
@@ -92,7 +91,8 @@ class PersonasController extends ControllerBase
 
         $table = (new PersonaPages())->getSource();
 
-        $this->db->query('INSERT INTO ' . $table . ' 
+        $this->db->query(
+            'INSERT INTO ' . $table . ' 
                 (id, persona_id, page_id, created_at, created_by, updated_at, updated_by)
                 SELECT
                     :id,
@@ -108,18 +108,21 @@ class PersonasController extends ControllerBase
                     FROM ' . $table . '
                     WHERE page_id=:page_id_2 AND persona_id=:persona_id_2 
                 )',
-                [
-                    ':id' => (new Random())->uuid(),
-                    ':page_id' => $page_id,
-                    ':page_id_2' => $page_id,
-                    ':persona_id' => $_POST['persona_id'],
-                    ':persona_id_2' => $_POST['persona_id'],
-                    ':created_at' => date('Y-m-d H:i:s'),
-                    ':created_by' => $user_id,
-                    ':updated_at' => date('Y-m-d H:i:s'),
-                    ':updated_by' => $user_id
-                ]);
-        $this->db->query('UPDATE ' . $table . '
+            [
+                ':id' => (new Random())->uuid(),
+                ':page_id' => $page_id,
+                ':page_id_2' => $page_id,
+                ':persona_id' => $_POST['persona_id'],
+                ':persona_id_2' => $_POST['persona_id'],
+                ':created_at' => date('Y-m-d H:i:s'),
+                ':created_by' => $user_id,
+                ':updated_at' => date('Y-m-d H:i:s'),
+                ':updated_by' => $user_id
+            ]
+        );
+
+        $this->db->query(
+            'UPDATE ' . $table . '
             SET deleted_at=NULL, deleted_by=NULL 
             WHERE page_id=:page_id AND persona_id=:persona_id;',
             [
@@ -423,7 +426,7 @@ class PersonasController extends ControllerBase
 
             $this->addTagsFromRequest($model->id, true);
             $this->addNoteFromRequest($model->id);
-            
+
             if (!empty($_FILES['upload_picture']['tmp_name'])) {
                 (new UsersController())->addProfileImage($model);
             }

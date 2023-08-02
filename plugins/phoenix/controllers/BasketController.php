@@ -50,8 +50,8 @@ use Kytschi\Tengu\Traits\Core\Security;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Phalcon\Encryption\Security\Random;
 use Phalcon\Tag;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class BasketController extends ControllerBase
 {

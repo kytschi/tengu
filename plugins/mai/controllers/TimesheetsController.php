@@ -33,8 +33,8 @@ use Kytschi\Tengu\Traits\Core\Tags;
 use Kytschi\Mai\Models\Timesheets;
 use Kytschi\Wako\Models\Invoices;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class TimesheetsController extends ControllerBase
 {

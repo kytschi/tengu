@@ -34,8 +34,8 @@ use Kytschi\Mai\Controllers\TimesheetsController;
 use Kytschi\Mai\Models\Projects;
 use Kytschi\Mai\Models\TimesheetEntries;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class TimesheetEntriesController extends ControllerBase
 {

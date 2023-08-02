@@ -4,12 +4,24 @@
  * Date helper.
  *
  * @package     Kytschi\Tengu\Helpers\DateHelper
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 /**
@@ -361,7 +373,7 @@ class DateHelper
             if (strtolower($datetime) == 'unknown') {
                 return $unknown;
             }
-            return date($time ? 'M dS, Y H:i' : 'M dS, Y', strtotime($datetime));
+            return date($time ? 'M jS, Y H:i' : 'M jS, Y', strtotime($datetime));
         } catch (\Exception $err) {
             return 'Failed to render the date';
         }

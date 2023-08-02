@@ -28,8 +28,8 @@ use Kytschi\Tengu\Traits\Core\Validation;
 use Kytschi\Umi\Models\BoardColumns;
 use Kytschi\Umi\Models\BoardEntries;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Validation as PhalconValidation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation as PhalconValidation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class BoardColumnsController extends ControllerBase
 {

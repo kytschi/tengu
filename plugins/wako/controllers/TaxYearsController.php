@@ -38,8 +38,8 @@ use Kytschi\Wako\Models\StatementItemInvoices;
 use Kytschi\Wako\Models\StatementItemReceipts;
 use Kytschi\Wako\Models\TaxYears;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class TaxYearsController extends InvoicesController
 {

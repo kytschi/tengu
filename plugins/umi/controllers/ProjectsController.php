@@ -28,8 +28,8 @@ use Kytschi\Umi\Models\BoardColumns;
 use Kytschi\Umi\Models\Projects;
 use Kytschi\Wako\Models\StatementItems;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 class ProjectsController extends ControllerBase
 {

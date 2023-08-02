@@ -39,6 +39,7 @@ class BlogPostCategoriesController extends PageCategoriesController
 
     public $global_url  = '/blog-posts/categories';
     public $resource = 'blog-post-category';
+    public $resource_category = 'blog-post-category';
 
     public function initialize()
     {

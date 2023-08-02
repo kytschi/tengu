@@ -35,8 +35,8 @@ use Kytschi\Wako\Models\Dividends;
 use Kytschi\Wako\Traits\TaxYear;
 use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Encryption\Security\Random;
-use Phalcon\Validation;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\Validator\PresenceOf;
 use Mpdf\Mpdf;
 
 class DividendsController extends ControllerBase

@@ -172,7 +172,7 @@ class PageCategoriesController extends PagesController
         return (new Pages())->find([
             'conditions' => $query,
             'bind' => $binds,
-            'order' => 'sort ASC'
+            'order' => 'name ASC'
         ]);
     }
 
