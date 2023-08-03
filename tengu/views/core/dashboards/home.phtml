@@ -43,9 +43,19 @@ $filter_year = $this->tengu->getFilters('year');
 		<h2>Hi <?= $this->tengu->getUser('first_name'); ?> and welcome!</h2>
 	</div>
 </div>
+<?php
+if ($previous['before_last']) {
+	$diff = $previous['last_month'] - $previous['before_last'];
+	if ($diff < 0) {
+		$colour = 'warning';
+	} else {
+		$colour = 'primary';
+	}
+}
+?>
 <div class="row mb-3">
     <div class="col-3">
-        <div class="card bg-primary">
+        <div class="card bg-<?= $colour; ?>">
             <div class="card-body">
 				<svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 					<path d="M4 16s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H4Zm4-5.95a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
@@ -53,16 +63,24 @@ $filter_year = $this->tengu->getFilters('year');
 				</svg>
                 <div class="h3 text-white mt-3 mb-1">
                     <strong><?= $previous['last_month']; ?></strong>
-					<?php
-					if ($previous['before_last']) {
-						$diff = $previous['before_last'] - $previous['last_month'];
-						if ($diff < 0) {
-							echo $diff;
+					<small> 
+						<?= $diff; ?>
+						<?php
+						if ($colour == 'warning') {
+							?>
+							<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+  								<path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5zM8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6z"/>
+							</svg>
+							<?php
 						} else {
-							echo $diff;
+							?>
+							<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+  								<path fill-rule="evenodd" d="M8 10a.5.5 0 0 0 .5-.5V3.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 3.707V9.5a.5.5 0 0 0 .5.5zm-7 2.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5z"/>
+							</svg>
+							<?php
 						}
-					}
-					?>
+						?>
+					</small>
                 </div>
                 <div class="text-white">
 					Last month
