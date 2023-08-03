@@ -26,6 +26,7 @@
 
 namespace Kytschi\Tengu\Traits\Website;
 
+use Kytschi\Tengu\Controllers\Core\PostcodesController;
 use Kytschi\Tengu\Models\Website\Pages;
 use Kytschi\Tengu\Models\Website\PageCategories as Model;
 
@@ -61,15 +62,63 @@ trait PageCategories
 
         $binds = ['category_id' => $data['category_id']];
 
-        $order = 'sort ASC, created_at DESC';
+        $model = new Pages();
+        $pages_table = $model->getSource();
+        $cats_table = (new Model())->getSource();
+
+        $selects = "$pages_table.*";
+        $wheres = '';
+        $order = "ORDER BY $cats_table.sort ASC, $cats_table.created_at DESC";
         if (!empty($data['order'])) {
             $order = $data['order'];
         }
 
-        return Model::find([
-            'conditions' => 'category_id = :category_id:',
-            'bind' => $binds,
-            'order' => $order
-        ]);
+        if (!empty($data['search'])) {
+            $controller = new PostcodesController();
+            if ($postcodes = $controller->hasPostcode($data['search'])) {
+                if (!empty($data['radius'])) {
+                    $postcode = reset($postcodes);
+                    $coords = $controller->getCoordinates($postcode);
+                    $latitude = $coords['latitude'];
+                    $longitude = $coords['longitude'];
+                    $selects .= ", 69.0 *
+                        DEGREES(ACOS(LEAST(1.0, COS(RADIANS($latitude))
+                                * COS(RADIANS(latitude))
+                                * COS(RADIANS($longitude - longitude))
+                                + SIN(RADIANS($latitude))
+                                * SIN(RADIANS(latitude))))) AS distance ";
+
+                    $order = ' HAVING distance < ' . $data['radius'] . ' ORDER BY distance ASC';
+                } else {
+                    $wheres = ' AND (';
+                    foreach ($postcodes as $key => $postcode) {
+                        $wheres .= 'postcode = :postcode_' . $key . '_1 OR postcode = :postcode_' . $key . '_2 OR ';
+                        $binds['postcode_' . $key . '_1'] = $postcode;
+                        $binds['postcode_' . $key . '_2'] = str_replace(' ', '', $postcode);
+                    }
+                    $wheres = rtrim($wheres, ' OR ') . ')';
+                }
+            }
+        }
+
+        $query = "SELECT
+            $selects
+        FROM 
+            $cats_table 
+        LEFT JOIN $pages_table ON $pages_table.id = $cats_table.page_id 
+        WHERE 
+            category_id = :category_id AND $cats_table.deleted_at IS NULL $wheres
+        $order";
+
+        return (new \Phalcon\Mvc\Model\Resultset\Simple(
+            null,
+            $model,
+            $model
+                ->getReadConnection()
+                ->query(
+                    rtrim($query, ','),
+                    $binds
+                )
+        ));
     }
 }

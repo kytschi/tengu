@@ -28,6 +28,7 @@ declare(strict_types=1);
 
 namespace Kytschi\Izumi\Controllers;
 
+use Kytschi\Tengu\Controllers\Core\PostcodesController;
 use Kytschi\Tengu\Controllers\Website\PagesController;
 use Kytschi\Tengu\Exceptions\RequestException;
 use Kytschi\Tengu\Exceptions\SaveException;
@@ -83,9 +84,22 @@ class EventsController extends PagesController
 
     private function setSubData($model)
     {
+        $postcode = $model->postcode;
+
         $model->event_on = DateHelper::sql($_POST['event_on']);
         $model->event_length = $_POST['event_length'];
         $model->event_location = !empty($_POST['event_location']) ? $_POST['event_location'] : null;
+        $model->postcode = !empty($_POST['postcode']) ? $_POST['postcode'] : null;
+
+        if (!empty($model->postcode) && $postcode != $model->postcode) {
+            if (
+                !empty($coords = (new PostcodesController())->getCoordinates($model->postcode))
+            ) {
+                $model->longitude = $coords['longitude'];
+                $model->latitude = $coords['latitude'];
+            }
+        }
+
         return $model;
     }
 

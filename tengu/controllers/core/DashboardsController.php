@@ -58,7 +58,7 @@ class DashboardsController extends ControllerBase
         for ($iLoop = $years[0] + 1; $iLoop <= intval(date('Y')); $iLoop++) {
             $years[] = $iLoop;
         }
-        
+
         return $this->view->partial(
             'core/dashboards/home',
             [
@@ -171,7 +171,11 @@ class DashboardsController extends ControllerBase
         return (new \Phalcon\Mvc\Model\Resultset\Simple(
             null,
             $model,
-            $model->getReadConnection()->query(rtrim($query, ','))
+            $model
+                ->getReadConnection()
+                ->query(
+                    rtrim($query, ',')
+                )
         ))->toArray();
     }
 

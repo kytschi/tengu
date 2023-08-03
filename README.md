@@ -42,3 +42,23 @@ vendor/bin/phalcon-migrations generate --config=migrations.php
 
 ### Run
 vendor/bin/phalcon-migrations run --config=migrations.php
+
+## Credits
+
+Phalcon team for making an awesome framework! You guys rock with your co...errr, you rock.
+https://phalcon.io/en-us
+
+Postcodes.io for their lovely postcode API.
+https://postcodes.io/
+
+OpenStreetMap for their fantastic map service.
+https://www.openstreetmap.org/#map=6/54.910/-3.432
+
+Leaflet JS for their great map plugin.
+https://leafletjs.com/
+
+Bootstrap Icons for their amazing icons.
+https://icons.getbootstrap.com/
+
+jQuery, man where would be without jQuery?
+https://jquery.com/
