@@ -89,7 +89,7 @@ class SettingsController extends ControllerBase
     private function setData($model)
     {
         $model->webdav_url = !empty($_POST['webdav_url']) ? $_POST['webdav_url'] : '';
-        $model->webdav_auth = !empty($_POST['webdav_username']) ? $_POST['webdav_username'] : '';
+        $model->webdav_auth = !empty($_POST['webdav_user']) ? $_POST['webdav_user'] : '';
         $model->webdav_auth_two = !empty($_POST['webdav_password']) ?
             ($_POST['webdav_password'] != 'ATENGUPASSWORDISSET' ? $_POST['webdav_password'] : '')
             : '';

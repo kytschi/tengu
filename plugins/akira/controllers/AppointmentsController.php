@@ -46,6 +46,7 @@ use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Filter\Validation;
 use Phalcon\Filter\Validation\Validator\PresenceOf;
 use Sabre\DAV\Client;
+use Sabre\VObject\Reader;
 
 class AppointmentsController extends ControllerBase
 {
@@ -212,27 +213,42 @@ class AppointmentsController extends ControllerBase
         );
     }
 
-    private function hasWebdav($data)
+    private function hasWebdav()
     {
         $settings = (new Settings())->findFirst([
             'id IS NOT NULL'
         ]);
         if (empty($settings)) {
-            return $data;
+            return;
         }
 
         if (!empty($settings->webdav_url)) {
+            $path = parse_url($settings->webdav_url);
+
+            if (empty($path) && (empty($path['host']) || empty($path['path']))) {
+                throw new \Exception('Invalid WebDAV url');
+            }
+
             $client = new Client([
-                'baseUri' => $settings->webdav_url,
+                'baseUri' => 'https://community.quietconnections.co.uk', //$settings->webdav_url,
                 'userName' => $settings->webdav_auth,
                 'password' => $settings->webdav_auth_two
             ]);
 
             $client->addCurlSetting(CURLOPT_SSL_VERIFYHOST, 0);
             $client->addCurlSetting(CURLOPT_SSL_VERIFYPEER, 0);
-
-            $features = $client->options();
-            var_dump($features);
+            //$contents = @$client->options();
+            $contents = @$client->request('GET', '/remote.php/dav/calendars/dumbdog/coaching_shared_by_mike/?export');
+            $calendar = @Reader::read($contents['body']);
+            //$this->dump($contents['body']);
+            foreach (@$calendar->VEVENT as $event) {
+                $this->dump($event->SUMMARY->getRawMimeDirValue());
+                $this->dump($event->SUMMARY->get('value'));
+                $start = $event->DTSTART->getDateTime()->format('Y-m-d H:i:s');
+                $this->dump($start);
+            }
+            //var_dump($settings->webdav_url);
+            die();
         }
     }
 
@@ -249,6 +265,8 @@ class AppointmentsController extends ControllerBase
         } else {
             $date = date('Y-m');
         }
+
+        //$this->hasWebdav();
 
         $results = Appointments::find([
             'conditions' => 'appointment_at BETWEEN :start: AND :end:',
@@ -268,8 +286,6 @@ class AppointmentsController extends ControllerBase
                 $data[$day][] = $result;
             }
         }
-
-        $data = $this->hasWebdav($data);
 
         return $this->view->partial(
             'akira/appointments/index',
