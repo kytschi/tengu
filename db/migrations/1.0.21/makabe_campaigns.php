@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class MakabeCampaignsMigration_121
  */
-class StatsMigration_115 extends Migration
+class MakabeCampaignsMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('makabe_campaigns', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,91 +31,58 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
+                    'search_engine_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
-                        'size' => 100,
+                        'notNull' => false,
+                        'size' => 36,
                         'after' => 'id'
                     ]
                 ),
                 new Column(
-                    'resource_id',
+                    'name',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 36,
-                        'after' => 'resource'
+                        'size' => 255,
+                        'after' => 'search_engine_id'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'type',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'default' => "seo",
+                        'notNull' => true,
+                        'size' => 50,
+                        'after' => 'name'
+                    ]
+                ),
+                new Column(
+                    'search_terms',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
                         'size' => 255,
-                        'after' => 'resource_id'
+                        'after' => 'type'
                     ]
                 ),
                 new Column(
-                    'parent_id',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
-                    ]
-                ),
-                new Column(
-                    'referer',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'parent_id'
-                    ]
-                ),
-                new Column(
-                    'bot',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'referer'
-                    ]
-                ),
-                new Column(
-                    'agent',
-                    [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
-                    ]
-                ),
-                new Column(
-                    'operating_system',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
-                    ]
-                ),
-                new Column(
-                    'created_at',
+                    'search_engine_last_scanned',
                     [
                         'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'search_terms'
+                    ]
+                ),
+                new Column(
+                    'status',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'default' => "active",
                         'notNull' => true,
-                        'after' => 'operating_system'
+                        'size' => 10,
+                        'after' => 'search_engine_last_scanned'
                     ]
                 ),
                 new Column(
@@ -124,11 +91,11 @@ class StatsMigration_115 extends Migration
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
-                        'after' => 'created_at'
+                        'after' => 'status'
                     ]
                 ),
                 new Column(
-                    'updated_at',
+                    'created_at',
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
@@ -141,24 +108,49 @@ class StatsMigration_115 extends Migration
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
+                        'after' => 'created_at'
+                    ]
+                ),
+                new Column(
+                    'updated_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => true,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
                         'after' => 'updated_at'
+                    ]
+                ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'deleted_by'
                     ]
                 ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('makabe_campaigns_created_at_IDX', ['created_at'], ''),
+                new Index('makabe_campaigns_created_by_IDX', ['created_by'], ''),
+                new Index('makabe_campaigns_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('makabe_campaigns_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('makabe_campaigns_id_IDX', ['id'], ''),
+                new Index('makabe_campaigns_name_IDX', ['name'], ''),
+                new Index('makabe_campaigns_search_engine_id_IDX', ['search_engine_id'], ''),
+                new Index('makabe_campaigns_search_terms_IDX', ['search_terms'], ''),
+                new Index('makabe_campaigns_status_IDX', ['status'], ''),
+                new Index('makabe_campaigns_type_IDX', ['type'], ''),
+                new Index('makabe_campaigns_updated_at_IDX', ['updated_at'], ''),
+                new Index('makabe_campaigns_updated_by_IDX', ['updated_by'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

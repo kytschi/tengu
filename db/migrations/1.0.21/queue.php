@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class QueueMigration_121
  */
-class StatsMigration_115 extends Migration
+class QueueMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('queue', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,11 +31,12 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
+                    'priority',
                     [
-                        'type' => Column::TYPE_VARCHAR,
+                        'type' => Column::TYPE_INTEGER,
+                        'default' => "1",
                         'notNull' => true,
-                        'size' => 100,
+                        'size' => 11,
                         'after' => 'id'
                     ]
                 ),
@@ -45,77 +46,51 @@ class StatsMigration_115 extends Migration
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
-                        'after' => 'resource'
+                        'after' => 'priority'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'resource',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
+                        'notNull' => true,
+                        'size' => 50,
                         'after' => 'resource_id'
                     ]
                 ),
                 new Column(
-                    'parent_id',
+                    'job',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
-                    ]
-                ),
-                new Column(
-                    'referer',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
+                        'notNull' => true,
                         'size' => 255,
-                        'after' => 'parent_id'
+                        'after' => 'resource'
                     ]
                 ),
                 new Column(
-                    'bot',
+                    'status',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'referer'
+                        'default' => "pending",
+                        'notNull' => true,
+                        'size' => 20,
+                        'after' => 'job'
                     ]
                 ),
                 new Column(
-                    'agent',
-                    [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
-                    ]
-                ),
-                new Column(
-                    'operating_system',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
-                    ]
-                ),
-                new Column(
-                    'created_at',
+                    'started_at',
                     [
                         'type' => Column::TYPE_DATETIME,
-                        'notNull' => true,
-                        'after' => 'operating_system'
+                        'notNull' => false,
+                        'after' => 'status'
+                    ]
+                ),
+                new Column(
+                    'completed_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'started_at'
                     ]
                 ),
                 new Column(
@@ -124,11 +99,11 @@ class StatsMigration_115 extends Migration
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
-                        'after' => 'created_at'
+                        'after' => 'completed_at'
                     ]
                 ),
                 new Column(
-                    'updated_at',
+                    'created_at',
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
@@ -141,24 +116,51 @@ class StatsMigration_115 extends Migration
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
+                        'after' => 'created_at'
+                    ]
+                ),
+                new Column(
+                    'updated_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => true,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
                         'after' => 'updated_at'
+                    ]
+                ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'deleted_by'
                     ]
                 ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('queue_complete_at_IDX', ['completed_at'], ''),
+                new Index('queue_created_at_IDX', ['created_at'], ''),
+                new Index('queue_created_by_IDX', ['created_by'], ''),
+                new Index('queue_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('queue_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('queue_id_IDX', ['id'], ''),
+                new Index('queue_job_IDX', ['job'], ''),
+                new Index('queue_priority_IDX', ['priority'], ''),
+                new Index('queue_resource_IDX', ['resource'], ''),
+                new Index('queue_resource_id_IDX', ['resource_id'], ''),
+                new Index('queue_started_at_IDX', ['started_at'], ''),
+                new Index('queue_status_IDX', ['status'], ''),
+                new Index('queue_updated_at_IDX', ['updated_at'], ''),
+                new Index('queue_updated_by_IDX', ['updated_by'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

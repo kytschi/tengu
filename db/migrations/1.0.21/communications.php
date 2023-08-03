@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class CommunicationsMigration_121
  */
-class StatsMigration_115 extends Migration
+class CommunicationsMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('communications', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,91 +31,103 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
+                    'box',
                     [
                         'type' => Column::TYPE_VARCHAR,
+                        'default' => "inbox",
                         'notNull' => true,
-                        'size' => 100,
+                        'size' => 10,
                         'after' => 'id'
                     ]
                 ),
                 new Column(
-                    'resource_id',
+                    'type',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'default' => "email",
+                        'notNull' => true,
+                        'size' => 50,
+                        'after' => 'box'
+                    ]
+                ),
+                new Column(
+                    'subject',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 36,
-                        'after' => 'resource'
+                        'size' => 255,
+                        'after' => 'type'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'message',
+                    [
+                        'type' => Column::TYPE_TEXT,
+                        'notNull' => true,
+                        'after' => 'subject'
+                    ]
+                ),
+                new Column(
+                    'from_name',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => true,
+                        'size' => 255,
+                        'after' => 'message'
+                    ]
+                ),
+                new Column(
+                    'from_email',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => true,
+                        'size' => 255,
+                        'after' => 'from_name'
+                    ]
+                ),
+                new Column(
+                    'from_phone',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
                         'size' => 255,
-                        'after' => 'resource_id'
+                        'after' => 'from_email'
                     ]
                 ),
                 new Column(
-                    'parent_id',
+                    'to_name',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
-                    ]
-                ),
-                new Column(
-                    'referer',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
+                        'notNull' => true,
                         'size' => 255,
-                        'after' => 'parent_id'
+                        'after' => 'from_phone'
                     ]
                 ),
                 new Column(
-                    'bot',
+                    'to_email',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
+                        'notNull' => true,
                         'size' => 255,
-                        'after' => 'referer'
+                        'after' => 'to_name'
                     ]
                 ),
                 new Column(
-                    'agent',
-                    [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
+                    'status',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
-                    ]
-                ),
-                new Column(
-                    'operating_system',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
+                        'default' => "sending",
+                        'notNull' => true,
+                        'size' => 50,
+                        'after' => 'to_email'
                     ]
                 ),
                 new Column(
                     'created_at',
                     [
                         'type' => Column::TYPE_DATETIME,
-                        'notNull' => true,
-                        'after' => 'operating_system'
+                        'notNull' => false,
+                        'after' => 'status'
                     ]
                 ),
                 new Column(
@@ -144,21 +156,41 @@ class StatsMigration_115 extends Migration
                         'after' => 'updated_at'
                     ]
                 ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
+                        'after' => 'deleted_at'
+                    ]
+                ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('communications_id_IDX', ['id'], ''),
+                new Index('communications_type_IDX', ['type'], ''),
+                new Index('communications_subject_IDX', ['subject'], ''),
+                new Index('communications_from_name_IDX', ['from_name'], ''),
+                new Index('communications_from_email_IDX', ['from_email'], ''),
+                new Index('communications_to_name_IDX', ['to_name'], ''),
+                new Index('communications_to_email_IDX', ['to_email'], ''),
+                new Index('communications_status_IDX', ['status'], ''),
+                new Index('communications_created_at_IDX', ['created_at'], ''),
+                new Index('communications_created_by_IDX', ['created_by'], ''),
+                new Index('communications_updated_at_IDX', ['updated_at'], ''),
+                new Index('communications_updated_by_IDX', ['updated_by'], ''),
+                new Index('communications_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('communications_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('communications_from_phone_IDX', ['from_phone'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

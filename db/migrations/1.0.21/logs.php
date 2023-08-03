@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class LogsMigration_121
  */
-class StatsMigration_115 extends Migration
+class LogsMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('logs', [
             'columns' => [
                 new Column(
                     'id',
@@ -43,71 +43,35 @@ class StatsMigration_115 extends Migration
                     'resource_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
+                        'notNull' => false,
                         'size' => 36,
                         'after' => 'resource'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'content',
                     [
-                        'type' => Column::TYPE_VARCHAR,
+                        'type' => Column::TYPE_TEXT,
                         'notNull' => false,
-                        'size' => 255,
                         'after' => 'resource_id'
                     ]
                 ),
                 new Column(
-                    'parent_id',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
-                    ]
-                ),
-                new Column(
-                    'referer',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'parent_id'
-                    ]
-                ),
-                new Column(
-                    'bot',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'referer'
-                    ]
-                ),
-                new Column(
-                    'agent',
+                    'summary',
                     [
                         'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
+                        'notNull' => true,
+                        'after' => 'content'
                     ]
                 ),
                 new Column(
-                    'browser',
+                    'type',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
+                        'default' => "info",
+                        'notNull' => true,
                         'size' => 100,
-                        'after' => 'agent'
-                    ]
-                ),
-                new Column(
-                    'operating_system',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
+                        'after' => 'summary'
                     ]
                 ),
                 new Column(
@@ -115,7 +79,7 @@ class StatsMigration_115 extends Migration
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
-                        'after' => 'operating_system'
+                        'after' => 'type'
                     ]
                 ),
                 new Column(
@@ -147,18 +111,13 @@ class StatsMigration_115 extends Migration
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('logs_created_at_IDX', ['created_at'], ''),
+                new Index('logs_created_by_IDX', ['created_by'], ''),
+                new Index('logs_updated_at_IDX', ['updated_at'], ''),
+                new Index('logs_updated_by_IDX', ['updated_by'], ''),
+                new Index('logs_type_IDX', ['type'], ''),
+                new Index('logs_resource_IDX', ['resource'], ''),
+                new Index('logs_resource_id_IDX', ['resource_id'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

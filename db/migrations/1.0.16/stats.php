@@ -87,7 +87,7 @@ class StatsMigration_116 extends Migration
                 new Column(
                     'agent',
                     [
-                        'type' => Column::TYPE_TINYTEXT,
+                        'type' => Column::TYPE_MEDIUMTEXT,
                         'notNull' => false,
                         'after' => 'bot'
                     ]

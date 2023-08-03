@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class MakabeContentBackupMigration_121
  */
-class StatsMigration_115 extends Migration
+class MakabeContentBackupMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('makabe_content_backup', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,91 +31,57 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
-                        'size' => 100,
-                        'after' => 'id'
-                    ]
-                ),
-                new Column(
                     'resource_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
-                        'after' => 'resource'
+                        'after' => 'id'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'resource',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
+                        'notNull' => true,
+                        'size' => 50,
                         'after' => 'resource_id'
                     ]
                 ),
                 new Column(
-                    'parent_id',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
-                    ]
-                ),
-                new Column(
-                    'referer',
+                    'title',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
                         'size' => 255,
-                        'after' => 'parent_id'
+                        'after' => 'resource'
                     ]
                 ),
                 new Column(
-                    'bot',
+                    'url',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
                         'size' => 255,
-                        'after' => 'referer'
+                        'after' => 'title'
                     ]
                 ),
                 new Column(
-                    'agent',
-                    [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
+                    'canonical_url',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
+                        'size' => 255,
+                        'after' => 'url'
                     ]
                 ),
                 new Column(
-                    'operating_system',
+                    'meta_description',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
-                    ]
-                ),
-                new Column(
-                    'created_at',
-                    [
-                        'type' => Column::TYPE_DATETIME,
-                        'notNull' => true,
-                        'after' => 'operating_system'
+                        'size' => 255,
+                        'after' => 'canonical_url'
                     ]
                 ),
                 new Column(
@@ -124,11 +90,11 @@ class StatsMigration_115 extends Migration
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
-                        'after' => 'created_at'
+                        'after' => 'meta_description'
                     ]
                 ),
                 new Column(
-                    'updated_at',
+                    'created_at',
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
@@ -141,24 +107,50 @@ class StatsMigration_115 extends Migration
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
+                        'after' => 'created_at'
+                    ]
+                ),
+                new Column(
+                    'updated_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => true,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
                         'after' => 'updated_at'
+                    ]
+                ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'deleted_by'
                     ]
                 ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('makabe_content_backup_canonical_url_IDX', ['canonical_url'], ''),
+                new Index('makabe_content_backup_created_at_IDX', ['created_at'], ''),
+                new Index('makabe_content_backup_created_by_IDX', ['created_by'], ''),
+                new Index('makabe_content_backup_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('makabe_content_backup_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('makabe_content_backup_id_IDX', ['id'], ''),
+                new Index('makabe_content_backup_meta_description_IDX', ['meta_description'], ''),
+                new Index('makabe_content_backup_resource_IDX', ['resource'], ''),
+                new Index('makabe_content_backup_resource_id_IDX', ['resource_id'], ''),
+                new Index('makabe_content_backup_title_IDX', ['title'], ''),
+                new Index('makabe_content_backup_updated_at_IDX', ['updated_at'], ''),
+                new Index('makabe_content_backup_updated_by_IDX', ['updated_by'], ''),
+                new Index('makabe_content_backup_url_IDX', ['url'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

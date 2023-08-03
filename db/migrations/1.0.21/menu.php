@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class MenuMigration_121
  */
-class StatsMigration_115 extends Migration
+class MenuMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('menu', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,83 +31,88 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
+                    'page_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
-                        'size' => 100,
+                        'notNull' => false,
+                        'size' => 36,
                         'after' => 'id'
                     ]
                 ),
                 new Column(
-                    'resource_id',
+                    'name',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 36,
-                        'after' => 'resource'
+                        'size' => 255,
+                        'after' => 'page_id'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'slug',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
                         'size' => 255,
-                        'after' => 'resource_id'
+                        'after' => 'name'
                     ]
                 ),
                 new Column(
-                    'parent_id',
+                    'tooltip',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
+                        'notNull' => true,
+                        'size' => 255,
+                        'after' => 'slug'
                     ]
                 ),
                 new Column(
-                    'referer',
+                    'sort',
+                    [
+                        'type' => Column::TYPE_INTEGER,
+                        'default' => "0",
+                        'notNull' => true,
+                        'size' => 11,
+                        'after' => 'tooltip'
+                    ]
+                ),
+                new Column(
+                    'external_link',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
                         'size' => 255,
-                        'after' => 'parent_id'
+                        'after' => 'sort'
                     ]
                 ),
                 new Column(
-                    'bot',
+                    'new_window',
+                    [
+                        'type' => Column::TYPE_TINYINTEGER,
+                        'default' => "0",
+                        'notNull' => false,
+                        'size' => 1,
+                        'after' => 'external_link'
+                    ]
+                ),
+                new Column(
+                    'status',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'referer'
+                        'default' => "active",
+                        'notNull' => true,
+                        'size' => 20,
+                        'after' => 'new_window'
                     ]
                 ),
                 new Column(
-                    'agent',
-                    [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
+                    'type',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
-                    ]
-                ),
-                new Column(
-                    'operating_system',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
+                        'default' => "menu-item",
+                        'notNull' => true,
+                        'size' => 20,
+                        'after' => 'status'
                     ]
                 ),
                 new Column(
@@ -115,7 +120,7 @@ class StatsMigration_115 extends Migration
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
-                        'after' => 'operating_system'
+                        'after' => 'type'
                     ]
                 ),
                 new Column(
@@ -144,21 +149,38 @@ class StatsMigration_115 extends Migration
                         'after' => 'updated_at'
                     ]
                 ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
+                        'after' => 'deleted_at'
+                    ]
+                ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('menu_id_IDX', ['id'], ''),
+                new Index('menu_name_IDX', ['name'], ''),
+                new Index('menu_sort_IDX', ['sort'], ''),
+                new Index('menu_status_IDX', ['status'], ''),
+                new Index('menu_created_at_IDX', ['created_at'], ''),
+                new Index('menu_created_by_IDX', ['created_by'], ''),
+                new Index('menu_updated_at_IDX', ['updated_at'], ''),
+                new Index('menu_updated_by_IDX', ['updated_by'], ''),
+                new Index('menu_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('menu_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('menu_page_id_IDX', ['page_id'], ''),
+                new Index('menu_type_IDX', ['type'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

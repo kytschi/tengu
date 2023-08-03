@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class FilesMigration_121
  */
-class StatsMigration_115 extends Migration
+class FilesMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('files', [
             'columns' => [
                 new Column(
                     'id',
@@ -35,7 +35,7 @@ class StatsMigration_115 extends Migration
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 100,
+                        'size' => 50,
                         'after' => 'id'
                     ]
                 ),
@@ -49,65 +49,59 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'mime_type',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
+                        'notNull' => true,
                         'size' => 255,
                         'after' => 'resource_id'
                     ]
                 ),
                 new Column(
-                    'parent_id',
+                    'name',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
+                        'notNull' => true,
+                        'size' => 255,
+                        'after' => 'mime_type'
                     ]
                 ),
                 new Column(
-                    'referer',
+                    'label',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
                         'size' => 255,
-                        'after' => 'parent_id'
+                        'after' => 'name'
                     ]
                 ),
                 new Column(
-                    'bot',
+                    'filename',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
                         'size' => 255,
-                        'after' => 'referer'
+                        'after' => 'label'
                     ]
                 ),
                 new Column(
-                    'agent',
-                    [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
+                    'status',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
+                        'default' => "active",
+                        'notNull' => true,
+                        'size' => 255,
+                        'after' => 'filename'
                     ]
                 ),
                 new Column(
-                    'operating_system',
+                    'compress',
                     [
-                        'type' => Column::TYPE_VARCHAR,
+                        'type' => Column::TYPE_TINYINTEGER,
+                        'default' => "0",
                         'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
+                        'size' => 1,
+                        'after' => 'status'
                     ]
                 ),
                 new Column(
@@ -115,7 +109,7 @@ class StatsMigration_115 extends Migration
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
-                        'after' => 'operating_system'
+                        'after' => 'compress'
                     ]
                 ),
                 new Column(
@@ -144,27 +138,45 @@ class StatsMigration_115 extends Migration
                         'after' => 'updated_at'
                     ]
                 ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
+                        'after' => 'deleted_at'
+                    ]
+                ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('files_type_IDX', ['resource'], ''),
+                new Index('files_mime_type_IDX', ['mime_type'], ''),
+                new Index('files_name_IDX', ['name'], ''),
+                new Index('files_filename_IDX', ['filename'], ''),
+                new Index('files_status_IDX', ['status'], ''),
+                new Index('files_created_at_IDX', ['created_at'], ''),
+                new Index('files_created_by_IDX', ['created_by'], ''),
+                new Index('files_updated_at_IDX', ['updated_at'], ''),
+                new Index('files_updated_by_IDX', ['updated_by'], ''),
+                new Index('files_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('files_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('files_resource_id_IDX', ['resource_id'], ''),
+                new Index('files_compress_IDX', ['compress'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',
                 'AUTO_INCREMENT' => '',
                 'ENGINE' => 'InnoDB',
-                'TABLE_COLLATION' => 'utf8mb4_general_ci',
+                'TABLE_COLLATION' => 'utf8mb3_general_ci',
             ],
         ]);
     }

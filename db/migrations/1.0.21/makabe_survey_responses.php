@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class MakabeSurveyResponsesMigration_121
  */
-class StatsMigration_115 extends Migration
+class MakabeSurveyResponsesMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('makabe_survey_responses', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,83 +31,48 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
+                    'page_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 100,
+                        'size' => 36,
                         'after' => 'id'
                     ]
                 ),
                 new Column(
-                    'resource_id',
+                    'survey_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
-                        'after' => 'resource'
+                        'after' => 'page_id'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'user_survey_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'resource_id'
-                    ]
-                ),
-                new Column(
-                    'parent_id',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
+                        'notNull' => true,
                         'size' => 36,
-                        'after' => 'visitor'
+                        'after' => 'survey_id'
                     ]
                 ),
                 new Column(
-                    'referer',
+                    'response',
                     [
-                        'type' => Column::TYPE_VARCHAR,
+                        'type' => Column::TYPE_TEXT,
                         'notNull' => false,
-                        'size' => 255,
-                        'after' => 'parent_id'
+                        'after' => 'user_survey_id'
                     ]
                 ),
                 new Column(
-                    'bot',
+                    'secure',
                     [
-                        'type' => Column::TYPE_VARCHAR,
+                        'type' => Column::TYPE_TINYINTEGER,
+                        'default' => "0",
                         'notNull' => false,
-                        'size' => 255,
-                        'after' => 'referer'
-                    ]
-                ),
-                new Column(
-                    'agent',
-                    [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
-                    ]
-                ),
-                new Column(
-                    'operating_system',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
+                        'size' => 1,
+                        'after' => 'response'
                     ]
                 ),
                 new Column(
@@ -115,7 +80,7 @@ class StatsMigration_115 extends Migration
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
-                        'after' => 'operating_system'
+                        'after' => 'secure'
                     ]
                 ),
                 new Column(
@@ -144,21 +109,36 @@ class StatsMigration_115 extends Migration
                         'after' => 'updated_at'
                     ]
                 ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
+                        'after' => 'deleted_at'
+                    ]
+                ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('makabe_survey_responses_created_at_IDX', ['created_at'], ''),
+                new Index('makabe_survey_responses_created_by_IDX', ['created_by'], ''),
+                new Index('makabe_survey_responses_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('makabe_survey_responses_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('makabe_survey_responses_page_id_IDX', ['page_id'], ''),
+                new Index('makabe_survey_responses_secure_IDX', ['secure'], ''),
+                new Index('makabe_survey_responses_survey_id_IDX', ['survey_id'], ''),
+                new Index('makabe_survey_responses_updated_at_IDX', ['updated_at'], ''),
+                new Index('makabe_survey_responses_updated_by_IDX', ['updated_by'], ''),
+                new Index('makabe_survey_responses_user_survey_id_IDX', ['user_survey_id'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

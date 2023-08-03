@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class WakoUserTaxCodesMigration_121
  */
-class StatsMigration_115 extends Migration
+class WakoUserTaxCodesMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('wako_user_tax_codes', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,91 +31,48 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
+                    'user_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 100,
+                        'size' => 36,
                         'after' => 'id'
                     ]
                 ),
                 new Column(
-                    'resource_id',
+                    'tax_year_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
-                        'after' => 'resource'
+                        'after' => 'user_id'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'code',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'resource_id'
-                    ]
-                ),
-                new Column(
-                    'parent_id',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
-                    ]
-                ),
-                new Column(
-                    'referer',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'parent_id'
-                    ]
-                ),
-                new Column(
-                    'bot',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'referer'
-                    ]
-                ),
-                new Column(
-                    'agent',
-                    [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
-                    ]
-                ),
-                new Column(
-                    'operating_system',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
-                    ]
-                ),
-                new Column(
-                    'created_at',
-                    [
-                        'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
-                        'after' => 'operating_system'
+                        'size' => 20,
+                        'after' => 'tax_year_id'
+                    ]
+                ),
+                new Column(
+                    'percentage',
+                    [
+                        'type' => Column::TYPE_FLOAT,
+                        'default' => "0",
+                        'notNull' => false,
+                        'after' => 'code'
+                    ]
+                ),
+                new Column(
+                    'allowance',
+                    [
+                        'type' => Column::TYPE_FLOAT,
+                        'default' => "0",
+                        'notNull' => false,
+                        'after' => 'percentage'
                     ]
                 ),
                 new Column(
@@ -124,11 +81,11 @@ class StatsMigration_115 extends Migration
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
-                        'after' => 'created_at'
+                        'after' => 'allowance'
                     ]
                 ),
                 new Column(
-                    'updated_at',
+                    'created_at',
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
@@ -141,24 +98,48 @@ class StatsMigration_115 extends Migration
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
+                        'after' => 'created_at'
+                    ]
+                ),
+                new Column(
+                    'updated_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => true,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
                         'after' => 'updated_at'
+                    ]
+                ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'deleted_by'
                     ]
                 ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('user_tax_code_user_id_IDX', ['user_id'], ''),
+                new Index('user_tax_code_tax_year_id_IDX', ['tax_year_id'], ''),
+                new Index('user_tax_code_code_IDX', ['code'], ''),
+                new Index('user_tax_code_created_by_IDX', ['created_by'], ''),
+                new Index('user_tax_code_created_at_IDX', ['created_at'], ''),
+                new Index('user_tax_code_updated_by_IDX', ['updated_by'], ''),
+                new Index('user_tax_code_updated_at_IDX', ['updated_at'], ''),
+                new Index('user_tax_code_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('user_tax_code_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('wako_user_tax_codes_percentage_IDX', ['percentage'], ''),
+                new Index('wako_user_tax_codes_allowance_IDX', ['allowance'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

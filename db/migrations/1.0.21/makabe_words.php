@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class MakabeWordsMigration_121
  */
-class StatsMigration_115 extends Migration
+class MakabeWordsMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('makabe_words', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,11 +31,11 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
+                    'campaign_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
-                        'size' => 100,
+                        'notNull' => false,
+                        'size' => 36,
                         'after' => 'id'
                     ]
                 ),
@@ -43,71 +43,37 @@ class StatsMigration_115 extends Migration
                     'resource_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
+                        'notNull' => false,
                         'size' => 36,
-                        'after' => 'resource'
+                        'after' => 'campaign_id'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'resource',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
+                        'notNull' => true,
                         'size' => 255,
                         'after' => 'resource_id'
                     ]
                 ),
                 new Column(
-                    'parent_id',
+                    'word',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
-                    ]
-                ),
-                new Column(
-                    'referer',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
+                        'notNull' => true,
                         'size' => 255,
-                        'after' => 'parent_id'
+                        'after' => 'resource'
                     ]
                 ),
                 new Column(
-                    'bot',
+                    'word_count',
                     [
-                        'type' => Column::TYPE_VARCHAR,
+                        'type' => Column::TYPE_INTEGER,
+                        'default' => "0",
                         'notNull' => false,
-                        'size' => 255,
-                        'after' => 'referer'
-                    ]
-                ),
-                new Column(
-                    'agent',
-                    [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
-                    ]
-                ),
-                new Column(
-                    'operating_system',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
+                        'size' => 11,
+                        'after' => 'word'
                     ]
                 ),
                 new Column(
@@ -115,7 +81,7 @@ class StatsMigration_115 extends Migration
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
-                        'after' => 'operating_system'
+                        'after' => 'word_count'
                     ]
                 ),
                 new Column(
@@ -144,21 +110,37 @@ class StatsMigration_115 extends Migration
                         'after' => 'updated_at'
                     ]
                 ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
+                        'after' => 'deleted_at'
+                    ]
+                ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('makabe_words_campaign_id_IDX', ['campaign_id'], ''),
+                new Index('makabe_words_created_at_IDX', ['created_at'], ''),
+                new Index('makabe_words_created_by_IDX', ['created_by'], ''),
+                new Index('makabe_words_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('makabe_words_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('makabe_words_resource_IDX', ['resource'], ''),
+                new Index('makabe_words_resource_id_IDX', ['resource_id'], ''),
+                new Index('makabe_words_scan_page_id_IDX', ['resource_id'], ''),
+                new Index('makabe_words_updated_at_IDX', ['updated_at'], ''),
+                new Index('makabe_words_updated_by_IDX', ['updated_by'], ''),
+                new Index('makabe_words_word_IDX', ['word'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

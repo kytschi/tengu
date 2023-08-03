@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class MakabePersonasMigration_121
  */
-class StatsMigration_115 extends Migration
+class MakabePersonasMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('makabe_personas', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,83 +31,86 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
+                    'default',
                     [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => true,
-                        'size' => 100,
+                        'type' => Column::TYPE_TINYINTEGER,
+                        'default' => "0",
+                        'notNull' => false,
+                        'size' => 1,
                         'after' => 'id'
                     ]
                 ),
                 new Column(
-                    'resource_id',
+                    'title',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 50,
+                        'after' => 'default'
+                    ]
+                ),
+                new Column(
+                    'first_name',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 36,
-                        'after' => 'resource'
+                        'size' => 255,
+                        'after' => 'title'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'last_name',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => true,
+                        'size' => 255,
+                        'after' => 'first_name'
+                    ]
+                ),
+                new Column(
+                    'job_title',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
                         'size' => 255,
-                        'after' => 'resource_id'
+                        'after' => 'last_name'
                     ]
                 ),
                 new Column(
-                    'parent_id',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
-                    ]
-                ),
-                new Column(
-                    'referer',
+                    'email',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
                         'size' => 255,
-                        'after' => 'parent_id'
+                        'after' => 'job_title'
                     ]
                 ),
                 new Column(
-                    'bot',
+                    'phone_number',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
                         'size' => 255,
-                        'after' => 'referer'
+                        'after' => 'email'
                     ]
                 ),
                 new Column(
-                    'agent',
-                    [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
+                    'mobile_number',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
+                        'size' => 255,
+                        'after' => 'phone_number'
                     ]
                 ),
                 new Column(
-                    'operating_system',
+                    'status',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
+                        'default' => "active",
+                        'notNull' => true,
+                        'size' => 10,
+                        'after' => 'mobile_number'
                     ]
                 ),
                 new Column(
@@ -115,7 +118,7 @@ class StatsMigration_115 extends Migration
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
-                        'after' => 'operating_system'
+                        'after' => 'status'
                     ]
                 ),
                 new Column(
@@ -144,21 +147,42 @@ class StatsMigration_115 extends Migration
                         'after' => 'updated_at'
                     ]
                 ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
+                        'after' => 'deleted_at'
+                    ]
+                ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('makabe_personas_created_at_IDX', ['created_at'], ''),
+                new Index('makabe_personas_created_by_IDX', ['created_by'], ''),
+                new Index('makabe_personas_default_IDX', ['default'], ''),
+                new Index('makabe_personas_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('makabe_personas_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('makabe_personas_email_IDX', ['email'], ''),
+                new Index('makabe_personas_first_name_IDX', ['first_name'], ''),
+                new Index('makabe_personas_id_IDX', ['id'], ''),
+                new Index('makabe_personas_job_title_IDX', ['job_title'], ''),
+                new Index('makabe_personas_last_name_IDX', ['last_name'], ''),
+                new Index('makabe_personas_mobile_number_IDX', ['mobile_number'], ''),
+                new Index('makabe_personas_phone_number_IDX', ['phone_number'], ''),
+                new Index('makabe_personas_status_IDX', ['status'], ''),
+                new Index('makabe_personas_title_IDX', ['title'], ''),
+                new Index('makabe_personas_updated_at_IDX', ['updated_at'], ''),
+                new Index('makabe_personas_updated_by_IDX', ['updated_by'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

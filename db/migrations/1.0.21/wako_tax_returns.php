@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class WakoTaxReturnsMigration_121
  */
-class StatsMigration_115 extends Migration
+class WakoTaxReturnsMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('wako_tax_returns', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,83 +31,49 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
+                    'tax_year_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 100,
+                        'size' => 36,
                         'after' => 'id'
                     ]
                 ),
                 new Column(
-                    'resource_id',
+                    'user_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
-                        'after' => 'resource'
+                        'after' => 'tax_year_id'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'type',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'resource_id'
+                        'default' => "self-assessment",
+                        'notNull' => true,
+                        'size' => 20,
+                        'after' => 'user_id'
                     ]
                 ),
                 new Column(
-                    'parent_id',
+                    'status',
                     [
                         'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
+                        'default' => "pending",
+                        'notNull' => true,
+                        'size' => 10,
+                        'after' => 'type'
                     ]
                 ),
                 new Column(
-                    'referer',
+                    'search_tags',
                     [
-                        'type' => Column::TYPE_VARCHAR,
+                        'type' => Column::TYPE_TEXT,
                         'notNull' => false,
-                        'size' => 255,
-                        'after' => 'parent_id'
-                    ]
-                ),
-                new Column(
-                    'bot',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'referer'
-                    ]
-                ),
-                new Column(
-                    'agent',
-                    [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
-                    ]
-                ),
-                new Column(
-                    'operating_system',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
+                        'after' => 'status'
                     ]
                 ),
                 new Column(
@@ -115,7 +81,7 @@ class StatsMigration_115 extends Migration
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
-                        'after' => 'operating_system'
+                        'after' => 'search_tags'
                     ]
                 ),
                 new Column(
@@ -144,21 +110,35 @@ class StatsMigration_115 extends Migration
                         'after' => 'updated_at'
                     ]
                 ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
+                        'after' => 'deleted_at'
+                    ]
+                ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('wako_tax_returns_tax_year_id_IDX', ['tax_year_id'], ''),
+                new Index('wako_tax_returns_status_IDX', ['status'], ''),
+                new Index('wako_tax_returns_created_at_IDX', ['created_at'], ''),
+                new Index('wako_tax_returns_created_by_IDX', ['created_by'], ''),
+                new Index('wako_tax_returns_updated_at_IDX', ['updated_at'], ''),
+                new Index('wako_tax_returns_updated_by_IDX', ['updated_by'], ''),
+                new Index('wako_tax_returns_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('wako_tax_returns_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('wako_tax_returns_user_id_IDX', ['user_id'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

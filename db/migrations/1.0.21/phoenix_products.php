@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class PhoenixProductsMigration_121
  */
-class StatsMigration_115 extends Migration
+class PhoenixProductsMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('phoenix_products', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,83 +31,58 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
+                    'page_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 100,
+                        'size' => 36,
                         'after' => 'id'
                     ]
                 ),
                 new Column(
-                    'resource_id',
+                    'code',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 36,
-                        'after' => 'resource'
-                    ]
-                ),
-                new Column(
-                    'visitor',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
                         'size' => 255,
-                        'after' => 'resource_id'
+                        'after' => 'page_id'
                     ]
                 ),
                 new Column(
-                    'parent_id',
+                    'price',
                     [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
+                        'type' => Column::TYPE_FLOAT,
+                        'notNull' => true,
+                        'after' => 'code'
                     ]
                 ),
                 new Column(
-                    'referer',
+                    'stock',
                     [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'parent_id'
+                        'type' => Column::TYPE_INTEGER,
+                        'default' => "1",
+                        'notNull' => true,
+                        'size' => 11,
+                        'after' => 'price'
                     ]
                 ),
                 new Column(
-                    'bot',
+                    'low_stock',
                     [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'referer'
+                        'type' => Column::TYPE_INTEGER,
+                        'default' => "5",
+                        'notNull' => true,
+                        'size' => 11,
+                        'after' => 'stock'
                     ]
                 ),
                 new Column(
-                    'agent',
+                    'vat',
                     [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
-                    ]
-                ),
-                new Column(
-                    'operating_system',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
+                        'type' => Column::TYPE_FLOAT,
+                        'default' => "25",
+                        'notNull' => true,
+                        'after' => 'low_stock'
                     ]
                 ),
                 new Column(
@@ -115,7 +90,7 @@ class StatsMigration_115 extends Migration
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
-                        'after' => 'operating_system'
+                        'after' => 'vat'
                     ]
                 ),
                 new Column(
@@ -144,21 +119,38 @@ class StatsMigration_115 extends Migration
                         'after' => 'updated_at'
                     ]
                 ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
+                        'after' => 'deleted_at'
+                    ]
+                ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('phoenix_products_code_IDX', ['code'], ''),
+                new Index('phoenix_products_created_at_IDX', ['created_at'], ''),
+                new Index('phoenix_products_created_by_IDX', ['created_by'], ''),
+                new Index('phoenix_products_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('phoenix_products_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('phoenix_products_low_stock_IDX', ['low_stock'], ''),
+                new Index('phoenix_products_page_id_IDX', ['page_id'], ''),
+                new Index('phoenix_products_price_IDX', ['price'], ''),
+                new Index('phoenix_products_stock_IDX', ['stock'], ''),
+                new Index('phoenix_products_updated_at_IDX', ['updated_at'], ''),
+                new Index('phoenix_products_updated_by_IDX', ['updated_by'], ''),
+                new Index('phoenix_products_vat_IDX', ['vat'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',

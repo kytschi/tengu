@@ -7,9 +7,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Migrations\Mvc\Model\Migration;
 
 /**
- * Class StatsMigration_115
+ * Class PhoenixOrderItemsMigration_121
  */
-class StatsMigration_115 extends Migration
+class PhoenixOrderItemsMigration_121 extends Migration
 {
     /**
      * Define the table structure
@@ -19,7 +19,7 @@ class StatsMigration_115 extends Migration
      */
     public function morph(): void
     {
-        $this->morphTable('stats', [
+        $this->morphTable('phoenix_order_items', [
             'columns' => [
                 new Column(
                     'id',
@@ -31,83 +31,68 @@ class StatsMigration_115 extends Migration
                     ]
                 ),
                 new Column(
-                    'resource',
+                    'order_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
-                        'size' => 100,
+                        'size' => 36,
                         'after' => 'id'
                     ]
                 ),
                 new Column(
-                    'resource_id',
+                    'product_id',
                     [
                         'type' => Column::TYPE_VARCHAR,
                         'notNull' => true,
                         'size' => 36,
-                        'after' => 'resource'
+                        'after' => 'order_id'
                     ]
                 ),
                 new Column(
-                    'visitor',
+                    'quantity',
                     [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'resource_id'
+                        'type' => Column::TYPE_INTEGER,
+                        'default' => "1",
+                        'notNull' => true,
+                        'size' => 11,
+                        'after' => 'product_id'
                     ]
                 ),
                 new Column(
-                    'parent_id',
+                    'fulfilled',
                     [
-                        'type' => Column::TYPE_VARCHAR,
+                        'type' => Column::TYPE_INTEGER,
+                        'default' => "0",
                         'notNull' => false,
-                        'size' => 36,
-                        'after' => 'visitor'
+                        'size' => 11,
+                        'after' => 'quantity'
                     ]
                 ),
                 new Column(
-                    'referer',
+                    'sub_total',
                     [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'parent_id'
+                        'type' => Column::TYPE_FLOAT,
+                        'default' => "0",
+                        'notNull' => true,
+                        'after' => 'fulfilled'
                     ]
                 ),
                 new Column(
-                    'bot',
+                    'vat',
                     [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 255,
-                        'after' => 'referer'
+                        'type' => Column::TYPE_FLOAT,
+                        'default' => "0",
+                        'notNull' => true,
+                        'after' => 'sub_total'
                     ]
                 ),
                 new Column(
-                    'agent',
+                    'total',
                     [
-                        'type' => Column::TYPE_MEDIUMTEXT,
-                        'notNull' => false,
-                        'after' => 'bot'
-                    ]
-                ),
-                new Column(
-                    'browser',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'agent'
-                    ]
-                ),
-                new Column(
-                    'operating_system',
-                    [
-                        'type' => Column::TYPE_VARCHAR,
-                        'notNull' => false,
-                        'size' => 100,
-                        'after' => 'browser'
+                        'type' => Column::TYPE_FLOAT,
+                        'default' => "0",
+                        'notNull' => true,
+                        'after' => 'vat'
                     ]
                 ),
                 new Column(
@@ -115,7 +100,7 @@ class StatsMigration_115 extends Migration
                     [
                         'type' => Column::TYPE_DATETIME,
                         'notNull' => true,
-                        'after' => 'operating_system'
+                        'after' => 'total'
                     ]
                 ),
                 new Column(
@@ -144,21 +129,39 @@ class StatsMigration_115 extends Migration
                         'after' => 'updated_at'
                     ]
                 ),
+                new Column(
+                    'deleted_at',
+                    [
+                        'type' => Column::TYPE_DATETIME,
+                        'notNull' => false,
+                        'after' => 'updated_by'
+                    ]
+                ),
+                new Column(
+                    'deleted_by',
+                    [
+                        'type' => Column::TYPE_VARCHAR,
+                        'notNull' => false,
+                        'size' => 36,
+                        'after' => 'deleted_at'
+                    ]
+                ),
             ],
             'indexes' => [
                 new Index('PRIMARY', ['id'], 'PRIMARY'),
-                new Index('stats_resource_id_IDX', ['resource_id'], ''),
-                new Index('stats_resource_IDX', ['resource'], ''),
-                new Index('stats_parent_id_IDX', ['parent_id'], ''),
-                new Index('stats_visitor_IDX', ['visitor'], ''),
-                new Index('stats_referer_IDX', ['referer'], ''),
-                new Index('stats_bot_IDX', ['bot'], ''),
-                new Index('stats_created_at_IDX', ['created_at'], ''),
-                new Index('stats_created_by_IDX', ['created_by'], ''),
-                new Index('stats_updated_at_IDX', ['updated_at'], ''),
-                new Index('stats_updated_by_IDX', ['updated_by'], ''),
-                new Index('stats_browser_IDX', ['browser'], ''),
-                new Index('stats_operating_system_IDX', ['operating_system'], ''),
+                new Index('phoenix_basket_items_basket_id_IDX', ['order_id'], ''),
+                new Index('phoenix_basket_items_created_at_IDX', ['created_at'], ''),
+                new Index('phoenix_basket_items_created_by_IDX', ['created_by'], ''),
+                new Index('phoenix_basket_items_deleted_at_IDX', ['deleted_at'], ''),
+                new Index('phoenix_basket_items_deleted_by_IDX', ['deleted_by'], ''),
+                new Index('phoenix_basket_items_price_IDX', ['sub_total'], ''),
+                new Index('phoenix_basket_items_product_id_IDX', ['product_id'], ''),
+                new Index('phoenix_basket_items_quanity_IDX', ['quantity'], ''),
+                new Index('phoenix_basket_items_total_IDX', ['total'], ''),
+                new Index('phoenix_basket_items_updated_at_IDX', ['updated_at'], ''),
+                new Index('phoenix_basket_items_updated_by_IDX', ['updated_by'], ''),
+                new Index('phoenix_basket_items_vat_IDX', ['vat'], ''),
+                new Index('phoenix_order_items_fulfilled_IDX', ['fulfilled'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',
