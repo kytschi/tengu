@@ -2,12 +2,24 @@
 /**
  * Main dashboard template.
  *
- * @copyright   2023 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.2
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 use Kytschi\Tengu\Controllers\Core\UsersController;
@@ -30,6 +42,34 @@ $filter_year = $this->tengu->getFilters('year');
     <div class="col-xl-12 pb-3">
 		<h2>Hi <?= $this->tengu->getUser('first_name'); ?> and welcome!</h2>
 	</div>
+</div>
+<div class="row mb-3">
+    <div class="col-3">
+        <div class="card bg-primary">
+            <div class="card-body">
+				<svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path d="M4 16s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H4Zm4-5.95a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+					<path d="M2 1a2 2 0 0 0-2 2v9.5A1.5 1.5 0 0 0 1.5 14h.653a5.373 5.373 0 0 1 1.066-2H1V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9h-2.219c.554.654.89 1.373 1.066 2h.653a1.5 1.5 0 0 0 1.5-1.5V3a2 2 0 0 0-2-2H2Z"/>
+				</svg>
+                <div class="h3 text-white mt-3 mb-1">
+                    <strong><?= $previous['last_month']; ?></strong>
+					<?php
+					if ($previous['before_last']) {
+						$diff = $previous['before_last'] - $previous['last_month'];
+						if ($diff < 0) {
+							echo $diff;
+						} else {
+							echo $diff;
+						}
+					}
+					?>
+                </div>
+                <div class="text-white">
+					Last month
+				</div>
+            </div>
+		</div>
+    </div>
 </div>
 <div class="row mb-3">
 	<div class="col-12">

@@ -68,7 +68,8 @@ class DashboardsController extends ControllerBase
                 'browsers' => $this->getBrowsers(),
                 'most_viewed' => $this->getMostViewed(),
                 'operating_systems' => $this->getOperatingSystems(),
-                'years' => $years
+                'years' => $years,
+                'previous' => $this->getPrevious()
             ]
         );
     }
@@ -177,6 +178,23 @@ class DashboardsController extends ControllerBase
                     rtrim($query, ',')
                 )
         ))->toArray();
+    }
+
+    private function getPrevious()
+    {
+        $last_month = date('Y-m', strtotime("-1 month"));
+        $before_last = date('Y-m', strtotime("-2 month"));
+
+        $query = "SELECT (SELECT count(id) FROM stats 
+            WHERE created_at BETWEEN '" . $last_month . "-01' AND '" . $last_month . "-31') AS last_month,
+            (SELECT count(id) FROM stats 
+            WHERE created_at BETWEEN '" . $before_last . "-01' AND '" . $before_last . "-31') AS before_last";
+        $model = new Stats();
+        return (new \Phalcon\Mvc\Model\Resultset\Simple(
+            null,
+            $model,
+            $model->getReadConnection()->query(rtrim($query, ','))
+        ))->toArray()[0];
     }
 
     private function getVisitorStats()
