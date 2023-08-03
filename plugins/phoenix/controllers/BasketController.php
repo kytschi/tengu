@@ -349,7 +349,7 @@ class BasketController extends ControllerBase
         $basket = new Orders([
             'customer_id' => $customer_id,
             'number' => OrdersController::getNumber(),
-            'status' => 'in progress',
+            'status' => 'basket',
             'created_by' => $user_id,
             'updated_by' => $user_id,
         ]);
@@ -457,7 +457,7 @@ class BasketController extends ControllerBase
         }
 
         $basket = (new Orders())->findFirst([
-            'conditions' => 'created_by = :created_by: AND status="in progress"',
+            'conditions' => 'created_by = :created_by: AND status="basket"',
             'bind' => [
                 'created_by' => $user_id
             ],

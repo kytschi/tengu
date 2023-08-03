@@ -373,7 +373,7 @@ class OrdersController extends ControllerBase
 
         $query = 'SELECT ';
         $query .= "(SELECT count(id) FROM $table WHERE status = 'complete') AS complete,";
-        $query .= "(SELECT count(id) FROM $table WHERE status = 'in progress') AS in_progress,";
+        $query .= "(SELECT count(id) FROM $table WHERE status = 'basket') AS basket,";
         $query .= "(SELECT count(id) FROM $table WHERE status = 'inactive') AS inactive,";
         $query .= "(SELECT count(id) FROM $table WHERE status = 'deleted' AND deleted_at IS NOT NULL) AS deleted,";
 

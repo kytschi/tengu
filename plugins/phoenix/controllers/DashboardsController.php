@@ -4,12 +4,24 @@
  * Dashboards controller.
  *
  * @package     Kytschi\Phoenix\Controllers\DashboardsController
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 declare(strict_types=1);
@@ -62,8 +74,8 @@ class DashboardsController extends ControllerBase
 
             $query .= "(SELECT count(id) FROM $table WHERE created_at BETWEEN '" . $year . "-" .
                 $month . "-01' AND '" . $year . "-" .
-                $month . "-31' AND status='active' AND deleted_at IS NULL) AS " .
-                strtolower(date("F", strtotime(date('Y') . "-" . $month . "-01"))) . "_active,";
+                $month . "-31' AND status='basket' AND deleted_at IS NULL) AS " .
+                strtolower(date("F", strtotime(date('Y') . "-" . $month . "-01"))) . "_basket,";
 
             $query .= "(SELECT count(id) FROM $table WHERE dispatched_at BETWEEN '" . $year . "-" .
                     $month . "-01' AND '" . $year . "-" .
@@ -75,7 +87,7 @@ class DashboardsController extends ControllerBase
                 $month . "-31' AND status='dispatch' AND deleted_at IS NULL) AS " .
                 strtolower(date("F", strtotime(date('Y') . "-" . $month . "-01"))) . "_dispatch,";
         }
-        
+
         $model = new Orders();
         $results = (new \Phalcon\Mvc\Model\Resultset\Simple(
             null,

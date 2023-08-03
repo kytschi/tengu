@@ -29,7 +29,7 @@ namespace Kytschi\Izumi\Traits;
 use Kytschi\Tengu\Models\Website\Pages;
 
 trait Events
-{    
+{
     public function findEvents($data = [])
     {
         $query = '';

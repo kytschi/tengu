@@ -31,8 +31,8 @@ class Orders extends Model
     public $vat = 0.00;
     public $total = 0.00;
     public $quantity = 0;
-    public $status = 'active';
-    
+    public $status = 'basket';
+
     public function initialize()
     {
         $this->setSource('phoenix_orders');
@@ -56,7 +56,7 @@ class Orders extends Model
                 'reusable' => true
             ]
         );
-        
+
         $this->hasOne(
             'deleted_by',
             Users::class,

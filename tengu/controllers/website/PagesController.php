@@ -75,6 +75,7 @@ class PagesController extends ControllerBase
 
     public $resource = 'page';
     public $resource_category = 'page-category';
+    public $category_support = true;
 
     public function initialize()
     {
@@ -350,6 +351,7 @@ class PagesController extends ControllerBase
         return $this->view->partial(
             $template,
             [
+                'category_support' => $this->category_support,
                 'url' => $this->global_url,
                 'data' => $paginator->paginate(),
                 'stats' => $this->stats()
@@ -408,7 +410,6 @@ class PagesController extends ControllerBase
             $this->validate();
 
             $model = $this->setData(new Pages());
-
             $this->checkURL($model);
 
             if ($model->save() === false) {
@@ -514,6 +515,10 @@ class PagesController extends ControllerBase
         }
 
         $model->slogan = !empty($_POST['slogan']) ? $_POST['slogan'] : null;
+
+        if (method_exists($this, 'setDataSubAction')) {
+            $model = $this->setDataSubAction($model);
+        }
 
         return $model;
     }

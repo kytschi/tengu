@@ -2,7 +2,7 @@
 /**
  * Dashboard template.
  *
- * @copyright   2023 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
  * Copyright Kytschi - All Rights Reserved.
@@ -80,13 +80,26 @@ if ($this->tengu->isAdmin()) {
 					var chart = new Chart(ctx, {
 						type: 'line',
 						data: {
-							labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+							labels: [
+								'January',
+								'February',
+								'March',
+								'April',
+								'May',
+								'June',
+								'July',
+								'August',
+								'September',
+								'October',
+								'November',
+								'December'
+							],
 							datasets: [
 								<?php
 								$colours = [
 									'dispatched' => '#00c129',
 									'dispatch' => '#1D8CF8',
-									'active' => '#E14ECA',
+									'basket' => '#E14ECA',
 								];
 
 								foreach ($orders as $label => $data) {

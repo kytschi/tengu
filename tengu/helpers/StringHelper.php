@@ -80,7 +80,7 @@ class StringHelper
     public static function toColour($string, $rgb = false)
     {
         $hex = '#' . substr(dechex(crc32($string)), 0, 6);
-        
+
         if ($rgb) {
             list($red, $green, $blue) = sscanf($hex, "#%02x%02x%02x");
             return $red . ',' . $green . ',' . $blue;

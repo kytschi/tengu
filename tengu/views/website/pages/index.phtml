@@ -104,9 +104,15 @@ echo $this->partial("common/form/messages");
 				<a href="<?= UrlHelper::backend($url . '/create'); ?>" class="btn btn-primary float-right">
 		            Create
 		        </a>
-                <a href="<?= UrlHelper::backend($url . '/categories'); ?>" class="btn btn-default float-right mr-3">
-		            Categories
-		        </a>
+                <?php
+                if($category_support) {
+                    ?>
+                    <a href="<?= UrlHelper::backend($url . '/categories'); ?>" class="btn btn-default float-right mr-3">
+                        Categories
+                    </a>
+                    <?php
+                }
+                ?>
 		        <div class="float-right dropdown mr-3">
 		            <a
                         href="#"
