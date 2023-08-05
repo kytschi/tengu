@@ -39,7 +39,9 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                                 if ($categories->count()) {
                                     foreach ($categories as $category) {
                                         ?>
-                                        <option value="<?= $category->id; ?>"><?= $category->name; ?></option>
+                                        <option value="<?= $category->id; ?>">
+                                            <?= $category->name . ' (' . str_replace('-', ' ', $category->type) . ')'; ?>
+                                        </option>
                                         <?php
                                     }
                                 } else {
@@ -140,18 +142,31 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                     </tfoot>
                 </table>
             </div>
-            <div class="col-12">
-                <table class="table table-sorter">
-                    <thead>
-                        <tr>
-                            <th>Category items</th>
-                            <th width="80px">Sort</th>
-                            <th width="80px">&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        if (!empty($data)) {
+            <?php
+            if (
+                !empty($data) &&
+                in_array(
+                    $data->type,
+                    [
+                        'event-category',
+                        'page-category',
+                        'blog-category',
+                        'portfolio-category'
+                    ]
+                )
+            ) {
+                ?>
+                <div class="col-12">
+                    <table class="table table-sorter">
+                        <thead>
+                            <tr>
+                                <th>Category items</th>
+                                <th width="80px">Sort</th>
+                                <th width="80px">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
                             if ($data->category_items->count()) {
                                 foreach ($data->category_items as $key => $result) {
                                     $edit_url = $url . '/edit/' . $result->id;
@@ -188,11 +203,13 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                                 </tr>
                                 <?php
                             }
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php
+            }
+            ?>
         </div>
     </div>
 </div>

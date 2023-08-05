@@ -83,6 +83,14 @@ class Pages extends Model
     public $sort = 0;
     public $feature = 0;
     public $rating;
+    public $event_on;
+    public $event_end;
+    public $event_recurring;
+    public $event_location;
+    public $postcode;
+    public $longitude;
+    public $latitude;
+    public $external_contact_form;
 
     public function initialize()
     {

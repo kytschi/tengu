@@ -357,7 +357,7 @@ if (!empty($_GET['back-url'])) {
                             </a>
                         </li>
                         <?php
-                        if ($resource == 'event') {
+                        if ($resource == 'event' || $resource == 'event-category') {
                             ?>
                             <li class="nav-item mt-2">
                                 <a
@@ -775,7 +775,7 @@ if (!empty($_GET['back-url'])) {
                     </div>
                 </div>
                 <?php
-                if ($resource == 'event') {
+                if ($resource == 'event' || $resource == 'event-category') {
                     ?>
                     <div
                         class="tab-pane <?= UrlHelper::activeTab('event-tab', 'content-tab'); ?>"

@@ -190,11 +190,20 @@ class DashboardsController extends ControllerBase
             (SELECT count(id) FROM stats 
             WHERE created_at BETWEEN '" . $before_last . "-01' AND '" . $before_last . "-31') AS before_last";
         $model = new Stats();
-        return (new \Phalcon\Mvc\Model\Resultset\Simple(
+        $results = (new \Phalcon\Mvc\Model\Resultset\Simple(
             null,
             $model,
             $model->getReadConnection()->query(rtrim($query, ','))
-        ))->toArray()[0];
+        ))->toArray();
+
+        if ($results) {
+            return $results[0];
+        }
+
+        return [
+            'last_month' => 0,
+            'before_last' => 0
+        ];
     }
 
     private function getVisitorStats()

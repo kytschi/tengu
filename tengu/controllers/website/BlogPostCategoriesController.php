@@ -38,12 +38,15 @@ class BlogPostCategoriesController extends PageCategoriesController
     ];
 
     public $global_url  = '/blog-posts/categories';
+    public $global_from_url = '/blog-posts';
     public $resource = 'blog-post-category';
     public $resource_category = 'blog-post-category';
+    public $category_support = false;
 
     public function initialize()
     {
         $this->global_url = ($this->di->getConfig())->urls->cms . $this->global_url;
+        $this->global_from_url = ($this->di->getConfig())->urls->cms . $this->global_from_url;
         $this->global_add_url = $this->global_url . '/add';
         $this->global_category_url = $this->global_url;
     }

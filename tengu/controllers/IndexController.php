@@ -412,6 +412,15 @@ class IndexController extends ControllerBase
         if ($pages->count()) {
             $url = ($this->di->getConfig())->application->appUrl;
             foreach ($pages as $page) {
+                if (
+                    strpos($page->url, 'http://') !== false ||
+                    strpos($page->url, 'https://') !== false ||
+                    strpos($page->url, 'ftp://') !== false ||
+                    strpos($page->url, 'sftp://') !== false
+                ) {
+                    continue;
+                }
+
                 echo '<url>';
                 echo '<loc>' .  $url . $page->url . '</loc>';
                 echo '<lastmod>' . (new \DateTime($page->updated_at))->format(\DateTime::ATOM) . '</lastmod>';

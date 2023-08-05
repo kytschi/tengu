@@ -106,7 +106,7 @@ $di->setShared('db', function () {
 /*
  * If the configuration specify the use of metadata adapter use it or use memory otherwise
  */
-if ($_ENV['APP_ENV'] == 'production') {
+if ($_ENV['APP_ENV'] != 'local') {
     $di->setShared('modelsMetadata', function () {
         $config = $this->getConfig();
 
@@ -133,7 +133,7 @@ $di->setShared('session', function () {
     $session = new SessionManager();
     $serializerFactory = new SerializerFactory();
     $factory = new AdapterFactory($serializerFactory);
-    if ($_ENV['APP_ENV'] == 'production') {
+    if ($_ENV['APP_ENV'] != 'local') {
         $options = [
             'host'  => $config->redis->host,
             'port'  => $config->redis->port,
@@ -149,9 +149,13 @@ $di->setShared('session', function () {
                 'savePath' => '/tmp',
             ]
         );
+        $id = 'tengu';
+        if (TENGU_BACKEND) {
+            $id = 'tengub';
+        }
         $session
             ->setAdapter($files)
-            ->setId('tengu')
+            ->setId($id)
             ->start();
     }
     return $session;

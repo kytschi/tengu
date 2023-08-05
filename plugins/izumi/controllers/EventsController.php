@@ -87,9 +87,13 @@ class EventsController extends PagesController
         $postcode = $model->postcode;
 
         $model->event_on = DateHelper::sql($_POST['event_on']);
-        $model->event_length = $_POST['event_length'];
+        $model->event_end = !empty($_POST['event_end']) ? DateHelper::sql($_POST['event_end']) : null;
+        $model->event_recurring = !empty($_POST['event_recurring']) ? $_POST['event_recurring'] : null;
         $model->event_location = !empty($_POST['event_location']) ? $_POST['event_location'] : null;
         $model->postcode = !empty($_POST['postcode']) ? $_POST['postcode'] : null;
+        $model->external_contact_form = !empty($_POST['external_contact_form']) ?
+            $_POST['external_contact_form'] :
+            null;
 
         if (!empty($model->postcode) && $postcode != $model->postcode) {
             if (
@@ -118,15 +122,6 @@ class EventsController extends PagesController
             new PresenceOf(
                 [
                     'message' => 'The event date is required',
-                ]
-            )
-        );
-
-        $validation->add(
-            'event_length',
-            new PresenceOf(
-                [
-                    'message' => 'The event length is required',
                 ]
             )
         );

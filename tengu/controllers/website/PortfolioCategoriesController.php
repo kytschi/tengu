@@ -38,11 +38,14 @@ class PortfolioCategoriesController extends PageCategoriesController
     ];
 
     public $global_url  = '/portfolio/categories';
+    public $global_from_url = '/portfolio';
     public $resource = 'portfolio-category';
+    public $category_support = false;
 
     public function initialize()
     {
         $this->global_url = ($this->di->getConfig())->urls->cms . $this->global_url;
+        $this->global_from_url = ($this->di->getConfig())->urls->cms . $this->global_from_url;
         $this->global_add_url = $this->global_url . '/add';
         $this->global_category_url = $this->global_url;
     }

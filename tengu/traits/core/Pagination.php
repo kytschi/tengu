@@ -4,12 +4,24 @@
  * Pagination traits.
  *
  * @package     Kytschi\Tengu\Traits\Core\Pagination
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 namespace Kytschi\Tengu\Traits\Core;
@@ -32,7 +44,7 @@ trait Pagination
         if (empty($controller->session)) {
             return '';
         }
-        
+
         return $controller->session->get($var);
     }
 
@@ -68,7 +80,10 @@ trait Pagination
         }
 
         if (!empty($_GET['search'])) {
-            $controller->session->set('search', self::cleanString($_GET['search']));
+            $controller->session->set(
+                'search',
+                self::cleanString($_GET['search'])
+            );
         } else {
             $controller->session->remove('search');
         }
@@ -95,13 +110,13 @@ trait Pagination
         if (!in_array($this->orderBy, $valid_order_bys)) {
             $this->orderBy = $default_order_by;
         }
-        
+
         if (!in_array(strtoupper($this->orderDir), ['ASC', 'DESC'])) {
             $this->orderDir = 'ASC';
         }
 
         $this->perPage = !empty($_GET['limit']) ? intval($_GET['limit']) : 30;
         $this->page = !empty($_GET['page']) ? intval($_GET['page']) : 1;
-        $this->search = !empty($_GET['search']) ? urlencode($_GET['search']) : '';
+        $this->search = !empty($_GET['search']) ? $_GET['search'] : '';
     }
 }

@@ -105,7 +105,7 @@ class UrlHelper
     public static function clean(string $url)
     {
         return str_replace(
-            ['!'],
+            ['!', ',', '’', ''],
             '',
             str_replace([' '], '-', strtolower(strip_tags($_POST['url'])))
         );

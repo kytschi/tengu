@@ -48,12 +48,15 @@ class PageCategoriesController extends PagesController
 
     public $global_url = '/pages/categories';
     public $global_add_url = '';
+    public $global_from_url = '/pages';
 
     public $resource = 'page-category';
+    public $category_support = false;
 
     public function initialize()
     {
         $this->global_url = ($this->di->getConfig())->urls->cms . $this->global_url;
+        $this->global_from_url = ($this->di->getConfig())->urls->cms . $this->global_from_url;
         $this->global_add_url = $this->global_url . '/add';
         $this->global_category_url = $this->global_url;
     }
@@ -155,13 +158,15 @@ class PageCategoriesController extends PagesController
         }
     }
 
-    public static function all($type = '', $exclude = '')
+    public static function all($type = null, $exclude = null)
     {
         $binds = [];
-        $query = 'deleted_at IS NULL AND status = "active"';
+        $query = 'deleted_at IS NULL';
         if ($type) {
             $query .= ' AND type=:type:';
             $binds['type'] = $type;
+        } else {
+            $query .= ' AND type IN ("event-category","page-category","blog-category","portfolio-category")';
         }
 
         if ($exclude) {

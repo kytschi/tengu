@@ -35,6 +35,7 @@ use Kytschi\Tengu\Controllers\Website\PageCategoriesController;
 use Kytschi\Tengu\Exceptions\RequestException;
 use Kytschi\Tengu\Exceptions\SaveException;
 use Kytschi\Tengu\Exceptions\ValidationException;
+use Kytschi\Tengu\Helpers\StringHelper;
 use Kytschi\Tengu\Helpers\UrlHelper;
 use Kytschi\Tengu\Models\Core\Files as ModelFile;
 use Kytschi\Tengu\Models\Website\Pages;
@@ -72,6 +73,7 @@ class PagesController extends ControllerBase
     public $global_url = '/pages';
     public $global_add_url = '';
     public $global_category_url = '';
+    public $global_from_url = '';
 
     public $resource = 'page';
     public $resource_category = 'page-category';
@@ -198,7 +200,7 @@ class PagesController extends ControllerBase
             $template,
             [
                 'campaigns' => Campaigns::find(['conditions' => 'deleted_at IS NULL AND type="seo"']),
-                'categories' => PageCategoriesController::all($this->resource_category, $model->id),
+                'categories' => PageCategoriesController::all(null, $model->id),
                 'data' => $model,
                 'parents' => Pages::find([
                     'conditions' => 'type=:type: AND id!=:id:',
@@ -353,6 +355,7 @@ class PagesController extends ControllerBase
             [
                 'category_support' => $this->category_support,
                 'url' => $this->global_url,
+                'from_url' => $this->global_from_url,
                 'data' => $paginator->paginate(),
                 'stats' => $this->stats()
             ]
@@ -504,7 +507,7 @@ class PagesController extends ControllerBase
             }
         } elseif (!$model->spinnable) {
             $model->content = !empty($_POST['content']) ? $_POST['content'] : null;
-            $model->name = strip_tags($_POST['name']);
+            $model->name = StringHelper::replaceInvalid(strip_tags($_POST['name']));
             $model->pre_spin_content = $model->content;
             $model->pre_spin_name = $model->name;
         }

@@ -210,7 +210,7 @@ echo $this->partial("common/form/messages");
                             </a>
                         </li>
                         <?php
-                        if ($resource == 'event') {
+                        if ($resource == 'event' || $resource == 'event-category') {
                             ?>
                             <li class="nav-item mt-2">
                                 <a
@@ -350,7 +350,7 @@ echo $this->partial("common/form/messages");
                     </div>
                 </div>
                 <?php
-                if ($resource == 'event') {
+                if ($resource == 'event' || $resource == 'event-category') {
                     ?>
                     <div
                         class="tab-pane <?= UrlHelper::activeTab('event-tab', 'content-tab'); ?>"

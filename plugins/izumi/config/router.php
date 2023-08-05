@@ -107,3 +107,73 @@ $router->add(
         'id' => 1
     ]
 );
+
+/*
+ * Event categories
+ */
+$router->add(
+    UrlHelper::backend($config->urls->ems . '/events/categories'),
+    [
+        'namespace'  => 'Kytschi\Izumi\Controllers',
+        'controller' => 'EventCategories',
+        'action'     => 'index',
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->ems . '/events/categories/create'),
+    [
+        'namespace'  => 'Kytschi\Izumi\Controllers',
+        'controller' => 'EventCategories',
+        'action'     => 'add',
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->ems . '/events/categories/delete/{id}'),
+    [
+        'namespace'  => 'Kytschi\Izumi\Controllers',
+        'controller' => 'EventCategories',
+        'action'     => 'delete',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->ems . '/events/categories/edit/{id}'),
+    [
+        'namespace'  => 'Kytschi\Izumi\Controllers',
+        'controller' => 'EventCategories',
+        'action'     => 'edit',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->ems . '/events/categories/recover/{id}'),
+    [
+        'namespace'  => 'Kytschi\Izumi\Controllers',
+        'controller' => 'EventCategories',
+        'action'     => 'recover',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->ems . '/events/categories/save'),
+    [
+        'namespace'  => 'Kytschi\Izumi\Controllers',
+        'controller' => 'EventCategories',
+        'action'     => 'save',
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->ems . '/events/categories/update/{id}'),
+    [
+        'namespace'  => 'Kytschi\Izumi\Controllers',
+        'controller' => 'EventCategories',
+        'action'     => 'update',
+        'id' => 1
+    ]
+);

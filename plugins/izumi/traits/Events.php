@@ -52,4 +52,22 @@ trait Events
             'bind' => $bind
         ]);
     }
+
+    public function findFeaturedEvents($data = [])
+    {
+        $query = '';
+        $binds = [];
+
+        if (!empty($data['random'])) {
+            $order = 'RAND() LIMIT ' . intval($data['random']);
+        } else {
+            $order = 'created_at';
+        }
+
+        return Pages::find([
+            'conditions' => 'type in ("event", "event-category") AND feature = 1 AND deleted_at IS NULL ' . $query,
+            'bind' => $binds,
+            'order' => $order
+        ]);
+    }
 }
