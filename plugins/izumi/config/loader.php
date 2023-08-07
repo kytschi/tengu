@@ -25,6 +25,7 @@
 
 $izumi_namespaces = [
     'Kytschi\Izumi\Controllers' => $config->application->pluginsDir . 'izumi/controllers',
+    'Kytschi\Izumi\Models' => $config->application->pluginsDir . 'izumi/models',
     'Kytschi\Izumi\Traits' => $config->application->pluginsDir . 'izumi/traits'
 ];
 

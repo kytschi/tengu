@@ -95,7 +95,7 @@ class PagesController extends ControllerBase
             $template,
             [
                 'campaigns' => Campaigns::find(['conditions' => 'deleted_at IS NULL AND type="seo"']),
-                'categories' => PageCategoriesController::all($this->resource_category),
+                'categories' => PageCategoriesController::all(),
                 'parents' => Pages::find([
                     'conditions' => 'type=:type:',
                     'bind' => ['type' => $this->resource]
@@ -121,12 +121,21 @@ class PagesController extends ControllerBase
 
     public function checkURL($model)
     {
-        $find = (new Pages())->findFirst([
-            'conditions' => 'url = :url: AND id != :id:',
-            'bind' => [
+        if ($model->id) {
+            $query = 'url = :url: AND id != :id:';
+            $bind = [
                 'url' => $model->url,
                 'id' => $model->id
-            ]
+            ];
+        } else {
+            $query = 'url = :url:';
+            $bind = [
+                'url' => $model->url
+            ];
+        }
+        $find = (new Pages())->findFirst([
+            'conditions' => $query,
+            'bind' => $bind
         ]);
 
         if (!empty($find)) {

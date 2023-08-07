@@ -28,6 +28,7 @@ declare(strict_types=1);
 
 namespace Kytschi\Izumi\Controllers;
 
+use Kytschi\Izumi\Models\Events;
 use Kytschi\Tengu\Controllers\Core\PostcodesController;
 use Kytschi\Tengu\Controllers\Website\PagesController;
 use Kytschi\Tengu\Exceptions\RequestException;
@@ -84,17 +85,35 @@ class EventsController extends PagesController
 
     private function setSubData($model)
     {
+        $event = Events::findFirst([
+            'conditions' => 'page_id=:page_id:',
+            'bind' => ['page_id' => $model->id]
+        ]);
+
+        $save = false;
+        if (empty($event)) {
+            $event = new Events();
+            $save = true;
+        }
+
         $postcode = $model->postcode;
 
-        $model->event_on = DateHelper::sql($_POST['event_on']);
-        $model->event_end = !empty($_POST['event_end']) ? DateHelper::sql($_POST['event_end']) : null;
-        $model->event_recurring = !empty($_POST['event_recurring']) ? $_POST['event_recurring'] : null;
-        $model->event_location = !empty($_POST['event_location']) ? $_POST['event_location'] : null;
-        $model->postcode = !empty($_POST['postcode']) ? $_POST['postcode'] : null;
-        $model->external_contact_form = !empty($_POST['external_contact_form']) ?
+        $event->page_id = $model->id;
+        $event->event_on = DateHelper::sql($_POST['event_on']);
+        $event->event_end = !empty($_POST['event_end']) ? DateHelper::sql($_POST['event_end']) : null;
+        $event->recurring = !empty($_POST['event_recurring']) ? $_POST['event_recurring'] : null;
+        $event->location = !empty($_POST['event_location']) ? $_POST['event_location'] : null;
+        $event->price = !empty($_POST['event_price']) ? floatval($_POST['event_price']) : null;
+        $event->pricing_type = !empty($_POST['event_pricing_type']) ? $_POST['event_pricing_type'] : null;
+        $event->external_contact_form = !empty($_POST['external_contact_form']) ?
             $_POST['external_contact_form'] :
             null;
+        $event->fee = !empty($_POST['event_fee']) ? floatval($_POST['event_fee']) : null;
+        $event->external_booking_form = !empty($_POST['external_booking_form']) ?
+            $_POST['external_booking_form'] :
+            null;
 
+        $model->postcode = !empty($_POST['postcode']) ? $_POST['postcode'] : null;
         if (!empty($model->postcode) && $postcode != $model->postcode) {
             if (
                 !empty($coords = (new PostcodesController())->getCoordinates($model->postcode))
@@ -102,6 +121,20 @@ class EventsController extends PagesController
                 $model->longitude = $coords['longitude'];
                 $model->latitude = $coords['latitude'];
             }
+        }
+
+        if ($save) {
+            if ($event->save() === false) {
+                throw new SaveException(
+                    'Failed to save the event data',
+                    $event->getMessages()
+                );
+            }
+        } elseif ($event->update() === false) {
+            throw new SaveException(
+                'Failed to update the event data',
+                $event->getMessages()
+            );
         }
 
         return $model;

@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Products model.
+ * Events model.
  *
- * @package     Kytschi\Phoenix\Models\Products
+ * @package     Kytschi\Izumi\Models\Events
  * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
@@ -24,24 +24,38 @@
  * Boston, MA  02110-1301, USA.
  */
 
-namespace Kytschi\Phoenix\Models;
+namespace Kytschi\Izumi\Models;
 
 use Kytschi\Tengu\Models\Core\Users;
 use Kytschi\Tengu\Models\Model;
 use Kytschi\Tengu\Models\Website\Pages;
 
-class Products extends Model
+class Events extends Model
 {
     public $page_id;
+    public $event_on;
+    public $event_end;
+    public $recurring;
+    public $location;
+    public $external_contact_form;
+    public $external_booking_form;
     public $price;
-    public $stock;
-    public $low_stock;
-    public $vat;
-    public $requires_shipping = 1;
+    public $pricing_type;
+    public $fee;
 
     public function initialize()
     {
-        $this->setSource('phoenix_products');
+        $this->setSource('izumi_events');
+
+        $this->hasOne(
+            'page_id',
+            Pages::class,
+            'id',
+            [
+                'alias'    => 'page',
+                'reusable' => true,
+            ]
+        );
 
         $this->hasOne(
             'updated_by',
@@ -72,20 +86,5 @@ class Products extends Model
                 'reusable' => true
             ]
         );
-
-        $this->hasOne(
-            'page_id',
-            Pages::class,
-            'id',
-            [
-                'alias'    => 'page',
-                'reusable' => true
-            ]
-        );
-    }
-
-    public function getName()
-    {
-        return !empty($this->page) ? $this->page->name : '';
     }
 }

@@ -355,7 +355,14 @@ class DateHelper
             if (strtolower($datetime) == 'unknown') {
                 return $unknown;
             }
-            return date($time ? ($seconds ? 'd/m/Y H:i:s' : 'd/m/Y H:i') : 'd/m/Y', strtotime((string) $datetime));
+            $timestamp = strtotime((string) $datetime);
+            if (empty($timestamp)) {
+                $timestamp = strtotime('NOW');
+            }
+            return date(
+                $time ? ($seconds ? 'd/m/Y H:i:s' : 'd/m/Y H:i') : 'd/m/Y',
+                $timestamp
+            );
         } catch (\Exception $err) {
             return 'Failed to render the date';
         }
@@ -373,7 +380,12 @@ class DateHelper
             if (strtolower($datetime) == 'unknown') {
                 return $unknown;
             }
-            return date($time ? 'M jS, Y H:i' : 'M jS, Y', strtotime($datetime));
+
+            $timestamp = strtotime((string) $datetime);
+            if (empty($timestamp)) {
+                $timestamp = strtotime('NOW');
+            }
+            return date($time ? 'M jS, Y H:i' : 'M jS, Y', $timestamp);
         } catch (\Exception $err) {
             return 'Failed to render the date';
         }

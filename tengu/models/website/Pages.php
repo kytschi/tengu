@@ -26,6 +26,7 @@
 
 namespace Kytschi\Tengu\Models\Website;
 
+use Kytschi\Izumi\Models\Events;
 use Kytschi\Makabe\Models\Campaigns;
 use Kytschi\Makabe\Models\Keywords;
 use Kytschi\Makabe\Models\Personas;
@@ -83,14 +84,9 @@ class Pages extends Model
     public $sort = 0;
     public $feature = 0;
     public $rating;
-    public $event_on;
-    public $event_end;
-    public $event_recurring;
-    public $event_location;
     public $postcode;
     public $longitude;
     public $latitude;
-    public $external_contact_form;
 
     public function initialize()
     {
@@ -331,6 +327,16 @@ class Pages extends Model
             'page_id',
             [
                 'alias'    => 'product',
+                'reusable' => true,
+            ]
+        );
+
+        $this->hasOne(
+            'id',
+            Events::class,
+            'page_id',
+            [
+                'alias'    => 'event',
                 'reusable' => true,
             ]
         );

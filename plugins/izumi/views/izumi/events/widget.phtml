@@ -24,6 +24,11 @@
 
 use Kytschi\Tengu\Controllers\Core\FormController;
 use Kytschi\Tengu\Helpers\DateHelper;
+
+$event = null;
+if (!empty($data->event)) {
+    $event = $data->event;
+}
 ?>
 <div class="row">
     <div class="col-6">
@@ -42,7 +47,7 @@ use Kytschi\Tengu\Helpers\DateHelper;
                         type="text"
                         class="form-control datetimepicker mt-2"
                         value="<?= DateHelper::pretty(
-                            FormController::getFormData('event_on', $data),
+                            FormController::getFormData('event_on', $event),
                             true,
                             false,
                             'Unknown',
@@ -61,7 +66,7 @@ use Kytschi\Tengu\Helpers\DateHelper;
                         type="text"
                         class="form-control datetimepicker mt-2"
                         value="<?= DateHelper::pretty(
-                            FormController::getFormData('event_end', $data),
+                            FormController::getFormData('event_end', $event),
                             true,
                             false,
                             'Unknown',
@@ -74,9 +79,10 @@ use Kytschi\Tengu\Helpers\DateHelper;
                         Recurring
                     </label>
                     <?php
-                        $selected = FormController::getFormData('event_recurring', $data, 'weekly');
+                        $selected = FormController::getFormData('recurring', $event);
                     ?>
                     <select name="event_recurring" class="form-control mt-2">
+                        <option value=""<?= empty($selected) ? ' selected' : ''; ?>>none</option>
                         <option value="daily"<?= $selected == 'daily' ? ' selected' : ''; ?>>daily</option>
                         <option value="weekly"<?= $selected == 'weekly' ? ' selected' : ''; ?>>weekly</option>
                         <option value="monthly"<?= $selected == 'monthly' ? ' selected' : ''; ?>>monthly</option>
@@ -100,7 +106,7 @@ use Kytschi\Tengu\Helpers\DateHelper;
                         id="event_location"
                         name="event_location"
                         rows="9"
-                        class="form-control mt-2"><?= FormController::getFormData('event_location', $data); ?></textarea>
+                        class="form-control mt-2"><?= FormController::getFormData('location', $event); ?></textarea>
                 </div>
                 <div class="form-group mb-4">
                     <label for="postcode" class="form-label">
@@ -120,20 +126,76 @@ use Kytschi\Tengu\Helpers\DateHelper;
     <div class="col-6">
         <div class="card">
             <div class="card-header mb-2">
-				<span class="card-title">Contact form</span>
+				<span class="card-title">Contact</span>
             </div>
             <div class="card-body p-3 pt-0">
                 <div class="form-group mb-4">
                     <label for="external_contact_form" class="form-label">
                         External contact form
                     </label>
-                    <input
+                    <textarea
                         id="external_contact_form"
                         name="external_contact_form"
+                        rows="9"
+                        class="form-control mt-2"><?= FormController::getFormData('external_contact_form', $event); ?></textarea>
+                    <small>If you want to make use of a custom contact form</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header mb-2">
+				<span class="card-title">Booking</span>
+            </div>
+            <div class="card-body p-3 pt-0">
+                <div class="form-group mb-4">
+                    <label for="event_price" class="form-label">
+                        Price
+                    </label>
+                    <input
+                        id="event_price"
+                        name="event_price"
                         type="text"
                         class="form-control mt-2"
-                        value="<?= FormController::getFormData('external_contact_form', $data); ?>">
-                    <small>If you want to make use of a custom contact form</small>
+                        value="<?= FormController::getFormData('price', $event); ?>">
+                </div>
+                <div class="form-group mb-4">
+                    <label for="event_pricing_type" class="form-label">
+                        Pricing type
+                    </label>
+                    <?php
+                        $selected = FormController::getFormData('pricing_type', $event);
+                    ?>
+                    <select name="event_pricing_type" class="form-control mt-2">
+                        <option value=""<?= empty($selected) ? ' selected' : ''; ?>>none</option>
+                        <option value="per_person"<?= $selected == 'per_person' ? ' selected' : ''; ?>>per person</option>
+                        <option value="per_day"<?= $selected == 'per_day' ? ' selected' : ''; ?>>per day</option>
+                        <option value="per_week"<?= $selected == 'per_week' ? ' selected' : ''; ?>>per week</option>
+                        <option value="per_year"<?= $selected == 'per_year' ? ' selected' : ''; ?>>per year</option>
+                    </select>
+                </div>
+                <div class="form-group mb-4">
+                    <label for="event_fee" class="form-label">
+                        Fee
+                    </label>
+                    <input
+                        id="event_fee"
+                        name="event_fee"
+                        type="text"
+                        class="form-control mt-2"
+                        value="<?= FormController::getFormData('fee', $event); ?>">
+                </div>
+                <div class="form-group mb-4">
+                    <label for="external_booking_form" class="form-label">
+                        External booking form
+                    </label>
+                    <textarea
+                        id="external_booking_form"
+                        name="external_booking_form"
+                        rows="9"
+                        class="form-control mt-2"><?= FormController::getFormData('external_booking_form', $event); ?></textarea>
+                    <small>If you want to make use of a custom booking form</small>
                 </div>
             </div>
         </div>
