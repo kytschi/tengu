@@ -91,6 +91,7 @@ trait Stats
         'panscient.com' => 'panscient.com',
         'pantest' => 'pantest',
         'Pandalytics' => 'Pandalytics',
+        'PetalBot' => 'petalbot',
         'P3P Validator' => 'P3P Validator',
         'okhttp' => 'okhttp',
         'Netwalk research scanner' => 'Netwalk research scanner',

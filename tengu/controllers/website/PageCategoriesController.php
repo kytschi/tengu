@@ -166,7 +166,7 @@ class PageCategoriesController extends PagesController
             $query .= ' AND type=:type:';
             $binds['type'] = $type;
         } else {
-            $query .= ' AND type IN ("event-category","page-category","blog-category","portfolio-category")';
+            $query .= ' AND type IN ("event-category","page-category","blog-post-category","portfolio-category")';
         }
 
         if ($exclude) {

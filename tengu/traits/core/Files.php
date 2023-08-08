@@ -166,7 +166,7 @@ trait Files
             $tmp_name = $name;
             $mime_type = mime_content_type($file);
         } else {
-            $name = $file['name'];
+            $name = str_replace(" ", "-", $file['name']);
             $tmp_name = $file['tmp_name'];
             $mime_type = $file['type'];
             if (empty($mime_type)) {

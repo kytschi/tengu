@@ -111,7 +111,7 @@ class TenguController
     {
         try {
             if ($url = Tag::getValue('canonical_url')) {
-                return (!empty($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $url;
+                return $this->siteUrl() . $url;
             }
 
             $path = parse_url($_SERVER['REQUEST_URI']);
@@ -119,7 +119,7 @@ class TenguController
                 return '';
             }
 
-            $url = (!empty($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $path['path'];
+            $url = $this->siteUrl() . $path['path'];
             return $url;
         } catch (\Exception $err) {
             throw new GenericException($err->getMessage());
@@ -241,5 +241,10 @@ class TenguController
     {
         header('Location: ' . ($pagination ? UrlHelper::generate($url) : $url));
         exit;
+    }
+
+    public function siteUrl()
+    {
+        return (!empty($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
     }
 }
