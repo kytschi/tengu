@@ -127,7 +127,12 @@ trait Stats
         'APIs-Ayeh' => 'APIs-Ayeh',
         'Google Site Verification' => 'Google-Site-Verification',
         'CommonCrawl' => 'CommonCrawl',
-        'Bloglovin' => 'Bloglovin'
+        'Bloglovin' => 'Bloglovin',
+        'mj12bot' => 'mj12bot',
+        'YisouSpider' => 'YisouSpider',
+        'AhrefsBot' => 'http://ahrefs.com/robot/',
+        'YandexBot' => 'http://yandex.com/bots',
+        'FeedBurner' => 'http://www.FeedBurner.com'
     ];
 
     public function addSearchStat($search_query, $type = 'internal')
