@@ -1,5 +1,7 @@
 <?php
 use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+$crumbs = UrlHelper::breadcrumbs();
 ?>
 <div id="page" class="col-12">
     <div class="container-fluid">
@@ -9,12 +11,25 @@ use Kytschi\Tengu\Helpers\DateHelper;
                     <h2 class="page-title"><?= $page->name; ?></h2>
                     <nav class="page-crumbs" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a href="/">Home</a>
-                            </li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                                <?= $page->name; ?>
-                            </li>
+                            <?php
+                            $key = 1;
+                            foreach ($crumbs as $name => $url) {
+                                if ($key == count($crumbs)) {
+                                    ?>
+                                    <li class="breadcrumb-item active">
+                                        <a href="<?= $page->url; ?>"><?= $page->name; ?></a>
+                                    </li>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <li class="breadcrumb-item">
+                                        <a href="<?= $url; ?>"><?= ucwords($name); ?></a>
+                                    </li>
+                                    <?php
+                                }
+                                $key++;
+                            }
+                            ?>
                         </ol>
                     </nav>
                     <?php

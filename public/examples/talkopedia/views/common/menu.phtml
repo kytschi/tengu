@@ -13,12 +13,11 @@ $menu = $this->tengu->findMenu(['slug' => 'header menu']);
         <ul id="menu-nav" class="float-right">
             <?php
             foreach ($menu->category_items as $item) {
-                $link = $item->link;
                 ?>
                 <li class="nav-item">
                     <a
-                        href="<?= $link; ?>"
-                        class="nav-link<?= (UrlHelper::matches($link)) ? ' active' : '';?>"
+                        href="<?= $item->link; ?>"
+                        class="nav-link<?= (UrlHelper::matches($item->link)) ? ' active' : '';?>"
                         <?= !empty($item->new_window) ? 'target="_blank"' : ''; ?>
                     >
                         <?= $item->name; ?>
@@ -37,12 +36,11 @@ $menu = $this->tengu->findMenu(['slug' => 'header menu']);
             <ul class="dropdown-menu dropdown-menu-right">
                 <?php
                 foreach ($menu->category_items as $item) {
-                    $link = $item->link;
                     ?>
                     <li class="nav-item">
                         <a
-                            href="<?= $link; ?>"
-                            class="nav-link<?= (UrlHelper::matches($link)) ? ' active' : '';?>"
+                            href="<?= $item->link; ?>"
+                            class="nav-link<?= (UrlHelper::matches($item->link)) ? ' active' : '';?>"
                             <?= !empty($item->new_window) ? 'target="_blank"' : ''; ?>
                         >
                             <?= $item->name; ?>

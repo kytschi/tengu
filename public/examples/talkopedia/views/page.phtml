@@ -1,6 +1,8 @@
 <?php
 use Kytschi\Tengu\Controllers\Website\BlogPostsController;
 use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+$crumbs = UrlHelper::breadcrumbs();
 
 $latest_posts = (new BlogPostsController())->get(3, $page->id, true);
 ?>
@@ -12,12 +14,25 @@ $latest_posts = (new BlogPostsController())->get(3, $page->id, true);
                     <h2 class="page-title"><?= $page->name; ?></h2>
                     <nav class="page-crumbs" aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a href="/">Home</a>
-                            </li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                                <?= $page->name; ?>
-                            </li>
+                            <?php
+                            $key = 1;
+                            foreach ($crumbs as $name => $url) {
+                                if ($key == count($crumbs)) {
+                                    ?>
+                                    <li class="breadcrumb-item active">
+                                        <a href="<?= $page->url; ?>"><?= $page->name; ?></a>
+                                    </li>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <li class="breadcrumb-item">
+                                        <a href="<?= $url; ?>"><?= ucwords($name); ?></a>
+                                    </li>
+                                    <?php
+                                }
+                                $key++;
+                            }
+                            ?>
                         </ol>
                     </nav>
                     <div class="page-body">

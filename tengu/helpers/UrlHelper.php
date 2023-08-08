@@ -102,6 +102,25 @@ class UrlHelper
         return $url;
     }
 
+    public static function breadcrumbs(string $url = '')
+    {
+        if (empty($url)) {
+            $parsed = parse_url($_SERVER['REQUEST_URI']);
+            $url = $parsed['path'];
+        }
+
+        $return = [];
+        $splits = explode('/', $url);
+        $url = '';
+        foreach ($splits as $split) {
+            if ($split) {
+                $url .= '/' . $split;
+            }
+            $return[empty($split) ? 'home' : str_replace('-', ' ', $split)] = $url ? $url : '/';
+        }
+        return $return;
+    }
+
     public static function clean(string $url)
     {
         return str_replace(

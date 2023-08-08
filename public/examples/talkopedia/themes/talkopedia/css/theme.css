@@ -55,7 +55,7 @@ a:hover, .nav-link:hover {
     font-size: 11pt;
 }
 
-.breadcrumb-item.active {
+.breadcrumb-item.active a {
     color: var(--font-yellow) !important;
 }
 

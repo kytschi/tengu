@@ -1,6 +1,8 @@
 <?php
 use Kytschi\Tengu\Controllers\Website\BlogPostsController;
 use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+$crumbs = UrlHelper::breadcrumbs();
 
 $category = $page->categories->getFirst();
 ?>
@@ -15,23 +17,25 @@ $category = $page->categories->getFirst();
                                 <h2 class="page-title"><?= $page->name; ?></h2>
                                 <nav class="page-crumbs-no-bg" aria-label="breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item">
-                                            <a href="/">Home</a>
-                                        </li>
                                         <?php
-                                        if (!empty($category)) {
-                                            ?>
-                                            <li class="breadcrumb-item">
-                                                <a href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>">
-                                                    <?= $category->name; ?>
-                                                </a>
-                                            </li>
-                                            <?php
+                                        $key = 1;
+                                        foreach ($crumbs as $name => $url) {
+                                            if ($key == count($crumbs)) {
+                                                ?>
+                                                <li class="breadcrumb-item active">
+                                                    <a href="<?= $page->url; ?>"><?= $page->name; ?></a>
+                                                </li>
+                                                <?php
+                                            } else {
+                                                ?>
+                                                <li class="breadcrumb-item">
+                                                    <a href="<?= $url; ?>"><?= ucwords($name); ?></a>
+                                                </li>
+                                                <?php
+                                            }
+                                            $key++;
                                         }
                                         ?>
-                                        <li class="breadcrumb-item active" aria-current="page">
-                                            <?= $page->name; ?>
-                                        </li>
                                     </ol>
                                 </nav>
                             </div>
