@@ -1,0 +1,6 @@
+@import "../../talkopedia/css/theme.css";
+
+html, body, .card-body {
+    text-transform: uppercase !important;
+}
+  

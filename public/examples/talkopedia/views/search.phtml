@@ -1,0 +1,121 @@
+<?php
+use Kytschi\Tengu\Controllers\Website\BlogPostsController;
+use Kytschi\Tengu\Helpers\DateHelper;
+
+$count = 0;
+if (isset($results)) {
+    $count = $results->total_items;
+} else {
+    $results = null;
+}
+
+$latest_posts = (new BlogPostsController())->get(3, $page->id, true);
+?>
+<div id="page" class="col-12 page-full">
+    <section class="search card">
+        <div class="card-header pt-3 pb-3">
+            <h2 class="page-title">Search</h2>
+        </div>
+        <div class="card-body">
+            <form id="search" action="/search" method="get" class="row">
+                <div class="col-12 mb-4">
+                    <input
+                        class="form-control"
+                        placeholder="What you looking for?"
+                        type="text"
+                        name="search"
+                        maxlength="255"
+                        value="<?= !empty($_GET['search']) ? BlogPostsController::cleanString($_GET['search']) : ''; ?>">
+                </div>
+                <div class="col-12">
+                    <div id="sitemap">
+                    <?php
+                    if ($count) {
+                        foreach ($results->getItems() as $item) {
+                            $category = null;
+                            if (!empty($item->categories)) {
+                                $item->categories->getFirst();
+                            }
+                            ?>
+                            <div class="sitemap-item">
+                                <div class="sitemap-image-thumb">
+                                    <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
+                                        <img 
+                                            src="<?= !empty($item->cover_image) ? $item->cover_image->url : $this->tengu->theme->getAsset('imgs/placeholder.jpg'); ?>"
+                                            alt="<?= $item->name; ?>">
+                                    </a>
+                                </div>
+                                <div class="sitemap-content">
+                                    <?php
+                                    if ($category) {
+                                        ?>
+                                        <div class="sitemap-name">
+                                            <a href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>">
+                                                <?= $category->name; ?>
+                                            </a>
+                                        </div>
+                                        <?php
+                                    }
+                                    if ($item->type == 'blog-post') {
+                                        ?>
+                                        <div class="sitemap-info">
+                                            <ul>
+                                                <li>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
+                                                        <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                                    </svg>
+                                                    <span><?= DateHelper::prettyFull($item->created_at, false); ?></span>
+                                                </li>
+                                                <li>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                                    </svg>
+                                                    <span>By <?= !empty($item->persona) ? $item->persona->full_name : $item->created->full_name; ?></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                    <p class="h4">
+                                        <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
+                                            <?= $item->name; ?>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                    } else {
+                        if (isset($_GET['search'])) {
+                            ?>
+                            Sorry but nothing was found for that search query
+                            <?php
+                        }
+                    }
+                    ?>
+                    </div>
+                </div>
+                <div class="col-12">
+                <?php
+                    echo $this->partial(
+                        'common/pagination',
+                        [
+                            'data' => $results,
+                            'url' => '/search'
+                        ]
+                    );
+                ?>
+                </div>
+            </form>
+        </div>
+    </section>
+    <div class="page-background-image">
+        <img src="<?= $this->tengu->theme->getAsset('imgs/search.jpg'); ?>" alt="<?= $page->name; ?>">
+    </div>
+</div>
+<div class="category-pages col-12">
+    <?= $this->partial('common/featured'); ?>
+    <?= $this->partial("common/maybe_of_interest"); ?>
+</div>

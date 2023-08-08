@@ -1,0 +1,49 @@
+@import "../../talkopedia/css/theme.css";
+
+@font-face {
+    font-family: 'Archivo';
+    src: url("../fonts/CFHalloween-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'Oswald';
+    src: url("../fonts/CFHalloween-Regular.ttf") format("truetype");
+}
+
+#search .form-control, html, body, .page-body {
+    text-transform: uppercase;
+}
+
+.page-content .card-body {
+    font-family: "Content";
+}
+
+/* Ghosts */
+.theme_animation {
+    height: 100%;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.theme_animation div {
+    top: -200%;
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    animation: 4s linear infinite;
+    display: none;
+}
+
+.theme_animation div.ghost {
+    top: -200%;
+}
+
+.theme_animation div.ghost img {
+    width: 200px;
+    height: 200px;
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+}

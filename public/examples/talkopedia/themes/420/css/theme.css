@@ -1,0 +1,27 @@
+@import "../../talkopedia/css/theme.css";
+
+@font-face {
+    font-family: 'Archivo';
+    src: url("../fonts/Potland-ZEK8.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'Oswald';
+    src: url("../fonts/Potland-ZEK8.ttf") format("truetype");
+}
+
+.card-header h3 span, .card-header h2 span, .sub-heading {
+    padding: 15px 15px 12px 15px;
+}
+
+.card-header h3 span {
+    font-size: 22pt;
+}
+
+.page-body, .category-page {
+    font-family: "Content" !important;
+}
+
+.nav-link, .breadcrumb {
+    font-size: 20pt;
+}

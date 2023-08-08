@@ -1,0 +1,10 @@
+@import "../../talkopedia/css/theme.css";
+
+@font-face {
+    font-family: 'Archivo';
+    src: url("../fonts/DeathStar-VmWB.ttf") format("truetype");
+}
+
+.sub-heading {
+    font-family: "Archivo" !important;
+}

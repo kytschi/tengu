@@ -1,0 +1,35 @@
+@import "../../talkopedia/css/theme.css";
+
+@font-face {
+    font-family: 'Archivo';
+    src: url("../fonts/Treasuremap-Ea1vj.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'Oswald';
+    src: url("../fonts/Treasuremap-Ea1vj.ttf") format("truetype");
+}
+
+.page-body, h3 span {
+    font-size: 18pt !important;
+}
+
+.category-content {
+    font-family: "Content";
+}
+
+.nav-item {
+    font-size: 16pt;
+}
+
+.breadcrumb {
+    font-size: 14pt;
+}
+
+.page-title p, .slogan p, h3 span, .sub-heading {
+    padding: 15px 15px 8px 15px !important;
+}
+
+.sub-heading {
+    font-size: 22pt;
+}

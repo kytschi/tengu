@@ -1,0 +1,50 @@
+<div id="page" class="col-12">
+    <div class="container-fluid">
+        <div class="container">
+            <section>
+                <div class="page-content">
+                    <h2 class="page-title">
+                        <?= $page->name; ?>
+                    </h2>
+
+                    <?php
+                    if ($slogan = $this->tengu->theme->getSlogan()) {
+                        ?>
+                        <div class="slogan">
+                            <p><?= $slogan; ?></p>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                    <div class="page-body">
+                        <?= $page->content; ?>
+                    </div>
+                </div>
+                <?php
+                if (!empty($page->banner_image)) {
+                    ?>
+                    <div class="page-background-image">
+                    <?php
+                    if ($this->tengu->theme->getSlug() != "talkopedia") {
+                        ?>
+                        <img src="<?= $this->tengu->theme->getAsset('imgs/background.jpg'); ?>" alt="<?= $page->name; ?>">
+                        <?php
+                    } else {
+                        ?>
+                        <img src="<?= $page->banner_image->url; ?>" alt="<?= $page->banner_image->label; ?>">
+                        <?php
+                    }
+                    ?>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?= $this->partial('common/theme_animation'); ?>
+            </section>
+        </div>
+        <div class="category-pages col-12">
+            <?= $this->partial('common/latest_reviews'); ?>
+            <?= $this->partial('common/featured'); ?>
+        </div>
+    </div>
+</div>

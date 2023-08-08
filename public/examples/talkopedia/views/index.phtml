@@ -1,0 +1,90 @@
+<?php
+use Kytschi\Tengu\Controllers\Core\EmailController;
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Controllers\Website\MenuController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+use Phalcon\Tag;
+
+$title = Tag::getTitle();
+$search = !empty($_GET['search']) ? $_GET['search'] : '';
+
+$footer_menu = MenuController::get('footer');
+?>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="referrer" content="origin">
+		<meta name="robots" content="index,folow">
+        <meta name="description" content="<?= Tag::getValue('meta_description'); ?>">
+        <meta name="keywords" content="<?= Tag::getValue('meta_keywords'); ?>">
+        <meta name="author" content="<?= Tag::getValue('meta_author'); ?>">
+		<meta name="revised" content="<?= DateHelper::meta(Tag::getValue('page_updated')); ?>">
+
+        <title><?= (!empty($title) ? $title . ' - ' : '')  . $this->tengu->settings->name;?></title>
+
+        <link rel="stylesheet" href="<?= $this->tengu->theme->getCSS('bootstrap.min.css'); ?>">
+        <link rel="stylesheet" href="<?= $this->tengu->theme->getCSS('theme.css'); ?>">
+        <link rel="icon" href="<?= $this->tengu->theme->getAsset('imgs/favicon.ico'); ?>" sizes="64x64">
+
+        <link rel="canonical" href="<?= $this->tengu->canonicalUrl(); ?>">
+
+        <script src="<?= $this->tengu->theme->getAsset('js/plugins/jquery.min.js');?>"></script>
+        <script src="<?= $this->tengu->theme->getAsset('js/plugins/popper.min.js');?>"></script>
+        <script src="<?= $this->tengu->theme->getAsset('js/plugins/bootstrap.min.js');?>"></script>
+    </head>
+    <body>
+        <header>
+            <?= $this->partial("common/menu"); ?>
+        </header>
+        <main>
+            <div class="row m-0">
+                <div class="col-12 p-0">
+                    <?= $this->getContent(); ?>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="logo float-left">
+                        <img src="<?= $this->tengu->theme->getAsset('imgs/logo.png'); ?>" alt="Monkey">
+                    </div>
+                    <div class="float-left pt-4">
+                        <div class="copyright">
+                            &copy;<?= date('Y'); ?>
+                            <?= !empty($this->tengu->settings->company_name) ? $this->tengu->settings->company_name : $this->tengu->settings->name; ?>
+                        </div>
+                        <div class="powered-by">
+                            <a href="https://tengu.kytschi.com" target="_blank">
+                                Powered by Tengu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <ul>
+                        <?php
+                        $footer_menu = $this->tengu->findMenu(['slug' => 'footer menu']);
+                        foreach ($footer_menu->category_items as $item) {
+                            $link = $item->link;
+                            ?>
+                            <li class="nav-item">
+                                <a
+                                    href="<?= $link; ?>"
+                                    class="nav-link<?= (UrlHelper::matches($link)) ? ' active' : '';?>"
+                                    <?= !empty($item->new_window) ? 'target="_blank"' : ''; ?>>
+                                    <?= $item->name; ?>
+                                </a>
+                            </li>
+                            <?php
+                        }
+                        ?>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+	</body>
+</html>

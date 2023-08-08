@@ -1,0 +1,47 @@
+<?php
+use Kytschi\Tengu\Helpers\DateHelper;
+?>
+<div id="page" class="col-12">
+    <div class="container-fluid">
+        <div class="container">
+            <section>
+                <div class="page-content">
+                    <h2 class="page-title"><?= $page->name; ?></h2>
+                    <nav class="page-crumbs" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <?= $page->name; ?>
+                            </li>
+                        </ol>
+                    </nav>
+                    <?php
+                    if ($page->content) {
+                        ?>
+                        <div class="page-body">
+                            <?= $page->content; ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+                <?php
+                if (!empty($page->banner_image)) {
+                    ?>
+                    <div class="page-background-image">
+                        <img src="<?= $page->banner_image->url; ?>" alt="<?= $page->banner_image->label; ?>">
+                    </div>
+                    <?php
+                }
+                ?>
+                <?= $this->partial('common/theme_animation'); ?>
+            </section>
+        </div>
+        <div class="category-pages col-12">
+            <?= $this->partial('common/category_latest_reviews', ['page' => $page]); ?>
+            <?= $this->partial('common/featured'); ?>
+        </div>
+    </div>
+</div>

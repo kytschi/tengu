@@ -1,0 +1,21 @@
+@import "../../talkopedia/css/theme.css";
+
+@font-face {
+    font-family: 'Archivo';
+    src: url("../fonts/Batman-mrVm.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'Dog';
+    src: url("../fonts/Batfont-e9mm.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'Oswald';
+    src: url("../fonts/Batfont-e9mm.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'Content';
+    src: url("../fonts/Archivo-Regular.ttf") format("truetype");
+}

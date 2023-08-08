@@ -1,0 +1,44 @@
+<?php
+use Kytschi\Tengu\Controllers\Website\BlogPostsController;
+use Kytschi\Tengu\Helpers\DateHelper;
+
+$latest_posts = (new BlogPostsController())->get(3, $page->id, true);
+?>
+<div id="page" class="col-12">
+    <div class="container-fluid">
+        <div class="container">
+            <section>
+                <div class="page-content">
+                    <h2 class="page-title"><?= $page->name; ?></h2>
+                    <nav class="page-crumbs" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <?= $page->name; ?>
+                            </li>
+                        </ol>
+                    </nav>
+                    <div class="page-body">
+                        <?= $page->content; ?>
+                    </div>
+                </div>
+                <?php
+                if (!empty($page->banner_image)) {
+                    ?>
+                    <div class="page-background-image">
+                        <img src="<?= $page->banner_image->url; ?>" alt="<?= $page->banner_image->label; ?>">
+                    </div>
+                    <?php
+                }
+                ?>
+                <?= $this->partial('common/theme_animation'); ?>
+            </section>
+        </div>
+        <div class="category-pages col-12">
+            <?= $this->partial('common/featured'); ?>
+            <?= $this->partial("common/maybe_of_interest"); ?>
+        </div>
+    </div>
+</div>

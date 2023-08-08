@@ -1,0 +1,113 @@
+<?php
+use Kytschi\Tengu\Controllers\Website\BlogPostsController;
+use Kytschi\Tengu\Helpers\DateHelper;
+
+$category = $page->categories->getFirst();
+?>
+<div id="page" class="col-12">
+    <div class="container-fluid">
+        <div class="container">
+            <section>
+                <div class="page-content">
+                    <div class="page-body">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="page-title"><?= $page->name; ?></h2>
+                                <nav class="page-crumbs-no-bg" aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="/">Home</a>
+                                        </li>
+                                        <?php
+                                        if (!empty($category)) {
+                                            ?>
+                                            <li class="breadcrumb-item">
+                                                <a href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>">
+                                                    <?= $category->name; ?>
+                                                </a>
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            <?= $page->name; ?>
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="card-body">
+                                <?php
+                                if (!empty($page->cover_image)) {
+                                    ?>
+                                    <div class="card-image">
+                                        <img src="<?= $page->cover_image->url; ?>" alt="<?= $page->cover_image->label; ?>">
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                                <div>
+                                    <?= $page->content; ?>
+                                </div>
+                            </div>
+                            <div class="card-footer mt-3 mb-3">
+                                <ul>
+                                    <li>
+                                        <div class="review-author-image">
+                                            <img src="<?= !empty($page->persona) ? 
+                                                (($page->persona->profile_image) ? $page->persona->profile_image->url : $this->tengu->theme->getAsset('imgs/profile-pic.jpg')) :
+                                                (($page->created->profile_image) ? $page->created->profile_image->url : $this->tengu->theme->getAsset('imgs/profile-pic.jpg')); ?>" alt="Picture of <?= !empty($page->persona) ? $page->persona->full_name : $page->created->full_name; ?>">
+                                        </div>
+                                        <div class="review-author">
+                                            <h6><?= !empty($page->persona) ? $page->persona->full_name : $page->created->full_name; ?></h6>
+                                            <span class="pl-0">
+                                                <?= (!empty($page->persona) ? $page->persona->job_title : $page->created->job_title) ?? 'Blogger'; ?>
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li class="pl-3 align-top">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
+                                            <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                        </svg>
+                                        <span class="post-date"><?= DateHelper::prettyFull($page->created_at, false); ?></span>
+                                    </li>
+                                </ul>
+                                
+                                <?php
+                                if ($page->tags->count()) {
+                                    ?>
+                                    <div class="tags">
+                                        <p class="mb-0">Tags</p>
+                                        <?php
+                                        foreach ($page->tags as $key => $tag) {
+                                            ?>
+                                            <a class="tag" href="/search?search=<?= urlencode($tag->tag); ?>"><?= $tag->tag . ($key + 1 == $page->tags->count() ? '' : ', '); ?></a>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+                if (!empty($page->banner_image)) {
+                    ?>
+                    <div class="page-background-image">
+                        <img src="<?= $page->banner_image->url; ?>" alt="<?= $page->banner_image->label; ?>">
+                    </div>
+                    <?php
+                }
+                ?>
+                <?= $this->partial('common/theme_animation'); ?>
+            </section>
+        </div>
+        <div class="category-pages col-12">
+            <?= $this->partial('common/featured'); ?>
+            <?= $this->partial('common/maybe_of_interest', ['page' => $page]); ?>
+        </div>
+    </div>
+</div>

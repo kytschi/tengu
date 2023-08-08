@@ -1,0 +1,15 @@
+@import "../../talkopedia/css/theme.css";
+
+@font-face {
+    font-family: 'Archivo';
+    src: url("../fonts/Hothead.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: 'Oswald';
+    src: url("../fonts/CampfireBlaze.otf") format("opentype");
+}
+
+.nav-link, .breadcrumb {
+    font-size: 20pt;
+}

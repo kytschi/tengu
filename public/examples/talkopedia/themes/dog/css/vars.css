@@ -1,0 +1,19 @@
+:root {
+    --bg-black: #0a0a0a;
+    --bg-black-lighter: #0c0c0c;
+    --bg-black-darker: #030303;
+    --bg-grey: #111111;
+    --bg-grey-ligher: #222222;
+    --bg-yellow: #ffce1c;
+	--bg-white: #fff;
+
+    --box-shadow-grey: #FFCE1C33;
+    --box-shadow-black: #00000026;
+
+    --border-black: #0a0a0a;
+
+    --font-black: #111;
+    --font-grey: #b8b8b8;
+    --font-white: #fff;
+    --font-yellow: #ffce1c;
+}
