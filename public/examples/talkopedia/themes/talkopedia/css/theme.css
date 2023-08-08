@@ -153,6 +153,7 @@ a:hover, .nav-link:hover {
 
 .category-page {
     background-color: var(--bg-black-darker);
+    border:1px solid var(--border-dark-yellow);
     box-shadow: 3px 4px 15px var(--box-shadow-black);
     margin-bottom: 30px;
 }
