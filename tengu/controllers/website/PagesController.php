@@ -505,7 +505,9 @@ class PagesController extends ControllerBase
 
         if ($old_spinnable && !$model->spinnable) {
             $model->content = $model->pre_spin_content;
-            $model->name = $model->pre_spin_name;
+            if (empty(!$model->pre_spin_name)) {
+                $model->name = $model->pre_spin_name;
+            }
             $model->last_spun = null;
             $model->current_spun_content->used_at = null;
             if ($model->current_spun_content->update() === false) {
