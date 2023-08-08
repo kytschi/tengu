@@ -60,14 +60,20 @@ trait Stats
         'Windows 8' => 'Windows NT 6.2',
         'Windows 8.1' => 'Windows NT 6.3',
         'Windows XP' => 'Windows NT 5.1',
+        'Windows 98' => 'Windows 98',
         'Mac OS X 12.5' => 'Mac OS X 12_5',
         'Mac OS X 12.5' => 'Mac OS X 12.5',
         'Mac OS X 10.15.5' => 'Mac OS X 10_15_5',
         'Mac OS X 10.15.6' => 'Mac OS X 10_15_6',
         'Ubuntu/Linux' => 'Ubuntu',
         'Android 9.0' => 'Android 9.0',
+        'Android 8.0' => 'Android 8.0',
         'Android 7.0' => 'Android 7.0',
-        'Linux' => 'Linux'
+        'Android 6.0' => 'Android 6.0',
+        'Android' => 'Android',
+        'Linux' => 'Linux',
+        'BlackBerry' => 'BlackBerry',
+        'iOS' => 'iOS'
     ];
 
     public $bots = [
@@ -121,7 +127,6 @@ trait Stats
         'LinkWalker' => 'LinkWalker/3.0 (http://www.brandprotect.com)',
         'masscan-ng' => 'masscan-ng',
         'crawlson' => 'Crawlson',
-        'PetalBot' => 'PetalBot',
         'Applebot' => 'Applebot',
         'CCBot' => 'CCBot',
         'APIs-Ayeh' => 'APIs-Ayeh',
