@@ -248,13 +248,11 @@ class UrlHelper
             return false;
         }
 
-        $path = '/' . trim(ltrim($parsed['path'], $_ENV['APP_TENGU_URL']), '/');
-
         if ($url == '/') {
-            return  ($path == $url) ? true : false;
+            return  ($parsed['path'] == $url) ? true : false;
         }
 
-        return (substr($path, 0, strlen($url)) == $url) ? true : false;
+        return strpos($parsed['path'], $url) !== false ? true : false;
     }
 
     public static function orderBy(string $url, string $order_by, string $order_dir = 'asc')
