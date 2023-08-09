@@ -128,6 +128,17 @@ $router->add(
 );
 
 /*
+ * RSS
+ */
+$router->add(
+    '/feed',
+    [
+        'controller' => 'Index',
+        'action'     => 'rss'
+    ]
+);
+
+/*
  * Sitemap.
  */
 $router->add(

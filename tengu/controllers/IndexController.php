@@ -241,6 +241,49 @@ class IndexController extends ControllerBase
         die();
     }
 
+    public function rssAction()
+    {
+        $pages = (new Pages())->find([
+            'conditions' => 'deleted_at IS NULL AND sitemap = 1 AND status="active"',
+            'order' => 'name'
+        ]);
+
+        $url = ($this->di->getConfig())->application->appUrl;
+
+        header("Content-type: text/xml");
+        echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        echo '<rss version="2.0">' . "\n";
+        echo '<channel>' . "\n";
+        echo '<title>' . $this->tengu->settings->name . '</title>' . "\n";
+        echo '<link>' . $url . '</link>' . "\n";
+        echo '<description>' . $this->tengu->settings->meta_description . '</description>' . "\n";
+        foreach ($pages as $page) {
+            if (
+                strpos($page->url, 'http://') !== false ||
+                strpos($page->url, 'https://') !== false ||
+                strpos($page->url, 'ftp://') !== false ||
+                strpos($page->url, 'sftp://') !== false
+            ) {
+                continue;
+            }
+
+            echo '<item>' . "\n";
+            echo '<title>' . htmlspecialchars($page->name, ENT_XML1) . '</title>' . "\n";
+            echo '<link>' .  $url . $page->url . '</link>' . "\n";
+            echo '<guid>' .  $url . $page->url . '</guid>' . "\n";
+            echo '<pubDate>' . (new \DateTime($page->created_at))->format(\DateTime::ATOM) . '</pubDate>' . "\n";
+            if ($page->summary) {
+                echo '<description>' .  $page->summary . '</description>' . "\n";
+            } elseif ($page->meta_description) {
+                echo '<description>' .  $page->meta_description . '</description>' . "\n";
+            }
+            echo '</item>' . "\n";
+        }
+        echo '</channel>' . "\n";
+        echo '</rss>' . "\n";
+        die();
+    }
+
     public function searchAction()
     {
         $this->secure();
