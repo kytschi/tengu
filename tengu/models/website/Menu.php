@@ -85,7 +85,7 @@ class Menu extends Model
                 'reusable' => true,
                 'params'   => [
                     'conditions' => MenuCategories::class . '.deleted_at IS NULL',
-                    'order' => MenuCategories::class . '.sort ASC, ' . MenuCategories::class . '.created_at DESC'
+                    'order' => MenuCategories::class . '.sort ASC'
                 ]
             ]
         );

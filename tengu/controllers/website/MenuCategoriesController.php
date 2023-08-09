@@ -83,51 +83,50 @@ class MenuCategoriesController extends MenuController
                     continue;
                 }
 
-                $this->db->query(
-                    'INSERT INTO ' . $table . ' 
-                    (id, category_id, menu_id, created_at, created_by, updated_at, updated_by)
-                    SELECT
-                        :id_' . $key . ',
-                        :category_id_' . $key . ',
-                        :menu_id,
-                        :created_at,
-                        :created_by,
-                        :updated_at,
-                        :updated_by
-                    FROM DUAL WHERE NOT EXISTS
-                    (
-                        SELECT
-                            id,
-                            menu_id,
-                            category_id,
-                            created_at,
-                            created_by,
-                            updated_at,
-                            updated_by
-                        FROM ' . $table . '
-                        WHERE menu_id=:menu_id_2 AND category_id=:category_id_' . $key . '_2 
-                    )',
-                    [
-                        ':id_' . $key => (new Random())->uuid(),
-                        ':category_id_' . $key => $id,
-                        ':category_id_' . $key . '_2' => $id,
-                        ':menu_id' => $menu_id,
-                        ':menu_id_2' => $menu_id,
-                        ':created_at' => date('Y-m-d H:i:s'),
-                        ':created_by' => $user_id,
-                        ':updated_at' => date('Y-m-d H:i:s'),
-                        ':updated_by' => $user_id
+                $sort = MenuCategories::find([
+                    'conditions' => 'category_id=:category_id:',
+                    'bind' => [
+                        'category_id' => $id
                     ]
-                );
-                $this->db->query(
-                    'UPDATE ' . $table . '
-                    SET deleted_at=NULL, deleted_by=NULL 
-                    WHERE menu_id=:menu_id AND category_id=:category_id_' . $key,
-                    [
-                        ':category_id_' . $key => $id,
-                        ':menu_id' => $menu_id
+                ])->count() + 1;
+
+                $model = MenuCategories::findFirst([
+                    'conditions' => 'menu_id=:menu_id: AND category_id=:category_id:',
+                    'bind' => [
+                        'menu_id' => $menu_id,
+                        'category_id' => $id
                     ]
-                );
+                ]);
+
+                if ($model) {
+                    $model->deleted_at = null;
+                    $model->deleted_by = null;
+                    $model->sort = $sort;
+                    if ($model->update() === false) {
+                        throw new SaveException(
+                            'Failed to add the menu item to the category',
+                            $model->getMessages()
+                        );
+                    }
+                } else {
+                    $model = new MenuCategories(
+                        [
+                            'menu_id' => $menu_id,
+                            'category_id' => $id,
+                            'sort' => $sort,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'created_by' => $user_id,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                            'updated_by' => $user_id
+                        ]
+                    );
+                    if ($model->save() === false) {
+                        throw new SaveException(
+                            'Failed to add the menu item to the category',
+                            $model->getMessages()
+                        );
+                    }
+                }
             }
         }
 

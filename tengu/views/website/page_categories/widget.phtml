@@ -158,22 +158,17 @@ use Kytschi\Tengu\Helpers\UrlHelper;
             ) {
                 ?>
                 <div class="col-12">
-                    <table class="table table-sorter">
+                    <table id="widget-category-items-table" class="table table-sorter">
                         <thead>
                             <tr>
                                 <th>Category items</th>
                                 <th width="80px">Sort</th>
-                                <th width="80px">&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
                             if ($data->category_items->count()) {
                                 foreach ($data->category_items as $key => $result) {
-                                    $edit_url = $url . '/edit/' . $result->id;
-                                    if (!empty($back_url)) {
-                                        $edit_url .= '?back-url=' . urlencode($back_url);
-                                    }
                                     ?>
                                     <tr id="category-<?= $result->id; ?>">
                                         <td class="widget-category-name">
@@ -184,15 +179,6 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                                                 class="form-control"
                                                 name="category_sort[<?= $result->id; ?>]"
                                                 value="<?= $key+1; ?>">
-                                        </td>
-                                        <td class="widget-category-button">
-                                            <a
-                                                href="<?= UrlHelper::backend($edit_url); ?>"
-                                                class="btn btn-blank float-right m-0 p-0 mr-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
-                                                    <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
-                                                </svg>
-                                            </a>
                                         </td>
                                     </tr>
                                     <?php
