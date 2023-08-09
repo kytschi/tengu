@@ -316,7 +316,7 @@ trait Files
         $file = null;
 
         if (!empty($_FILES['image']['name'])) {
-            $label = $_FILES['image']['name'];
+            $label = basename($_FILES['image']['name']);
             if (!empty($_POST['image_label'])) {
                 $label = $_POST['image_label'];
             }
