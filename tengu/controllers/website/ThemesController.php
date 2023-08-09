@@ -203,7 +203,7 @@ class ThemesController extends ControllerBase
                     $url = $this->theme_url . trim($this->current_theme->folder, '/') . '/assets/' . $asset;
                 }
 
-                if (($_ENV['APP_ENV'] == 'local' || $_ENV['APP_ENV'] == 'staging') && !$ignore_cache) {
+                if (($_ENV['APP_ENV'] == 'local' || $_ENV['APP_ENV'] == 'staging') || $ignore_cache) {
                     $url .= '?' . time();
                 }
             }
