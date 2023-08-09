@@ -159,7 +159,6 @@ trait Files
             }
         }
 
-        var_dump($file);
         if (is_string($file)) {
             $splits = explode("\\", $file);
             $name = end($splits);
@@ -178,7 +177,7 @@ trait Files
             $label = str_replace(
                 ['-', '/', '\\'],
                 ' ',
-                explode('.', $name)[0]
+                basename($name)
             );
         }
 
