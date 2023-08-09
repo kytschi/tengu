@@ -258,15 +258,6 @@ class IndexController extends ControllerBase
         echo '<link>' . $url . '</link>' . "\n";
         echo '<description>' . $this->tengu->settings->meta_description . '</description>' . "\n";
         foreach ($pages as $page) {
-            if (
-                strpos($page->url, 'http://') !== false ||
-                strpos($page->url, 'https://') !== false ||
-                strpos($page->url, 'ftp://') !== false ||
-                strpos($page->url, 'sftp://') !== false
-            ) {
-                continue;
-            }
-
             echo '<item>' . "\n";
             echo '<title>' . htmlspecialchars($page->name, ENT_XML1) . '</title>' . "\n";
             echo '<link>' .  $url . $page->url . '</link>' . "\n";
