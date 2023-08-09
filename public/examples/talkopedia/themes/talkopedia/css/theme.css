@@ -577,12 +577,16 @@ ol li {
     border-radius: 10px;
 }
 
+
 .review-image img {
     width: 100%;
 }
 
 .review-stars svg {
-    fill: var(--bg-yellow);
+    fill: #2c2c2b;
+}
+.review-stars svg.active {
+    fill: var(--bg-yellow) !important;
 }
 
 .search {
