@@ -174,10 +174,11 @@ trait Files
         }
 
         if (empty($label)) {
+            $path = basename($name);
             $label = str_replace(
                 ['-', '/', '\\'],
                 ' ',
-                basename($name)
+                $path['filename']
             );
         }
 
@@ -315,22 +316,24 @@ trait Files
     {
         $file = null;
 
-        if (!empty($_FILES['image']['name'])) {
-            $label = basename($_FILES['image']['name']);
-            if (!empty($_POST['image_label'])) {
-                $label = $_POST['image_label'];
-            }
-
-            $file = $this->addFile(
-                $resource_id,
-                $_FILES['image'],
-                'image',
-                $label
-            );
-
-            $this->createThumb($file, $_FILES['image']);
+        if (empty($_FILES['image']['name'])) {
+            return $file;
         }
 
+        $path = basename($_FILES['image']['name']);
+        $label = $path['filename'];
+        if (!empty($_POST['image_label'])) {
+            $label = $_POST['image_label'];
+        }
+
+        $file = $this->addFile(
+            $resource_id,
+            $_FILES['image'],
+            'image',
+            $label
+        );
+
+        $this->createThumb($file, $_FILES['image']);
         return $file;
     }
 
