@@ -2,7 +2,7 @@
 use Kytschi\Tengu\Controllers\Website\BlogPostsController;
 use Kytschi\Tengu\Helpers\DateHelper;
 
-if ($latest_posts = (new BlogPostsController())->get(3)) {
+if ($latest_posts = (new BlogPostsController())->get(6)) {
     if (!$latest_posts->count()) {
         return;
     }
