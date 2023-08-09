@@ -581,6 +581,10 @@ ol li {
     width: 100%;
 }
 
+.review-stars svg {
+    fill: var(--bg-yellow);
+}
+
 .search {
     z-index: 101;
 }
