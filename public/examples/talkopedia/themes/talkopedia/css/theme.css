@@ -15,6 +15,11 @@
     src: url("../fonts/Archivo-Regular.ttf") format("truetype");
 }
 
+@font-face {
+    font-family: 'Capture';
+    src: url("../fonts/Capture-it.ttf") format("truetype");
+}
+
 html, body {
     color: var(--font-white);
     background-color: var(--bg-black-darker);
@@ -281,7 +286,8 @@ h1, h2, h3, h4, h5, strong {
 }
 
 h1 {
-    font-size: 3em;
+    font-size: 4em;
+    font-family: 'Capture', sans-serif !important;
 }
 
 h1 img {
