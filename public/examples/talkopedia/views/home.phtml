@@ -6,7 +6,6 @@
                     <h2 class="page-title">
                         <?= $page->name; ?>
                     </h2>
-
                     <?php
                     if ($slogan = $this->tengu->theme->getSlogan()) {
                         ?>
@@ -16,9 +15,6 @@
                         <?php
                     }
                     ?>
-                    <div class="page-body">
-                        <?= $page->content; ?>
-                    </div>
                 </div>
                 <?php
                 if (!empty($page->banner_image)) {
