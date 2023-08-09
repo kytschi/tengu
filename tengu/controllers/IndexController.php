@@ -245,7 +245,7 @@ class IndexController extends ControllerBase
     {
         $pages = (new Pages())->find([
             'conditions' => 'deleted_at IS NULL AND sitemap = 1 AND status="active"',
-            'order' => 'name'
+            'order' => 'created_at DESC'
         ]);
 
         $url = ($this->di->getConfig())->application->appUrl;
