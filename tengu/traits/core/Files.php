@@ -174,7 +174,7 @@ trait Files
         }
 
         if (empty($label)) {
-            $path = basename($name);
+            $path = pathinfo(basename($name));
             $label = str_replace(
                 ['-', '/', '\\'],
                 ' ',
@@ -320,7 +320,7 @@ trait Files
             return $file;
         }
 
-        $path = basename($_FILES['image']['name']);
+        $path = pathinfo(basename($_FILES['image']['name']));
         $label = $path['filename'];
         if (!empty($_POST['image_label'])) {
             $label = $_POST['image_label'];
