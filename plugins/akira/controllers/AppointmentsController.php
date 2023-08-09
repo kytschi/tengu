@@ -419,6 +419,7 @@ class AppointmentsController extends ControllerBase
 
             $this->saveFormSaved('Appointment has been saved');
             $this->clearFormData();
+            $this->lastUpdate();
 
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (ValidationException $err) {
@@ -513,6 +514,7 @@ class AppointmentsController extends ControllerBase
 
             $this->saveFormUpdated('Appointment has been updated');
             $this->clearFormData();
+            $this->lastUpdate();
 
             $this->redirect($url);
         } catch (ValidationException $err) {

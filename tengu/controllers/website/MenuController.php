@@ -150,6 +150,7 @@ class MenuController extends ControllerBase
             );
 
             $this->saveFormDeleted('Menu item has been marked as deleted');
+            $this->lastUpdate();
 
             $url = $this->global_url . '/edit/' . $model->id;
             if (!empty($_GET['from'])) {
@@ -303,6 +304,7 @@ class MenuController extends ControllerBase
             );
 
             $this->saveFormUpdated('Menu item has been recovered');
+            $this->lastUpdate();
 
             $url = $this->global_url . '/edit/' . $model->id;
             if (!empty($_GET['from'])) {
@@ -363,6 +365,7 @@ class MenuController extends ControllerBase
 
             $this->saveFormSaved();
             $this->clearFormData();
+            $this->lastUpdate();
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (ValidationException $err) {
             $this->saveValidationError($err);
@@ -534,6 +537,7 @@ class MenuController extends ControllerBase
 
             $this->saveFormUpdated();
             $this->clearFormData();
+            $this->lastUpdate();
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (ValidationException $err) {
             $this->saveValidationError($err);

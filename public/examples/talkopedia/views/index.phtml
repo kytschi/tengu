@@ -17,7 +17,7 @@ $footer_menu = MenuController::get('footer');
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="referrer" content="origin">
-		<meta name="robots" content="index,folow">
+		<meta name="robots" content="<?= $this->tengu->settings->robots; ?>">
         <meta name="description" content="<?= Tag::getValue('meta_description'); ?>">
         <meta name="keywords" content="<?= Tag::getValue('meta_keywords'); ?>">
         <meta name="author" content="<?= Tag::getValue('meta_author'); ?>">
@@ -30,6 +30,7 @@ $footer_menu = MenuController::get('footer');
         <link rel="icon" href="<?= $this->tengu->theme->getAsset('imgs/favicon.ico'); ?>" sizes="64x64">
 
         <link rel="canonical" href="<?= $this->tengu->canonicalUrl(); ?>">
+        <link rel="author" href="/humans.txt">
 
         <script src="<?= $this->tengu->theme->getAsset('js/plugins/jquery.min.js');?>"></script>
         <script src="<?= $this->tengu->theme->getAsset('js/plugins/popper.min.js');?>"></script>

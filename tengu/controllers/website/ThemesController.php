@@ -111,6 +111,7 @@ class ThemesController extends ControllerBase
             );
 
             $this->saveFormDeleted('Theme successfully marked as deleted');
+            $this->lastUpdate();
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (Exception $err) {
             throw new SaveException(
@@ -540,6 +541,7 @@ class ThemesController extends ControllerBase
             );
 
             $this->saveFormSaved('Theme successfully recovered');
+            $this->lastUpdate();
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (Exception $err) {
             throw new SaveException(
@@ -583,6 +585,7 @@ class ThemesController extends ControllerBase
 
             $this->saveFormSaved('Theme successfully saved');
             $this->clearFormData();
+            $this->lastUpdate();
             $this->redirect(UrlHelper::backend($this->global_url));
         } catch (ValidationException $err) {
             $this->saveValidationError($err);
@@ -638,6 +641,7 @@ class ThemesController extends ControllerBase
         }
 
         $this->resetDefault();
+        $this->lastUpdate();
 
         $model->status = 'active';
         if ($model->update() === false) {
@@ -689,6 +693,7 @@ class ThemesController extends ControllerBase
 
             $this->saveFormUpdated('Theme successfully updated');
             $this->clearFormData();
+            $this->lastUpdate();
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (ValidationException $err) {
             $this->saveValidationError($err);

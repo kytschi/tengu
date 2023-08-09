@@ -4,12 +4,24 @@
  * Settings controller.
  *
  * @package     Kytschi\Tengu\Controllers\Website\SettingsController
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 declare(strict_types=1);
@@ -134,7 +146,7 @@ class SettingsController extends ControllerBase
     public function indexAction()
     {
         $this->secure($this->access);
-        
+
         $this->clearFormData();
 
         $this->setPageTitle('Settings');
@@ -170,8 +182,10 @@ class SettingsController extends ControllerBase
         $model->contact_email = !empty($_POST['contact_email']) ? $_POST['contact_email'] : '';
         $model->robots_txt = !empty($_POST['robots_txt']) ? $_POST['robots_txt'] : '';
         $model->robots = !empty($_POST['robots']) ? $_POST['robots'] : '';
+        $model->humans_txt = !empty($_POST['humans_txt']) ? $_POST['humans_txt'] : '';
         $model->status = !empty($_POST['status']) ? 'online' : 'offline';
-                
+        $model->last_update = date('Y-m-d');
+
         if (empty($model->cache_key)) {
             $model->cache_key = urlencode((new Crypt())->encrypt(
                 file_get_contents(BASE_PATH . '/secure/tengu.pub'),

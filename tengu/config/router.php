@@ -105,6 +105,18 @@ include $config->application->pluginsDir . 'phoenix/config/website_routes.php';
 include $config->application->pluginsDir . 'makabe/config/website_routes.php';
 
 /*
+ * Humans text
+ */
+$router->add(
+    '/humans.txt',
+    [
+        'controller' => 'Index',
+        'action'     => 'humans',
+    ]
+);
+
+
+/*
  * Robots text
  */
 $router->add(

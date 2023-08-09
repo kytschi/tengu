@@ -289,6 +289,7 @@ class PageCategoriesController extends PagesController
                 );
 
             $this->saveFormSaved('Categories have been sorted');
+            $this->lastUpdate();
             $this->redirect(UrlHelper::backend($this->global_url));
         } catch (ValidationException $err) {
             $this->saveValidationError($err);

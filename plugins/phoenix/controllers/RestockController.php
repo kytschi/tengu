@@ -142,9 +142,9 @@ class RestockController extends ControllerBase
             $table = (new Products())->getSource();
             $query = '';
             $params = [];
-            
+
             $iLoop = 0;
-            
+
             foreach ($_POST['quantity'] as $id => $stock) {
                 $query .= 'UPDATE ' . $table . ' SET stock=:stock_' . $iLoop . ' WHERE id=:id_' . $iLoop . ';';
                 $params[':stock_' . $iLoop] = $stock;
@@ -165,7 +165,7 @@ class RestockController extends ControllerBase
             );
 
             $this->saveFormUpdated('Stock has been updated');
-
+            $this->lastUpdate();
             $this->clearFormData();
             $this->redirect(UrlHelper::backend($url));
         } catch (ValidationException $err) {

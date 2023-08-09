@@ -93,6 +93,18 @@ class ControllerBase extends Controller
         );
     }
 
+    public function lastUpdate()
+    {
+        $model = $this->getSettings();
+        $model->last_update = date('Y-m-d');
+        if ($model->update() === false) {
+            throw new SaveException(
+                'Failed to update the settings',
+                $model->getMessages()
+            );
+        }
+    }
+
     public function redirect(string $url, $pagination = true, $old_url = false)
     {
         if ($old_url) {

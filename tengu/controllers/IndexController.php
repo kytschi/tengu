@@ -212,6 +212,27 @@ class IndexController extends ControllerBase
         );
     }
 
+    public function humansAction()
+    {
+        header("Content-Type: text/plain");
+        if (!empty($this->tengu->settings->humans_txt)) {
+            echo $this->tengu->settings->humans_txt;
+        } else {
+            echo "/* TEAM */\n";
+            echo "Your title: " . $this->tengu->settings->name . "\n";
+            echo "Site: " . $this->tengu->settings->name . "\n";
+            if (!empty($this->tengu->settings->address)) {
+                echo "Location: " . str_replace("\n", ", ", $this->tengu->settings->address) . "\n";
+            }
+            echo "/* SITE */\n";
+            if (!empty($this->tengu->settings->last_update)) {
+                echo "Last update: " . date('Y/m/d', strtotime($this->tengu->settings->last_update)) . "\n";
+            }
+            echo "Doctype: HTML5\n";
+        }
+        die();
+    }
+
     public function robotsAction()
     {
         header("Content-Type: text/plain");

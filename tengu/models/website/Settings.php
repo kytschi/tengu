@@ -50,6 +50,8 @@ class Settings extends Model
     public $status = 'online';
     public $tengu_theme = 'default';
     public $cache_key;
+    public $humans_txt;
+    public $last_update;
 
     public function initialize()
     {

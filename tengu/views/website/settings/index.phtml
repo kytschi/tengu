@@ -168,6 +168,15 @@ echo $this->partial("common/form/messages");
                                 Stats exclude
                             </a>
                         </li>
+                        <li class="nav-item mt-2">
+                            <a
+                                class="nav-link text-active-primary <?= UrlHelper::activeTab('activity-tab', 'overview-tab'); ?>"
+                                data-toggle="tab"
+                                role="tab"
+                                href="#activity-tab">
+                                Activity
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -238,21 +247,33 @@ echo $this->partial("common/form/messages");
                                     </div>
                                     <div class="form-group mb-4">
                                         <label for="robots">
-                                            robots
+                                            meta robots
                                         </label>
                                         <input
-                                            id="robots"
-                                            name="robots"
                                             type="text"
+                                            name="robots"
                                             class="form-control mt-2"
-                                            aria-describedby="robots"
                                             value="<?= FormController::getFormData('robots', $data); ?>">
+										<small>Can be used in the meta tag in the header</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-6">
-                            <?= $this->partial("common/logs", ['data' => $data->logs]); ?>
+                            <div class="card">
+                                <div class="card-header mb-2">
+                                    <span class="card-title">humans</span>
+                                </div>
+                                <div class="card-body p-3 pt-0">
+                                    <div class="form-group mb-4">
+                                        <label for="humans_txt">
+                                            humans.txt
+                                        </label>
+                                        <textarea name="humans_txt" rows="6" class="form-control mt-2"><?= FormController::getFormData('humans_txt', $data); ?></textarea>
+										<small>If blank I'll generate it based on settings</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -364,6 +385,17 @@ echo $this->partial("common/form/messages");
 						</div>
 					</div>
 				</div>
+                <div
+                    class="tab-pane <?= UrlHelper::activeTab('activity-tab', 'content-tab'); ?>"
+                    id="activity-tab"
+                    role="tabpanel"
+                    aria-labelledby="activity-tab">
+                    <div class="row">
+                        <div class="col-6">
+                            <?= $this->partial("common/logs", ['data' => $data->logs]); ?>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -175,6 +175,7 @@ class PagesController extends ControllerBase
             }
 
             $this->saveFormDeleted('Page has been deleted');
+            $this->lastUpdate();
             $this->redirect(
                 UrlHelper::backend(
                     rtrim($url, '/')
@@ -403,6 +404,7 @@ class PagesController extends ControllerBase
             }
 
             $this->saveFormUpdated('Page has been recovered');
+            $this->lastUpdate();
             $this->redirect(
                 UrlHelper::backend(rtrim($url, '/'))
             );
@@ -448,6 +450,7 @@ class PagesController extends ControllerBase
 
             $this->saveFormSaved(ucfirst(str_replace('-', ' ', $this->resource)) . ' has been saved');
             $this->clearFormData();
+            $this->lastUpdate();
 
             if (method_exists($this, 'saveSubAction')) {
                 $this->saveSubAction($model);
@@ -666,6 +669,7 @@ class PagesController extends ControllerBase
 
             $this->saveFormUpdated(ucfirst(str_replace('-', ' ', $this->resource)) . ' has been updated');
             $this->clearFormData();
+            $this->lastUpdate();
 
             if (method_exists($this, 'updateSubAction')) {
                 $this->updateSubAction($model);

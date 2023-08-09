@@ -103,6 +103,7 @@ class TemplatesController extends ControllerBase
             );
 
             $this->saveFormDeleted('Template successfully marked as deleted');
+            $this->lastUpdate();
             $this->redirect(UrlHelper::backend($this->global_url));
         } catch (Exception $err) {
             throw new SaveException(
@@ -307,6 +308,7 @@ class TemplatesController extends ControllerBase
             );
 
             $this->saveFormUpdated('Template successfully recovered');
+            $this->lastUpdate();
             $this->redirect(UrlHelper::backend($this->global_url));
         } catch (Exception $err) {
             throw new SaveException(
@@ -340,6 +342,7 @@ class TemplatesController extends ControllerBase
 
             $this->clearFormData();
             $this->saveFormSaved('Template successfully created');
+            $this->lastUpdate();
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (ValidationException $err) {
             $this->saveValidationError($err);
@@ -398,6 +401,7 @@ class TemplatesController extends ControllerBase
             $this->addJobToQueue($this->resource, $model->id, 'Kytschi\Tengu\Jobs\TemplateSnapshot', 'low');
 
             $this->clearFormData();
+            $this->lastUpdate();
             $this->saveFormUpdated('Template successfully updated');
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (ValidationException $err) {

@@ -351,6 +351,7 @@ class PersonasController extends ControllerBase
 
             $this->saveFormSaved('Persona has been saved');
             $this->clearFormData();
+            $this->lastUpdate();
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (ValidationException $err) {
             $this->saveValidationError($err);
@@ -439,7 +440,7 @@ class PersonasController extends ControllerBase
             );
 
             $this->saveFormUpdated('Persona has been updated');
-
+            $this->lastUpdate();
             $this->clearFormData();
             $this->redirect(UrlHelper::backend($this->global_url . '/edit/' . $model->id));
         } catch (ValidationException $err) {
