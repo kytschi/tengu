@@ -289,9 +289,15 @@ footer .table-cell {
     display: table-cell !important;
 }
 
+.form-control {
+    padding: 20px;
+    height: 80px;
+    border-radius: 0;
+}
+
 .form-control, .form-control:focus, .form-control:hover, .captcha-img {
     background-color: var(--bg-black);
-    border: 1px solid var(--bg-grey-ligher) !important;
+    border: 1px solid var(--border-dark-yellow) !important;
     color: var(--font-yellow);
     box-shadow: none;
 }
@@ -823,4 +829,27 @@ ol li {
 
 .tag:hover {
     color: var(--font-white) !important;
+}
+
+#trending {
+    background-image: url(../assets/imgs/trending.jpg);
+    background-repeat: no-repeat;
+    padding: 60px;
+}
+
+#trending-stats a {
+    padding: 20px;
+    color: var(--bg-black);
+    background-color: var(--bg-yellow);
+    font-weight: bolder;
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    font-size: 32px;
+    font-family: 'Capture', sans-serif !important;
+}
+
+#trending-stats a:hover {
+    color: var(--bg-black) !important;
+    text-decoration: underline !important;
 }

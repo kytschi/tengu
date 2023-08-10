@@ -53,6 +53,7 @@ use Kytschi\Tengu\Traits\Website\Menu;
 use Kytschi\Tengu\Traits\Website\PageCategories;
 use Kytschi\Tengu\Traits\Website\Pages;
 use Kytschi\Tengu\Traits\Website\Reviews;
+use Kytschi\Tengu\Traits\Website\Search;
 use Phalcon\Encryption\Security\Random;
 use Phalcon\Tag;
 
@@ -68,6 +69,7 @@ class TenguController
     use PaymentGateways;
     use Products;
     use Reviews;
+    use Search;
     use Tags;
     use User;
 

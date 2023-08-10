@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Search stats model.
+ * Search trait.
  *
- * @package     Kytschi\Tengu\Models\Website\SearchStats
+ * @package     Kytschi\Tengu\Traits\Website\Search
  * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
@@ -24,14 +24,31 @@
  * Boston, MA  02110-1301, USA.
  */
 
-namespace Kytschi\Tengu\Models\Website;
+namespace Kytschi\Tengu\Traits\Website;
 
-use Kytschi\Tengu\Models\Model;
+use Kytschi\Tengu\Models\Website\SearchStats;
 
-class SearchStats extends Model
+trait Search
 {
-    public $type = 'internal';
-    public $visitor;
-    public $query;
-    public $referer;
+    public function findTrendingSearch($count = 10)
+    {
+        $query = "SELECT 
+            query,
+            count(query) AS total
+        FROM search_stats
+        WHERE deleted_at IS NULL 
+        GROUP BY query
+        ORDER BY total DESC
+        LIMIT :count";
+
+        $model = new SearchStats();
+        return (new \Phalcon\Mvc\Model\Resultset\Simple(
+            null,
+            $model,
+            $model->getReadConnection()->query(
+                rtrim($query, ','),
+                ['count' => $count]
+            )
+        ));
+    }
 }

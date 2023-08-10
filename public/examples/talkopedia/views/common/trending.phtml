@@ -1,0 +1,35 @@
+<?php
+use Kytschi\Tengu\Helpers\DateHelper;
+
+if ($trending = $this->tengu->findTrendingSearch(10)) {
+    if (!$trending->count()) {
+        return;
+    }
+    ?>
+    <div id="trending" class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 p-0">
+                    <section class="card">
+                        <div class="card-header">
+                            <h3>
+                                <span>Trending</span>
+                            </h3>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div id="trending-stats">
+                <?php
+                foreach ($trending as $item) {
+                    ?>
+                    <p><a href="/search?search=<?= urlencode($item->query); ?>">&#35;<?= htmlentities($item->query); ?></a></p>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+?>
