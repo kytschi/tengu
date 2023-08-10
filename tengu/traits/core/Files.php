@@ -456,15 +456,26 @@ trait Files
         die();
     }
 
-    public function getImages()
+    public function getImages($page = 1, $limit = 30)
     {
-        return (new Model())->find([
-            'conditions' => '
-                deleted_at IS NULL AND
+        $builder = $this
+            ->modelsManager
+            ->createBuilder()
+            ->from(Model::class)
+            ->where('deleted_at IS NULL AND
                 mime_type IN ("image/png", "image/jpeg", "image/jpg") AND
-                resource NOT IN ("profile-image")',
-            'order' => 'created_at DESC'
-        ]);
+                resource NOT IN ("profile-image")')
+            ->orderBy('created_at DESC');
+
+        $paginator = new QueryBuilder(
+            [
+                "builder" => $builder,
+                "limit" => $limit,
+                "page" => $page,
+            ]
+        );
+
+        return $paginator->paginate();
     }
 
     public function createTempFile($model)

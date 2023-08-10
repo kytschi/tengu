@@ -24,4 +24,21 @@ $(function() {
 
         window.location.href = url;        
     });
+
+    $('.media-page-item').click(function () {
+        $.ajax({
+            url: TENGU_URL + "/api/v1/files/images/" +
+                $(this).data('data-page') + "/" +
+                $('#media-page-limit').val(),
+            headers: {
+                "TENGU-API-KEY": TENGU_API_KEY
+            }
+        })
+        .done(function(response) {
+            console.log(response);
+        })
+        .fail(function(response) {
+            throwError(response);            
+        });
+    });
 });

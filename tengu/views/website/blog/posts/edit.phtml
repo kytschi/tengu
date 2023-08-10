@@ -452,9 +452,8 @@ echo $this->partial("common/form/messages");
                     role="tabpanel"
                     aria-labelledby="media-tab">
                     <?= $this->partial(
-						"common/media",
+						"common/files/widget",
 						[
-							'data' => $data,
 							'url' => $url . '/edit/' . $data->id
 						]
 					); ?>

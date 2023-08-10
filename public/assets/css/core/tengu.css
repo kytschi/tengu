@@ -1119,7 +1119,10 @@ iframe {
   background-color: var(--bg-blue);
 }
 
-.page-item.previous .page-link:hover, .page-item.next .page-link:hover {
+.page-item.previous .page-link:hover,
+.page-item.next .page-link:hover,
+.media-page-item.previous .page-link:hover,
+.media-page-item.next .page-link:hover {
 	color: var(--font-blue) !important;
   background: none;
 }
@@ -1130,24 +1133,24 @@ iframe {
 	box-shadow: none;
 }
 
-.page-item:first-child .page-link {
+.page-item:first-child .page-link, .media-page-item:first-child .page-link {
 	margin-left: 0;
 	border-top-left-radius: 0.25rem;
 	border-bottom-left-radius: 0.25rem;
 }
 
-.page-item:last-child .page-link {
+.page-item:last-child .page-link, .media-page-item:last-child .page-link {
 	border-top-right-radius: 0.25rem;
 	border-bottom-right-radius: 0.25rem;
 }
 
-.page-item.active .page-link {
+.page-item.active .page-link, .media-page-item.active .page-link {
 	z-index: 1;
 	color: var(--font-white) !important;
   background-color: var(--bg-blue);
 }
 
-.page-item.disabled .page-link {
+.page-item.disabled .page-link, .media-page-item.disabled .page-link {
 	color: var(--font-grey-lighter) !important;
   background-color: var(--bg-white);
 	pointer-events: none;

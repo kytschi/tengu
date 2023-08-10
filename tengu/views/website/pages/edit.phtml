@@ -35,6 +35,7 @@ if (!empty($_GET['back-url'])) {
 ?>
 <script src="<?= $this->tengu->theme->getAsset('js/plugins/chartjs.min.js'); ?>"></script>
 <script src="<?= $this->tengu->theme->getAsset('js/core/edit.js'); ?>"></script>
+<script src="<?= $this->tengu->theme->getAsset('js/core/pagination.js'); ?>"></script>
 <form 
     id="form-edit" 
     method="post" 
@@ -831,7 +832,7 @@ if (!empty($_GET['back-url'])) {
                     role="tabpanel"
                     aria-labelledby="media-tab">
                     <?= $this->partial(
-						"common/media",
+						"common/files/widget",
 						[
 							'url' => $url . '/edit/' . $data->id
 						]
