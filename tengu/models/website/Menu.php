@@ -67,7 +67,8 @@ class Menu extends Model
                 'alias'    => 'categories',
                 'reusable' => true,
                 'params'   => [
-                    'conditions' => MenuCategories::class . '.deleted_at IS NULL',
+                    'conditions' => MenuCategories::class . '.deleted_at IS NULL AND ' .
+                        Menu::class . '.deleted_at IS NULL',
                     'order' => MenuCategories::class . '.sort ASC'
                 ]
             ]
@@ -84,7 +85,8 @@ class Menu extends Model
                 'alias'    => 'category_items',
                 'reusable' => true,
                 'params'   => [
-                    'conditions' => MenuCategories::class . '.deleted_at IS NULL',
+                    'conditions' => MenuCategories::class . '.deleted_at IS NULL AND ' .
+                        Menu::class . '.deleted_at IS NULL',
                     'order' => MenuCategories::class . '.sort ASC'
                 ]
             ]
