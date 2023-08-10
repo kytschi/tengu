@@ -11,7 +11,6 @@ $latest_posts = (new BlogPostsController())->get(3, $page->id, true);
         <div class="container">
             <section>
                 <div class="page-content">
-                    <h2 class="page-title"><?= $page->name; ?></h2>
                     <nav class="page-crumbs" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <?php
@@ -20,7 +19,7 @@ $latest_posts = (new BlogPostsController())->get(3, $page->id, true);
                                 if ($key == count($crumbs)) {
                                     ?>
                                     <li class="breadcrumb-item active">
-                                        <a href="<?= $page->url; ?>"><?= $page->name; ?></a>
+                                        <a href="<?= $page->url; ?>"><h2><?= $page->name; ?></h2></a>
                                     </li>
                                     <?php
                                 } else {

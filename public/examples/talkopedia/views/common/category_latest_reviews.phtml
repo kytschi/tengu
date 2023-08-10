@@ -16,17 +16,21 @@ if ($page->category_items->count()) {
         }
     }
     ?>
-    <div class="category-pages col-12">
+    <div class="col-12">
         <?php
         if ($subs) {
             ?>
             <div class="row">
                 <div class="col-12 p-0">
                     <section class="card">
-                        <div class="card-header">
-                            <h3>
-                                <span>Sub categories</span>
-                            </h3>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <span class="sub-heading-yellow">
+                                        Sub categories
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </section>
                 </div>
@@ -64,16 +68,11 @@ if ($page->category_items->count()) {
             <div class="row">
                 <div class="col-12 p-0">
                     <section class="card">
-                        <div class="card-header">
-                            <h3>
-                                <span><?= $page->name; ?> reviews</span>
-                            </h3>
-                        </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
-                                    <span class="sub-heading">
-                                        Our latest
+                                    <span class="sub-heading-yellow">
+                                        The latest
                                     </span>
                                 </div>
                             </div>

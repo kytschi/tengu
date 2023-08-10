@@ -193,14 +193,15 @@ a:hover, .nav-link:hover {
 
 .category-name {
     background: var(--bg-yellow) 0% 0% no-repeat padding-box;
+    font-family: 'Capture', sans-serif !important;
+    font-size: 28pt;
     box-shadow: 0px 4px 8px var(--box-shadow-grey);
-    border-radius: 30px;
     color: var(--font-black);
     display: inline-block;
     padding: 5px 30px;
     position: absolute;
-    top: -25px;
-    right: 7%;
+    top: -45px;
+    right: 2%;
     text-transform: uppercase;
 }
 
@@ -388,7 +389,7 @@ main {
     cursor: pointer;
 }
 
-#page {
+#page, #blog {
     position: relative;
     background-color: var(--bg-black);
     z-index: 101;
@@ -518,7 +519,23 @@ main {
 }
 
 ol li.breadcrumb-item {
+    padding-top: 7px;
+    padding-bottom: 5px;
     margin-bottom: 0px;
+}
+#blog ol li.breadcrumb-item {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+ol li.breadcrumb-item h2 {
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
+ol li.breadcrumb-item.active {
+    padding-top: 0;
 }
 
 ol li {
@@ -693,7 +710,7 @@ ol li {
         height: 75px;
     }
 
-    #page {
+    #page, #blog {
         padding: 0;
     }
 
@@ -807,6 +824,21 @@ ol li {
     font-size: 60px;
     color: var(--font-white);
     margin-bottom: 30px;
+}
+
+.sub-heading-yellow {
+    display: inline-block;
+    font-family: 'Capture', sans-serif !important;
+    font-size: 60px;
+    color: var(--font-yellow);
+    background-color: var(--bg-black);
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-bottom: 30px;
+}
+
+#sub-categories .category-content {
+    font-family: 'Capture', sans-serif !important;
 }
 
 .tags {
