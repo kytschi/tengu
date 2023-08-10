@@ -85,7 +85,7 @@ $category = $page->categories->getFirst();
                                         <?php
                                         foreach ($page->tags as $key => $tag) {
                                             ?>
-                                            <a class="tag" href="/search?search=<?= urlencode($tag->tag); ?>"><?= $tag->tag . ($key + 1 == $page->tags->count() ? '' : ', '); ?></a>
+                                            <a class="tag" href="/search?search=<?= urlencode($tag->tag); ?>">&#35;<?= $tag->tag . ($key + 1 == $page->tags->count() ? '' : ', '); ?></a>
                                             <?php
                                         }
                                         ?>
