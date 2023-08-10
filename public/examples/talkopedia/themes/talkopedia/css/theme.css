@@ -218,6 +218,22 @@ a:hover, .nav-link:hover {
     z-index: 101;
 }
 
+#sub-categories .category-content {
+    padding-bottom: 0px;
+}
+
+#sub-categories .category-content h4 {
+    padding-top: 20px;
+}
+
+#sub-categories .category-image-thumb {
+    height: 300px;
+}
+
+#sub-categories .category-image-thumb img {
+    min-height: 100%;
+}
+
 .container {
     max-width: 1140px;
     padding: 20px 70px 0px 70px;

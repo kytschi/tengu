@@ -31,7 +31,7 @@ if ($page->category_items->count()) {
                     </section>
                 </div>
             </div>
-            <div class="row">
+            <div id="sub-categories" class="row">
                 <?php
                 foreach ($subs as $item) {
                     ?>
@@ -44,13 +44,7 @@ if ($page->category_items->count()) {
                                         alt="<?= $item->name; ?>">
                                 </a>
                             </div>
-                            <div class="category-content">     
-                                <div class="category-name">
-                                    <a href="<?= !empty($page->canonical_url) ? $page->canonical_url : $page->url; ?>">
-                                        <?= $page->name; ?>
-                                    </a>
-                                </div>
-                                <p>&nbsp;</p>
+                            <div class="category-content">
                                 <h4>
                                     <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
                                         <?= $item->name; ?>
