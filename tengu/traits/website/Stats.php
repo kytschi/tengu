@@ -144,7 +144,8 @@ trait Stats
         'YisouSpider' => 'YisouSpider',
         'AhrefsBot' => 'http://ahrefs.com/robot/',
         'YandexBot' => 'http://yandex.com/bots',
-        'FeedBurner' => 'http://www.FeedBurner.com'
+        'FeedBurner' => 'http://www.FeedBurner.com',
+        'SeznamBot' => 'http://napoveda.seznam.cz'
     ];
 
     public function addSearchStat($search_query, $type = 'internal')

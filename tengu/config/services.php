@@ -3,12 +3,24 @@
 /**
  * Services.
  *
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 declare(strict_types=1);
@@ -106,7 +118,7 @@ $di->setShared('db', function () {
 /*
  * If the configuration specify the use of metadata adapter use it or use memory otherwise
  */
-if ($_ENV['APP_ENV'] != 'local') {
+if ($_ENV['APP_ENV'] != 'local' && $_ENV['REDIS'] == 'true') {
     $di->setShared('modelsMetadata', function () {
         $config = $this->getConfig();
 
@@ -133,7 +145,7 @@ $di->setShared('session', function () {
     $session = new SessionManager();
     $serializerFactory = new SerializerFactory();
     $factory = new AdapterFactory($serializerFactory);
-    if ($_ENV['APP_ENV'] != 'local') {
+    if ($_ENV['APP_ENV'] != 'local' && $_ENV['REDIS'] == 'true') {
         $options = [
             'host'  => $config->redis->host,
             'port'  => $config->redis->port,

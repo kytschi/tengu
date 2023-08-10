@@ -354,6 +354,7 @@ header {
     z-index: 800;
     height: 108px;
     box-shadow: 0 -6px 10px 5px rgba(0,0,0,0.5);
+    border-bottom:1px solid var(--border-dark-yellow);
     padding-top: 5px;
 }
 
