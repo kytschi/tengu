@@ -55,6 +55,8 @@ trait Menu
             return null;
         }
 
+        $query .= ' AND deleted_at IS NULL';
+
         return Model::findFirst([
             'conditions' => $query,
             'bind' => $binds
