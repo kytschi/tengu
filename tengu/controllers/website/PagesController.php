@@ -439,6 +439,10 @@ class PagesController extends ControllerBase
 
             (new PageCategoriesController())->addCategories($model->id, self::getUserId());
 
+            if (($this->di->getConfig())->apps->makabe) {
+                (new PersonasController())->attachPagePersona($model->id);
+            }
+
             $this->addLog(
                 $this->resource,
                 $model->id,

@@ -257,6 +257,21 @@ echo $this->partial("common/form/messages");
                                 SEO
                             </a>
                         </li>
+                        <?php
+                        if (($this->di->getConfig())->apps['makabe']) {
+                            ?>
+                            <li class="nav-item mt-2">
+                                <a
+                                    class="nav-link <?= UrlHelper::activeTab('persona-tab', 'overview-tab'); ?>"
+                                    data-toggle="tab"
+                                    role="tab"
+                                    href="#persona-tab">
+                                    Personas
+                                </a>
+                            </li>
+                            <?php
+                        }
+                        ?>
                     </ul>
                 </div>
             </div>
@@ -400,6 +415,35 @@ echo $this->partial("common/form/messages");
 						]
 					); ?>
                 </div>
+                <?php
+                if (($this->di->getConfig())->apps['makabe']) {
+					?>
+                    <div
+                        class="tab-pane <?= UrlHelper::activeTab('persona-tab', 'content-tab'); ?>"
+                        id="persona-tab"
+                        role="tabpanel"
+                        aria-labelledby="persona-tab">
+                        <?= $this->partial(
+                            "makabe/personas/widget",
+                            [
+                                'url' => $url . '/edit/' . $data->id
+                            ]
+                        ); ?>
+                    </div>
+                    <div
+                        class="tab-pane <?= UrlHelper::activeTab('spin-tab', 'content-tab'); ?>"
+                        id="spin-tab"
+                        role="tabpanel"
+                        aria-labelledby="spin-tab">
+                        <?= $this->partial(
+                            "makabe/spinner/widget",
+                            [
+                                'url' => $url
+                            ]); ?>
+                    </div>
+                    <?php
+				}
+                ?>
             </div>
         </div>
     </div>

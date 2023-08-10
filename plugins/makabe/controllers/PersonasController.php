@@ -370,7 +370,7 @@ class PersonasController extends ControllerBase
     public function setData($model)
     {
         $model->first_name = $_POST['first_name'];
-        $model->last_name = $_POST['last_name'];
+        $model->last_name = !empty($_POST['last_name']) ? $_POST['last_name'] : null;
         $model->title = !empty($_POST['title']) ? $_POST['title'] : null;
         $model->job_title = !empty($_POST['job_title']) ? $_POST['job_title'] : null;
         $model->email = !empty($_POST['email']) ? $_POST['email'] : null;
@@ -469,15 +469,6 @@ class PersonasController extends ControllerBase
             new PresenceOf(
                 [
                     'message' => 'The first name is required',
-                ]
-            )
-        );
-
-        $validation->add(
-            'last_name',
-            new PresenceOf(
-                [
-                    'message' => 'The last name is required',
                 ]
             )
         );
