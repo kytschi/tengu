@@ -31,9 +31,19 @@ use Kytschi\Tengu\Models\Website\Pages as Model;
 
 trait Pages
 {
-    public function findSimilarBlogPosts($count = 3, $exclude = null)
+    public function findFeaturedPages($count = 3, $exclude = null, $random = false)
+    {
+        return (new BlogPostsController())->get($count, $exclude, $random, true);
+    }
+
+    public function findRandomPages($count = 3, $exclude = null)
     {
         return (new BlogPostsController())->get($count, $exclude, true);
+    }
+
+    public function findSimilarPages($count = 3, $exclude = null)
+    {
+        return (new BlogPostsController())->get($count, $exclude, false);
     }
 
     public function findPage($data)

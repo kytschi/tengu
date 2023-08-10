@@ -1,5 +1,4 @@
 <?php
-use Kytschi\Tengu\Controllers\Website\BlogPostsController;
 use Kytschi\Tengu\Helpers\DateHelper;
 
 if (!empty($page)) {
@@ -10,7 +9,7 @@ if (!isset($exclude)) {
     $exclude = null;
 }
 
-if ($random_posts = (new BlogPostsController())->get(6, $exclude, true)) {
+if ($random_posts = $this->tengu->findRandomPages(6, $exclude)) {
     if (!$random_posts->count()) {
         return;
     }

@@ -2,7 +2,7 @@
 use Kytschi\Tengu\Controllers\Website\BlogPostsController;
 use Kytschi\Tengu\Helpers\DateHelper;
 
-if ($latest_posts = (new BlogPostsController())->get(6, null, false, true)) {
+if ($latest_posts = $this->tengu->findFeaturedPages(6, null, false, true)) {
     if (!$latest_posts->count()) {
         return;
     }
