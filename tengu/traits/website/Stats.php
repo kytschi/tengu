@@ -1,15 +1,27 @@
 <?php
 
 /**
- * Stats traits.
+ * Stats trait.
  *
  * @package     Kytschi\Tengu\Traits\Website\Stats
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 namespace Kytschi\Tengu\Traits\Website;
@@ -17,6 +29,7 @@ namespace Kytschi\Tengu\Traits\Website;
 use Kytschi\Tengu\Exceptions\SaveException;
 use Kytschi\Tengu\Models\Website\SearchStats;
 use Kytschi\Tengu\Models\Website\Stats as Model;
+use Kytschi\Tengu\Models\Website\StatsData;
 use Kytschi\Tengu\Models\Website\StatsExclude;
 use Kytschi\Tengu\Traits\Core\User;
 
@@ -280,6 +293,41 @@ trait Stats
             )
         ) {
             return;
+        }
+
+        /**
+         * Logging the country for the country stats map.
+         */
+        if ($country = self::getUserLocationByIp()) {
+            $stat = StatsData::findFirst([
+                'conditions' => 'country=:country:',
+                'bind' => [
+                    'country' => $country
+                ]
+            ]);
+
+            $save = false;
+            if (empty($stat)) {
+                $stat = new StatsData([
+                    'country' => $country
+                ]);
+                $save = true;
+            }
+
+            $stat->total += 1;
+            if ($save) {
+                if ($stat->save() === false) {
+                    throw new SaveException(
+                        'Failed to save the stat data entry',
+                        $stat->getMessages()
+                    );
+                }
+            } elseif ($stat->update() === false) {
+                throw new SaveException(
+                    'Failed to update the stat data entry',
+                    $stat->getMessages()
+                );
+            }
         }
 
         $stat = new Model(

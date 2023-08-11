@@ -46,7 +46,7 @@ if ($latest_posts = $this->tengu->findFeaturedPages(6, null, false, true)) {
                                 ?>
                                 <div class="category-name">
                                     <a href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>">
-                                        <?= $category->name; ?>
+                                        &#35;<?= $category->name; ?>
                                     </a>
                                 </div>
                                 <?php

@@ -6,6 +6,14 @@ This is public for now just to illustrate to those looking at me for work the ty
 
 If you after a more lightweight CMS go with my other project https://github.com/kytschi/dumb-dog
 
+## Requirements
+* PHP 8+
+* Mysql/Maria DB or equivalent
+* Phalcon 5 
+* PHP-GD
+* Redis (OPTIONAL but worth it for production server to cache)
+* geoiplookup (OPTIONAL, only if you want to lookup the country of origin for stats)
+
 ## Setup
 
 ### Creating the tengu.pub file for encryption

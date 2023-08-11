@@ -53,7 +53,7 @@ if ($random_posts = $this->tengu->findRandomPages(6, $exclude)) {
                                 ?>
                                 <div class="category-name">
                                     <a href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>">
-                                        <?= $category->name; ?>
+                                        &#35;<?= $category->name; ?>
                                     </a>
                                 </div>
                                 <?php

@@ -458,13 +458,15 @@ trait Files
 
     public function getImages($page = 1, $limit = 30)
     {
+        $query = 'deleted_at IS NULL AND
+        mime_type IN ("image/png", "image/jpeg", "image/jpg") AND
+        resource NOT IN ("profile-image")';
+
         $builder = $this
             ->modelsManager
             ->createBuilder()
             ->from(Model::class)
-            ->where('deleted_at IS NULL AND
-                mime_type IN ("image/png", "image/jpeg", "image/jpg") AND
-                resource NOT IN ("profile-image")')
+            ->where($query)
             ->orderBy('created_at DESC');
 
         $paginator = new QueryBuilder(
