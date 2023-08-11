@@ -33,8 +33,7 @@ $(function () {
         $("#form-page #summernote").summernote(
             {
                 placeholder: $('#summernote').attr("placeholder"),
-                tabsize: 2,
-                height: 400
+                tabsize: 2
             }
         );
     } catch (err) {
