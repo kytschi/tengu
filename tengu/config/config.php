@@ -101,7 +101,7 @@ $global_cfg = [
         'srcDir'         => BASE_PATH . '/public/website/src/',
         'jobsDir'        => APP_PATH . '/jobs/',
         'traitsDir'      => APP_PATH . '/traits/',
-        'assetsDir'      => BASE_PATH . '/public/assets/tengu',
+        'assetsDir'      => BASE_PATH . '/public/assets/',
     ],
     'apps' => $apps,
     'urls' => $urls

@@ -30,6 +30,7 @@ namespace Kytschi\Tengu\Controllers\Core;
 
 use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Models\Website\Stats;
+use Kytschi\Tengu\Models\Website\StatsData;
 use Kytschi\Tengu\Traits\Core\User;
 
 class DashboardsController extends ControllerBase
@@ -69,7 +70,8 @@ class DashboardsController extends ControllerBase
                 'most_viewed' => $this->getMostViewed(),
                 'operating_systems' => $this->getOperatingSystems(),
                 'years' => $years,
-                'previous' => $this->getPrevious()
+                'previous' => $this->getPrevious(),
+                'visitors_map' => $this->getVisitorMapData()
             ]
         );
     }
@@ -204,6 +206,32 @@ class DashboardsController extends ControllerBase
             'last_month' => 0,
             'before_last' => 0
         ];
+    }
+
+    private function getVisitorMapData()
+    {
+        $json = json_decode(
+            file_get_contents(
+                $this->getDI()->get('config')->application->assetsDir .
+                '/plugins/leaflet/countries.json'
+            )
+        );
+
+        $data = StatsData::find();
+        foreach ($json->features as $feature) {
+            if ($data) {
+                foreach ($data as $stat) {
+                    if ($stat->country == $feature->properties->name) {
+                        $feature->properties->total = $stat->total;
+                        break;
+                    }
+                }
+            } else {
+                $feature->properties->total = 0;
+            }
+        }
+
+        return json_encode($json);
     }
 
     private function getVisitorStats()

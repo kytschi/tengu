@@ -48,7 +48,11 @@ trait User
 
     public static function getUserLocationByIp()
     {
-        $output = shell_exec("geoiplookup " . $_SERVER['REMOTE_ADDR']);
+        if ($_ENV['APP_ENV'] == 'local') {
+            $output = 'GeoIP Country Edition: GB, United Kingdom';
+        } else {
+            $output = shell_exec("geoiplookup " . $_SERVER['REMOTE_ADDR']);
+        }
         if ($output) {
             if (strpos($output, 'IP Address not found') !== false) {
                 return null;

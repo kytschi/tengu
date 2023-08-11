@@ -38,6 +38,8 @@ $url = '/';
 $filter_year = $this->tengu->getFilters('year');
 ?>
 <script src="<?= $this->tengu->theme->getAsset('js/plugins/chartjs.min.js'); ?>"></script>
+<link rel="stylesheet" href="<?= $this->tengu->theme->getAsset('plugins/leaflet/leaflet.css');?>" type="text/css" />
+<script src="<?= $this->tengu->theme->getAsset('plugins/leaflet/leaflet.js');?>"></script>
 <div class="row">
     <div class="col-xl-12 pb-3">
 		<h2>Hi <?= $this->tengu->getUser('first_name'); ?> and welcome!</h2>
@@ -208,6 +210,67 @@ if ($this->tengu->isAdmin()) {
             </div>
         </div>
     </div>
+	<div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+				<span class="card-title">Visitors map</span>
+            </div>
+            <div class="card-body">
+				<div id="map" style="width: 100%; height:500px"></div>
+				<script type="text/javascript">
+					var countries = <?= $visitors_map; ?>;
+
+					var map = L.map('map');
+					map.createPane('labels');
+					map.getPane('labels').style.zIndex = 650;					
+					map.getPane('labels').style.pointerEvents = 'none';
+					var cartodbAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution">CARTO</a>';
+					var positron = L.tileLayer(
+						'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
+						{
+							noWrap: true,
+							attribution: cartodbAttribution
+						}
+					).addTo(map);
+					var positronLabels = L.tileLayer(
+						'http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png',
+						{
+							noWrap: true,
+							attribution: cartodbAttribution,
+							pane: 'labels'
+						}
+					).addTo(map);
+					var geojson = L
+						.geoJson(
+							countries,
+							{
+								style: function(feature) {
+									if (feature.properties.total >= 1 && feature.properties.total <= 100) {
+										return {color: "#01394c"};
+									} else if (feature.properties.total >= 101 && feature.properties.total <= 200) {
+										return {color: "#014e68"};
+									} else if (feature.properties.total >= 201 && feature.properties.total <= 300) {
+										return {color: "#006789"};
+									} else if (feature.properties.total >= 301 && feature.properties.total <= 400) {
+										return {color: "#0082aa"};
+									} else if (feature.properties.total >= 401 && feature.properties.total <= 500) {
+										return {color: "#029ece"};
+									} else if (feature.properties.total >= 501 && feature.properties.total <= 600) {
+										return {color: "#00afe5"};
+									} else if (feature.properties.total >= 601 && feature.properties.total <= 700) {
+										return {color: "#02c2fc"};
+									} else {
+										return {color: "#D4DADC"};
+									}
+								}
+							}
+						)
+						.addTo(map);
+					map.setView({lat: 50, lng: 0}, 3);
+				</script>
+			</div>
+		</div>
+	</div>
 	<div class="col-6">
         <div class="card">
             <div class="card-header">
