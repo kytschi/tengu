@@ -89,7 +89,7 @@ trait User
 
         $res = $guzzle->request(
             'GET',
-            '/json/80.193.180.236'
+            '/json/' . $_SERVER['REMOTE_ADDR']
         );
 
         $object = json_decode($res->getBody()->getContents());
