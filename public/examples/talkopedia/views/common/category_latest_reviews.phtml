@@ -1,10 +1,10 @@
 <?php
 use Kytschi\Tengu\Helpers\DateHelper;
-
-if ($page->category_items->count()) {
+$category_items = $this->tengu->findCategoryItems(['category_id' => $page->id]);
+if ($category_items->count()) {
     $reviews = [];
     $subs = [];
-    foreach ($page->category_items as $item) {
+    foreach ($category_items as $item) {
         if ($item->status == 'inactive') {
             continue;
         }
