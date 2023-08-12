@@ -68,7 +68,7 @@ trait PageCategories
 
         $selects = "$pages_table.*";
         $wheres = '';
-        $order = "ORDER BY $cats_table.sort ASC, $cats_table.created_at DESC";
+        $order = "$cats_table.sort ASC, $cats_table.created_at DESC";
         if (!empty($data['order'])) {
             $order = $data['order'];
         }
@@ -109,7 +109,7 @@ trait PageCategories
         WHERE 
             category_id = :category_id AND $cats_table.deleted_at IS NULL AND $pages_table.id IS NOT NULL 
             $wheres
-        $order";
+        ORDER BY $order";
 
         return (new \Phalcon\Mvc\Model\Resultset\Simple(
             null,

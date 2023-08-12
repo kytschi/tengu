@@ -1,6 +1,9 @@
 <?php
 use Kytschi\Tengu\Helpers\DateHelper;
-$category_items = $this->tengu->findCategoryItems(['category_id' => $page->id]);
+$category_items = $this->tengu->findCategoryItems([
+    'category_id' => $page->id,
+    'order' => 'page_categories.created_at ASC'
+]);
 if ($category_items->count()) {
     $reviews = [];
     $subs = [];
