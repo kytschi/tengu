@@ -105,9 +105,10 @@ trait PageCategories
             $selects
         FROM 
             $cats_table 
-        LEFT JOIN $pages_table ON $pages_table.id = $cats_table.page_id 
+        LEFT JOIN $pages_table ON $pages_table.id = $cats_table.page_id AND $pages_table.deleted_at IS NULL
         WHERE 
-            category_id = :category_id AND $cats_table.deleted_at IS NULL $wheres
+            category_id = :category_id AND $cats_table.deleted_at IS NULL AND $pages_table.id IS NOT NULL 
+            $wheres
         $order";
 
         return (new \Phalcon\Mvc\Model\Resultset\Simple(
