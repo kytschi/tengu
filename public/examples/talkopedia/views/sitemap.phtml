@@ -29,10 +29,6 @@ $pages = (new IndexController())->sitemapAction(true);
                         <div id="sitemap">
                             <?php
                             foreach ($pages as $item) {
-                                $category = null;
-                                if (!empty($item->categories)) {
-                                    $category = $item->categories->getFirst();
-                                }
                                 ?>
                                 <div class="sitemap-item">
                                     <div class="sitemap-image-thumb">
@@ -44,7 +40,7 @@ $pages = (new IndexController())->sitemapAction(true);
                                     </div>
                                     <div class="sitemap-content">
                                         <?php
-                                        if ($category) {
+                                        if ($category = $item->getPrimaryCategory()) {
                                             ?>
                                             <div class="sitemap-name">
                                                 <a href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>">
