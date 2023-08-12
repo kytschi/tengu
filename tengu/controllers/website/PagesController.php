@@ -475,7 +475,6 @@ class PagesController extends ControllerBase
     public function setData($model)
     {
         $model->template_id = $_POST['template_id'];
-        $model->parent_id = !empty($_POST['parent_id']) ? $_POST['parent_id'] : null;
         $model->type = $this->resource;
 
         $model->url = empty($_POST['url']) ?

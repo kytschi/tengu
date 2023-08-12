@@ -35,6 +35,7 @@ class PageCategories extends Model
     public $page_id;
     public $category_id;
     public $sort = 0;
+    public $primary = 0;
 
     public function initialize()
     {

@@ -141,29 +141,6 @@ class Pages extends Model
         );
 
         $this->hasOne(
-            'parent_id',
-            self::class,
-            'id',
-            [
-                'alias'    => 'parent',
-                'reusable' => true
-            ]
-        );
-
-        $this->hasMany(
-            'id',
-            self::class,
-            'parent_id',
-            [
-                'alias'    => 'children',
-                'reusable' => true,
-                'params'   => [
-                    'conditions' => 'deleted_at IS NULL'
-                ]
-            ]
-        );
-
-        $this->hasOne(
             'cover_image_id',
             Files::class,
             'id',
@@ -470,6 +447,38 @@ class Pages extends Model
     public function getPrice()
     {
         return !empty($this->product) ? $this->product->price : 0.00;
+    }
+
+    public function getPrimaryCategory()
+    {
+        $model = PageCategories::findFirst([
+            'conditions' => 'page_id=:page_id: AND primary=1',
+            'bind' => [
+                'page_id' => $this->id
+            ]
+        ]);
+        if (empty($model)) {
+            return null;
+        }
+
+        return $model->category;
+    }
+
+    public function isPrimary($category_id)
+    {
+        $model = PageCategories::findFirst([
+            'conditions' => 'category_id=:category_id: AND page_id=:page_id:',
+            'bind' => [
+                'page_id' => $this->id,
+                'category_id' => $category_id
+            ]
+        ]);
+
+        if (empty($model)) {
+            return false;
+        }
+
+        return $model->primary;
     }
 
     public function getResourceType()

@@ -69,7 +69,8 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                     <thead>
                         <tr>
                             <th>Belongs to category</th>
-                            <th>&nbsp;</th>
+                            <th width="120px">Primary</th>
+                            <th width="80px">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -85,6 +86,36 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                                     <tr id="category-<?= $result->id; ?>">
                                         <td class="widget-category-name">
                                             <?= $result->name; ?>
+                                        </td>
+                                        <td class="widget-category-primary">
+                                            <div class="radio switcher">
+                                                <div class="checkbox switcher mt-2">
+                                                    <label
+                                                        title="This is the items primary category"
+                                                        data-toggle="tooltip"
+                                                        data-trigger="hover"
+                                                        data-dismiss="click"
+                                                        data-placement="bottom">
+                                                        <input
+                                                            type="radio"
+                                                            name="category_primary"
+                                                            value="<?= $result->id; ?>"
+                                                            <?= $data->isPrimary($result->id) ? ' checked' : '';?>>
+                                                        <span>
+                                                            <small class="switcher-on">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                                                                </svg>
+                                                            </small>
+                                                            <small class="switcher-off">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                                </svg>
+                                                            </small>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td class="widget-category-button">
                                             <button
@@ -127,6 +158,7 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                     <tfoot class="d-none">
                         <tr>
                             <td class="widget-category-name"></td>
+                            <td class="widget-category-primary"></td>
                             <td class="widget-category-button">
                                 <button
                                     class="btn btn-blank float-right btn-widget-category"

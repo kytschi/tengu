@@ -25,10 +25,6 @@ if ($latest_posts = $this->tengu->findSimilarPages(12)) {
         <div class="row">
             <?php
             foreach ($latest_posts as $item) {
-                $category = null;
-                if (!empty($item->categories)) {
-                    $category = $item->categories->getFirst();
-                }
                 ?>
                 <div class="col-lg-4 col-md-12">
                     <div class="category-page">
@@ -41,7 +37,7 @@ if ($latest_posts = $this->tengu->findSimilarPages(12)) {
                         </div>
                         <div class="category-content">
                             <?php
-                            if ($category) {
+                            if ($category = $item->getPrimaryCategory()) {
                                 ?>
                                 <div class="category-name">
                                     <a href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>">

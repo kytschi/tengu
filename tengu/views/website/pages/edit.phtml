@@ -319,32 +319,6 @@ if (!empty($_GET['back-url'])) {
                                     rows="4"
                                     aria-describedby="summary"><?= FormController::getFormData('summary', $data); ?></textarea>
                             </div>
-                            <div class="form-group mb-4">
-                                <label for="summary">Parent</label>
-                                <select name="parent_id" class="form-control">
-                                    <?php
-                                    $selected = FormController::getFormData('parent_id', $data);
-                                    if ($parents->count()) {
-                                        ?>
-                                        <option value="">No parent</option>
-                                        <?php
-                                        foreach ($parents as $parent) {
-                                            ?>
-                                            <option 
-                                                value="<?= $parent->id; ?>"
-                                                <?= $selected == $parent->id ? ' selected' : ''; ?>>
-                                                <?= $parent->name; ?>
-                                            </option>
-                                            <?php
-                                        }
-                                    } else {
-                                        ?>
-                                        <option value="0" disabled>No parents available</option>
-                                        <?php
-                                    }
-                                    ?>
-                                </select>
-                            </div>
                         </div>
                     </div>
                     <ul class="nav p-0 m-0">
@@ -590,65 +564,6 @@ if (!empty($_GET['back-url'])) {
                                             </label>
                                         </div>
                                         <small>Make the page featured</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <span class="card-title">Children</span>
-                                </div>
-                                <div class="card-body pl-0 pr-0">
-                                    <div class="form-group">
-                                    <?php
-                                    if ($data->children) {
-                                        ?>
-                                        <table class="table tablesorter">
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>URL</th>
-                                                    <th width="90px">Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                foreach ($data->children as $row) {
-                                                    switch ($row->status) {
-                                                        case 'live':
-                                                            $bg_colour = 'badge-success';
-                                                            break;
-                                                        default:
-                                                            $bg_colour = 'badge-warning';
-                                                            break;
-                                                    }
-                                                    ?>
-                                                    <tr>
-                                                        <td>
-                                                            <?= $row->name; ?>
-                                                        </td>
-                                                        <td>
-                                                            <a href="<?= $row->url ?>"><?= $row->url ?></a>
-                                                        </td>
-                                                        <td>
-                                                            <span class="badge <?= $bg_colour; ?>">
-                                                                <?= $row->status ?>
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                    <?php
-                                                }
-                                                ?>
-                                            </tbody>
-                                        </table>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <p class="h6 pt-3 pb-3 m-0">No children</p>
-                                        <?php
-                                    }
-                                    ?>
                                     </div>
                                 </div>
                             </div>

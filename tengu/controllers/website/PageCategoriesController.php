@@ -73,12 +73,17 @@ class PageCategoriesController extends PagesController
             ->executeQuery(
                 'UPDATE ' .
                 PageCategories::class .
-                ' SET deleted_at=NOW(), deleted_by=:deleted_by: WHERE page_id = :page_id:',
+                ' SET deleted_at=NOW(), deleted_by=:deleted_by:, primary=0 WHERE page_id = :page_id:',
                 [
                     'deleted_by' => $user_id,
                     'page_id' => $page_id
                 ]
             );
+
+        $primary = '';
+        if (!empty($_POST['category_primary'])) {
+            $primary = $_POST['category_primary'];
+        }
 
         if (!empty($_POST['category_id'])) {
             $table = (new PageCategories())->getSource();
@@ -87,52 +92,39 @@ class PageCategoriesController extends PagesController
                 if (empty($id)) {
                     continue;
                 }
+                $model = PageCategories::findFirst([
+                    'conditions' => 'category_id=:category_id: AND page_id=:page_id:',
+                    'bind' => [
+                        'page_id' => $page_id,
+                        'category_id' => $id
+                    ]
+                ]);
 
-                $this->db->query(
-                    'INSERT INTO ' . $table . ' 
-                    (id, category_id, page_id, created_at, created_by, updated_at, updated_by)
-                    SELECT
-                        :id_' . $key . ',
-                        :category_id_' . $key . ',
-                        :page_id,
-                        :created_at,
-                        :created_by,
-                        :updated_at,
-                        :updated_by
-                    FROM DUAL WHERE NOT EXISTS
-                    (
-                        SELECT
-                            id,
-                            page_id,
-                            category_id,
-                            created_at,
-                            created_by,
-                            updated_at,
-                            updated_by
-                        FROM ' . $table . '
-                        WHERE page_id=:page_id_2 AND category_id=:category_id_' . $key . '_2 
-                    )',
-                    [
-                        ':id_' . $key => (new Random())->uuid(),
-                        ':category_id_' . $key => $id,
-                        ':category_id_' . $key . '_2' => $id,
-                        ':page_id' => $page_id,
-                        ':page_id_2' => $page_id,
-                        ':created_at' => date('Y-m-d H:i:s'),
-                        ':created_by' => $user_id,
-                        ':updated_at' => date('Y-m-d H:i:s'),
-                        ':updated_by' => $user_id
-                    ]
-                );
-                $this->db->query(
-                    'UPDATE ' . $table . '
-                    SET deleted_at=NULL, deleted_by=NULL 
-                    WHERE page_id=:page_id AND category_id=:category_id_' . $key,
-                    [
-                        ':category_id_' . $key => $id,
-                        ':page_id' => $page_id
-                    ]
-                );
+                if (empty($model)) {
+                    $model = new PageCategories([
+                        'category_id' => $id,
+                        'page_id' => $page_id,
+                        'primary' => ($primary == $id ? true : false)
+                    ]);
+
+                    if ($model->save() === false) {
+                        throw new SaveException(
+                            'Failed to attach the item to the category',
+                            $model->getMessages()
+                        );
+                    }
+                } else {
+                    $model->deleted_at = null;
+                    $model->deleted_by = null;
+                    $model->primary = ($primary == $id ? true : false);
+
+                    if ($model->update() === false) {
+                        throw new SaveException(
+                            'Failed to attach the item to the category',
+                            $model->getMessages()
+                        );
+                    }
+                }
             }
         }
 
