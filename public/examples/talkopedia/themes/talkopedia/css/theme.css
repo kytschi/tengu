@@ -134,7 +134,7 @@ a:hover, .nav-link:hover {
 	background-size: 75% 78%;
 }
 
-.category-info {
+.category-info, .sitemap-info {
     padding-top: 30px;
     padding-bottom: 15px;
 }
@@ -175,7 +175,7 @@ a:hover, .nav-link:hover {
     margin-right: 10px;
 }
 
-.category-content {
+.category-content, .sitemap-content {
     position: relative;
     z-index: 1;
     padding:0 20px 20px 20px;
@@ -191,7 +191,7 @@ a:hover, .nav-link:hover {
     width: 100%;
 }
 
-.category-name {
+.category-name, .sitemap-name {
     background: var(--bg-yellow) 0% 0% no-repeat padding-box;
     font-family: 'Capture', sans-serif !important;
     font-size: 28pt;
@@ -205,7 +205,7 @@ a:hover, .nav-link:hover {
     text-transform: uppercase;
 }
 
-.category-name a {
+.category-name a, .sitemap-name a {
     color: var(--font-black);
 }
 

@@ -44,7 +44,7 @@ $pages = (new IndexController())->sitemapAction(true);
                                             ?>
                                             <div class="sitemap-name">
                                                 <a href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>">
-                                                    <?= $category->name; ?>
+                                                    &#35;<?= $category->name; ?>
                                                 </a>
                                             </div>
                                             <?php
