@@ -220,13 +220,19 @@ if ($this->tengu->isAdmin()) {
 				<script type="text/javascript">
 					var map = L.map('map');
 
-					L
+					/*L
 						.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 							maxZoom: 19,
 							noWrap: true,
 							attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
 						})
-						.addTo(map);
+						.addTo(map);*/
+
+						L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+							attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+							subdomains: 'abcd',
+							maxZoom: 20
+						}).addTo(map);
 
 					var markers = map.createPane('markers');
 					
