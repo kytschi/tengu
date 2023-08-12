@@ -26,6 +26,8 @@
 
 namespace Kytschi\Tengu\Traits\Core;
 
+use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\Exception\ClientException;
 use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Exceptions\AuthorisationException;
 use Kytschi\Tengu\Helpers\UrlHelper;
@@ -65,6 +67,33 @@ trait User
         }
 
         return null;
+    }
+
+    public static function getUserGeolocationByIp()
+    {
+        $object = new \stdClass();
+        $object->country_name = null;
+        $object->latitude = null;
+        $object->longitude = null;
+
+        if (empty($_SERVER['REMOTE_ADDR'])) {
+            return $object;
+        }
+
+        $guzzle = new Guzzle(
+            [
+                'base_uri' => 'https://freegeoip.app',
+                'verify' => false
+            ]
+        );
+
+        $res = $guzzle->request(
+            'GET',
+            '/json/80.193.180.236'
+        );
+
+        $object = json_decode($res->getBody()->getContents());
+        return $object;
     }
 
     public static function getUser($var = '')

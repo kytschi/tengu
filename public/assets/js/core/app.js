@@ -45,6 +45,14 @@ $(function () {
         $temp.val($(event.currentTarget).data("clipboard")).select();
         document.execCommand("copy");
         $temp.remove();
+
+        $.toast({
+            position: "bottom-right",
+            heading: 'Done',
+            text: 'Copied to clipboard',
+            showHideTransition: 'fade',
+            icon: 'success'
+        });
     });
 
     $(".show-processing").click(function(event) {

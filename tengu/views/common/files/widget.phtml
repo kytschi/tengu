@@ -215,7 +215,9 @@ if ($upload) {
 			}
 			if ($images->total_items) {
 				foreach ($images->getItems() as $image) {
-					echo $this->partial('common/files/tile');
+					if ($data->banner_image->id != $image->id && $data->cover_image->id != $image->id) {
+						echo $this->partial('common/files/tile');
+					}
 				}
 			} else {
 				?>

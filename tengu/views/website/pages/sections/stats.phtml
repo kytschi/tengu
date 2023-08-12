@@ -138,38 +138,48 @@ use Kytschi\Tengu\Controllers\Core\FormController;
             <div class="card-header">
 				<span class="card-title">Referrers</span>
             </div>
-            <div class="card-body pt-0">
-				<canvas id="referrers" width="600" height="400"></canvas>
-				<script type="text/javascript">
-				var ctx_referrers = document.getElementById('referrers').getContext('2d');
-				var referrers = new Chart(ctx_referrers, {
-					type: 'pie',
-					data: {
-						<?php
-						$labels = [];
-						$totals = [];
+            <div class="card-body">
+				<?php
+				if (count($data->referrers)) {
+					?>
+					<canvas id="referrers" width="600" height="400"></canvas>
+					<script type="text/javascript">
+					var ctx_referrers = document.getElementById('referrers').getContext('2d');
+					var referrers = new Chart(ctx_referrers, {
+						type: 'pie',
+						data: {
+							<?php
+							$labels = [];
+							$totals = [];
+							$colours = [];
 
-						foreach ($data->referrers as $key => $values) {
-							$labels[] = '"' . $values['referer'] . '"';
-							$totals[] = $values['total'];
-							$colours[] = '"#' . substr(md5($values['referer']), 3, 6) . '"';
+							foreach ($data->referrers as $key => $values) {
+								$labels[] = '"' . $values['referer'] . '"';
+								$totals[] = $values['total'];
+								$colours[] = '"#' . substr(md5($values['referer']), 3, 6) . '"';
+							}
+							?>
+							labels: [<?= implode(',', $labels); ?>],
+							datasets: [
+								{
+									label: 'referrers',
+									data: [<?= implode(',', $totals); ?>],
+									backgroundColor: [<?= implode(',', $colours); ?>],
+									borderColor: "#5E5E60",
+									borderWidth: 0.4
+								},
+							]
+						},
+						options: {
 						}
-						?>
-						labels: [<?= implode(',', $labels); ?>],
-						datasets: [
-							{
-								label: 'referrers',
-								data: [<?= implode(',', $totals); ?>],
-								backgroundColor: [<?= implode(',', $colours); ?>],
-								borderColor: "#5E5E60",
-								borderWidth: 0.4
-							},
-						]
-					},
-					options: {
-					}
-				});
-				</script>
+					});
+					</script><?php
+				} else {
+					?>
+					<strong class="h5">No referrers detected</strong>
+					<?php
+				}
+				?>
             </div>
         </div>
     </div>

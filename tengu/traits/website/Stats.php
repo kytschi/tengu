@@ -298,37 +298,7 @@ trait Stats
         /**
          * Logging the country for the country stats map.
          */
-        if ($country = self::getUserLocationByIp()) {
-            $stat = StatsData::findFirst([
-                'conditions' => 'country=:country:',
-                'bind' => [
-                    'country' => $country
-                ]
-            ]);
-
-            $save = false;
-            if (empty($stat)) {
-                $stat = new StatsData([
-                    'country' => $country
-                ]);
-                $save = true;
-            }
-
-            $stat->total += 1;
-            if ($save) {
-                if ($stat->save() === false) {
-                    throw new SaveException(
-                        'Failed to save the stat data entry',
-                        $stat->getMessages()
-                    );
-                }
-            } elseif ($stat->update() === false) {
-                throw new SaveException(
-                    'Failed to update the stat data entry',
-                    $stat->getMessages()
-                );
-            }
-        }
+        $geo = self::getUserGeolocationByIp();
 
         $stat = new Model(
             [
@@ -340,7 +310,10 @@ trait Stats
                 'bot' => $bot,
                 'agent' => $agent,
                 'browser' => $browser,
-                'operating_system' => $operating_system
+                'operating_system' => $operating_system,
+                'country' => $geo->country_name,
+                'latitude' => $geo->latitude,
+                'longitude' => $geo->longitude
             ]
         );
 

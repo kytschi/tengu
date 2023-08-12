@@ -210,28 +210,11 @@ class DashboardsController extends ControllerBase
 
     private function getVisitorMapData()
     {
-        $json = json_decode(
-            file_get_contents(
-                $this->getDI()->get('config')->application->assetsDir .
-                '/plugins/leaflet/countries.json'
-            )
-        );
-
-        $data = StatsData::find();
-        foreach ($json->features as $feature) {
-            if ($data) {
-                foreach ($data as $stat) {
-                    if ($stat->country == $feature->properties->name) {
-                        $feature->properties->total = $stat->total;
-                        break;
-                    }
-                }
-            } else {
-                $feature->properties->total = 0;
-            }
-        }
-
-        return json_encode($json);
+        return Stats::find([
+            'columns' => 'latitude, longitude',
+            'conditions' => 'latitude IS NOT NULL AND longitude IS NOT NULL',
+            'group' => 'visitor'
+        ]);
     }
 
     private function getVisitorStats()
