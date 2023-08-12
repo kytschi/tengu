@@ -2,7 +2,7 @@
 use Kytschi\Tengu\Helpers\DateHelper;
 $category_items = $this->tengu->findCategoryItems([
     'category_id' => $page->id,
-    'order' => 'page_categories.created_at ASC'
+    'order' => 'pages.created_at DESC'
 ]);
 if ($category_items->count()) {
     $reviews = [];
