@@ -7,32 +7,10 @@ $crumbs = UrlHelper::breadcrumbs();
     <div class="container-fluid">
         <div class="container">
             <section>
-                <div class="page-content">
-                    <nav class="page-crumbs" aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <?php
-                            $key = 1;
-                            foreach ($crumbs as $name => $url) {
-                                if ($key == count($crumbs)) {
-                                    ?>
-                                    <li class="breadcrumb-item active">
-                                        <a href="<?= $page->url; ?>"><h2><?= $page->name; ?></h2></a>
-                                    </li>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <li class="breadcrumb-item">
-                                        <a href="<?= $url; ?>"><?= ucwords($name); ?></a>
-                                    </li>
-                                    <?php
-                                }
-                                $key++;
-                            }
-                            ?>
-                        </ol>
-                    </nav>
+                <!--<div class="page-content">
+                    
                     <?php
-                    if ($page->content) {
+                    if ($page->content && empty($page->summary)) {
                         ?>
                         <div class="page-body">
                             <?= $page->content; ?>
@@ -40,8 +18,8 @@ $crumbs = UrlHelper::breadcrumbs();
                         <?php
                     }
                     ?>
-                </div>
-                <?php
+                </div>-->
+                <?php            
                 if (!empty($page->banner_image)) {
                     ?>
                     <div class="page-background-image">
@@ -52,6 +30,40 @@ $crumbs = UrlHelper::breadcrumbs();
                 ?>
                 <?= $this->partial('common/theme_animation'); ?>
             </section>
+        </div>
+        <div id="page-summary" class="col-12">
+            <nav class="page-crumbs" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <?php
+                    $key = 1;
+                    foreach ($crumbs as $name => $url) {
+                        if ($key == count($crumbs)) {
+                            ?>
+                            <li class="breadcrumb-item active">
+                                <a href="<?= $page->url; ?>"><h2><?= $page->name; ?></h2></a>
+                            </li>
+                            <?php
+                        } else {
+                            ?>
+                            <li class="breadcrumb-item">
+                                <a href="<?= $url; ?>"><?= ucwords($name); ?></a>
+                            </li>
+                            <?php
+                        }
+                        $key++;
+                    }
+                    ?>
+                </ol>
+            </nav>
+            <?php
+            if ($page->summary) {
+                ?>
+                <div>
+                    <?= $page->summary; ?>
+                </div>
+                <?php
+            }
+            ?>
         </div>
         <div class="category-pages col-12">
             <?= $this->partial('common/category_latest_reviews'); ?>

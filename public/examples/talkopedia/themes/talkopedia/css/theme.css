@@ -213,12 +213,6 @@ a:hover, .nav-link:hover {
     color: var(--font-white) !important;
 }
 
-.category-pages {
-    padding: 60px 60px 60px 60px;
-    /*background-color: var(--bg-black);*/
-    z-index: 101;
-}
-
 #sub-categories .category-content {
     padding-bottom: 0px;
 }
@@ -400,8 +394,28 @@ main {
 }
 
 .page-body {
+    margin-top: 60px;
+    margin-bottom: 60px;
     padding: 40px;
     background-color: var(--bg-black-darker);
+}
+
+.category-pages {
+    padding: 20px 60px 0px 60px;
+    z-index: 101;
+}
+#page-summary {
+    display: inline-block;
+    width: 100%;
+    padding: 20px 60px 0 60px;
+    z-index: 102;
+}
+#page-summary div {
+    padding: 40px;
+    color: var(--font-black);
+    background-color: var(--bg-yellow);
+    font-family: 'Capture', sans-serif !important;
+    font-size: 40px;
 }
 
 .page-content {
@@ -836,7 +850,9 @@ ol li {
     padding-right: 20px;
     margin-bottom: 30px;
 }
-
+#sub-categories, #latest-reviews, #featured, #trending, #worth-a-look {
+    margin-bottom: 60px;
+}
 #sub-categories .category-content {
     font-family: 'Capture', sans-serif !important;
 }
