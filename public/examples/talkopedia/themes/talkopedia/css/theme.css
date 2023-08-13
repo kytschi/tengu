@@ -409,6 +409,7 @@ main {
     width: 100%;
     padding: 20px 60px 0 60px;
     z-index: 102;
+    margin-bottom: 60px;
 }
 #page-summary div {
     padding: 40px;
