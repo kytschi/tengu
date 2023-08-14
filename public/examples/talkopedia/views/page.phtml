@@ -50,9 +50,6 @@ $latest_posts = (new BlogPostsController())->get(3, $page->id, true);
                 <?= $this->partial('common/theme_animation'); ?>
             </section>
         </div>
-        <div class="category-pages col-12">
-            <?= $this->partial('common/featured'); ?>
-            <?= $this->partial("common/maybe_of_interest"); ?>
-        </div>
     </div>
 </div>
+<?= $this->partial("common/maybe_of_interest"); ?>

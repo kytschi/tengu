@@ -841,6 +841,7 @@ ol li {
     margin: 1em 0;
     break-inside: avoid-column;
     background-color: var(--bg-black-darker);
+    border:1px solid var(--border-dark-yellow);
 }
   
 .sitemap-content {
@@ -888,6 +889,20 @@ ol li {
 #sub-categories, #latest-reviews, #featured, #trending, #worth-a-look {
     margin-bottom: 60px;
 }
+#featured, #worth-a-look, #trending {
+    background-repeat: no-repeat;
+    padding: 60px;
+    margin-top: 60px;
+}
+#featured {
+    background-image: url(../assets/imgs/featured-talks.jpg);
+}
+#trending {
+    background-image: url(../assets/imgs/trending.jpg);
+}
+#worth-a-look {
+    background-image: url(../assets/imgs/worth-a-look.jpg);    
+}
 #sub-categories .category-content {
     font-family: 'Capture', sans-serif !important;
 }
@@ -912,12 +927,6 @@ ol li {
 
 .tag:hover {
     color: var(--font-white) !important;
-}
-
-#trending {
-    background-image: url(../assets/imgs/trending.jpg);
-    background-repeat: no-repeat;
-    padding: 60px;
 }
 
 #trending-stats a {

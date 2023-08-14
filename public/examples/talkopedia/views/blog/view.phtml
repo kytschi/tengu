@@ -109,9 +109,6 @@ $category = $page->categories->getFirst();
                 <?= $this->partial('common/theme_animation'); ?>
             </section>
         </div>
-        <div class="category-pages col-12">
-            <?= $this->partial('common/featured'); ?>
-            <?= $this->partial('common/maybe_of_interest', ['page' => $page]); ?>
-        </div>
     </div>
 </div>
+<?= $this->partial('common/maybe_of_interest', ['page' => $page]); ?>

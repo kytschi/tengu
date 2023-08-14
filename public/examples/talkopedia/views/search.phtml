@@ -115,7 +115,4 @@ $latest_posts = (new BlogPostsController())->get(3, $page->id, true);
         <img src="<?= $this->tengu->theme->getAsset('imgs/search.jpg'); ?>" alt="<?= $page->name; ?>">
     </div>
 </div>
-<div class="category-pages col-12">
-    <?= $this->partial('common/featured'); ?>
-    <?= $this->partial("common/maybe_of_interest"); ?>
-</div>
+<?= $this->partial("common/maybe_of_interest"); ?>
