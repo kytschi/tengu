@@ -144,6 +144,13 @@ $router->add(
         'action'     => 'rss'
     ]
 );
+$router->add(
+    '/news/feed',
+    [
+        'controller' => 'Index',
+        'action'     => 'rss'
+    ]
+);
 
 /*
  * Sitemap.
