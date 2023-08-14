@@ -1390,6 +1390,10 @@ select.form-control {
   background-color: var(--bg-blue-lighter);
 }
 
+.table tbody tr.danger td {
+  background-color: var(--bg-red) !important;
+}
+
 .tagify {
   font-size: 0.75rem;
   -webkit-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;

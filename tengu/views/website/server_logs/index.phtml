@@ -1,0 +1,138 @@
+<?php
+/**
+ * Groups index template.
+ *
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
+ * @version     0.0.1
+ *
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
+ */
+
+use Kytschi\Tengu\Controllers\Core\FormController;
+use Kytschi\Tengu\Helpers\DateHelper;
+use Kytschi\Tengu\Helpers\UrlHelper;
+
+$filter_status = $this->tengu->getFilters('status');
+
+echo $this->partial("common/form/messages");
+?>
+<div class="row mb-3">
+	<div class="col-12">
+        <div class="card p-0">
+			<div class="card-body">
+				<?php
+				    $this->partial('common/lists/search', ['url' => $url]);
+				?>
+                <a href="<?= UrlHelper::backend($url . '/add'); ?>" class="btn btn-primary float-right">
+		            Add
+		        </a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body p-3">
+                <?php
+                if ($data->total_items) {
+                    ?>
+                    <table class="table tablesorter">
+                        <thead>
+                            <tr>
+                                <th width="200px">Name</th>
+                                <th>File</th>
+                                <th width="100px">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            foreach ($data->getItems() as $row) {
+                                ?>
+                                <tr>
+                                    <td>
+                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                            <?= $row->name; ?>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>">
+                                            <?= $row->file; ?>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a
+                                            href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>"
+                                            class="btn btn-blank float-right p-0"
+                                            title="View the log"
+                                            data-toggle="tooltip"
+                                            data-trigger="hover"
+                                            data-dismiss="click"
+                                            data-placement="top">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">
+                                                <path d="M6 9a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3A.5.5 0 0 1 6 9zM3.854 4.146a.5.5 0 1 0-.708.708L4.793 6.5 3.146 8.146a.5.5 0 1 0 .708.708l2-2a.5.5 0 0 0 0-.708l-2-2z"/>
+                                                <path d="M2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h12z"/>
+                                            </svg>
+                                        </a>
+                                        <button
+                                            type="button"
+                                            class="btn btn-blank float-right p-0 mr-2"
+                                            data-original-title="Are you sure?"
+                                            data-trigger="focus"
+                                            data-html="true"
+                                            data-content='<span class="btn btn-secondary">No</span>&nbsp;<a class="btn btn-danger" href="<?= UrlHelper::backend($url . '/delete/' . $row->id); ?>?from=<?= urlencode($url); ?>">Yes</a>'
+                                            data-toggle="popover">
+                                            <span
+                                                title="Delete the log"
+                                                data-toggle="tooltip"
+                                                data-trigger="hover"
+                                                data-dismiss="click"
+                                                data-placement="top">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    <?php
+                } else {
+                    ?>
+                    <strong class="h5">No results</strong>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+    echo $this->partial(
+        'common/lists/pagination',
+        [
+            'data' => $data,
+            'url' => UrlHelper::backend($url)
+        ]
+    );
+?>
+<script src="<?= $this->tengu->theme->getAsset('js/core/list.js'); ?>"></script>

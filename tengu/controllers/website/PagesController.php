@@ -196,7 +196,7 @@ class PagesController extends ControllerBase
         $model = (new Pages())->findFirst([
             'conditions' => 'id = :id:',
             'bind' => [
-                'id' => $this->dispatcher->getParam('id')
+                'id' => $id
             ]
         ]);
 

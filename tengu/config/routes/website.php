@@ -670,6 +670,76 @@ $router->add(
 );
 
 /*
+ * Server logs.
+ */
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/server-logs'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'ServerLogs',
+        'action'     => 'index',
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/server-logs/add'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'ServerLogs',
+        'action'     => 'add',
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/server-logs/delete/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'ServerLogs',
+        'action'     => 'delete',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/server-logs/edit/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'ServerLogs',
+        'action'     => 'edit',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/server-logs/recover/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'ServerLogs',
+        'action'     => 'recover',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/server-logs/save'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'ServerLogs',
+        'action'     => 'save',
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/server-logs/update/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'ServerLogs',
+        'action'     => 'update',
+        'id' => 1
+    ]
+);
+
+/*
  * Settings.
  */
 $router->add(
