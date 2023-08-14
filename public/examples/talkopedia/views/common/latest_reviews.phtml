@@ -1,7 +1,7 @@
 <?php
 use Kytschi\Tengu\Helpers\DateHelper;
 
-if ($latest_posts = $this->tengu->findSimilarPages(12)) {
+if ($latest_posts = $this->tengu->findSimilarPages(32)) {
     if (!$latest_posts->count()) {
         return;
     }
