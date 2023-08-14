@@ -242,14 +242,16 @@ echo $this->partial("common/form/messages");
                                                             $matches
                                                         )
                                                     ) {
-                                                        //Always ignore localhost.
-                                                        if ($matches[0] == "127.0.0.1") {
-                                                            continue;
-                                                        }
-                                                        foreach ($excludes as $exclude) {
-                                                            if ($exclude->exclude == $match) {
-                                                                $found = true;
-                                                                break;
+                                                        if ($matches) {
+                                                            //Always ignore localhost.
+                                                            if ($matches[0] == "127.0.0.1") {
+                                                                continue;
+                                                            }
+                                                            foreach ($excludes as $exclude) {
+                                                                if ($exclude->exclude == $matches[0]) {
+                                                                    $found = true;
+                                                                    break;
+                                                                }
                                                             }
                                                         }
                                                     }
