@@ -1,10 +1,10 @@
 @import "../../talkopedia/css/theme.css";
 
 @font-face {
-    font-family: 'Archivo';
+    font-family: 'StarWars';
     src: url("../fonts/DeathStar-VmWB.ttf") format("truetype");
 }
 
-.sub-heading {
-    font-family: "Archivo" !important;
+.sub-heading, h2.page-title, .sub-heading-yellow {
+    font-family: "StarWars" !important;
 }

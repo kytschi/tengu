@@ -1,50 +1,16 @@
 @import "../../talkopedia/css/theme.css";
 
 @font-face {
-    font-family: 'Archivo';
-    src: url("../fonts/ChristmasStory-3zXXy.ttf") format("truetype");
-}
-
-@font-face {
-    font-family: 'Oswald';
+    font-family: 'XMAS';
     src: url("../fonts/Christmas-2OdZd.ttf") format("truetype");
 }
 
-.page-body, h3 span {
-    font-size: 26pt !important;
+#home .page-content {
+    padding-bottom: 650px;
 }
 
-.category-content {
-    font-family: "Content";
-}
-
-.nav-item, .breadcrumb {
-    font-size: 22pt;
-}
-
-.page-title p, .slogan p, h3 span, .sub-heading {
-    padding: 15px 15px 8px 15px !important;
-}
-
-h2.page-title {
-    font-family: "Archivo" !important;
-}
-
-.page-body {
-    font-family: "Oswald" !important;
-}
-
-.category-name {
-    font-family: "Oswald" !important;
-    font-size: 20pt !important;
-}
-
-.sub-heading {
-    font-size: 32pt !important;
-}
-
-.search .form-control {
-    font-family: "Content" !important;
+.sub-heading, h2.page-title, .sub-heading-yellow {
+    font-family: "XMAS" !important;
 }
 
 .theme_animation {
