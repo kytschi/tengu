@@ -99,7 +99,7 @@ a:hover, .nav-link:hover {
     margin: 0;
 }
 
-.card-body .card-image {
+.card-image {
     width: 100%;
     max-height: 400px;    
     overflow: hidden;
@@ -108,7 +108,7 @@ a:hover, .nav-link:hover {
     border: 1px solid var(--bg-black-darker);
 }
 
-.card-body .card-image img {
+.card-image img {
     max-width: 100%;
 }
 

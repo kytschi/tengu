@@ -35,7 +35,18 @@ $latest_posts = (new BlogPostsController())->get(3, $page->id, true);
                         </ol>
                     </nav>
                     <div class="page-body">
-                        <?= $page->content; ?>
+                        <?php
+                        if (!empty($page->cover_image)) {
+                            ?>
+                            <div class="card-image">
+                                <img src="<?= $page->cover_image->url; ?>" alt="<?= $page->cover_image->label; ?>">
+                            </div>
+                            <?php
+                        }
+                        ?>
+                        <div>
+                            <?= $page->content; ?>
+                        </div>
                     </div>
                 </div>
                 <?php
