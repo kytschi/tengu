@@ -158,7 +158,8 @@ trait Stats
         'AhrefsBot' => 'http://ahrefs.com/robot/',
         'YandexBot' => 'http://yandex.com/bots',
         'FeedBurner' => 'http://www.FeedBurner.com',
-        'SeznamBot' => 'http://napoveda.seznam.cz'
+        'SeznamBot' => 'http://napoveda.seznam.cz',
+        'anthropic-ai' => 'anthropic-ai'
     ];
 
     public function addSearchStat($search_query, $type = 'internal')
