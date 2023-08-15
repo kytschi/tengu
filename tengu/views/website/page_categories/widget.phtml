@@ -88,6 +88,9 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                                             <?= $result->name; ?>
                                         </td>
                                         <td class="widget-category-primary">
+                                        <?php
+                                        if ($result->type != 'menu-category') {
+                                            ?>
                                             <div class="radio switcher">
                                                 <div class="checkbox switcher mt-2">
                                                     <label
@@ -116,6 +119,11 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                                                     </label>
                                                 </div>
                                             </div>
+                                            <?php
+                                        } else {
+                                            echo 'N/A';
+                                        }
+                                        ?>
                                         </td>
                                         <td class="widget-category-button">
                                             <button
