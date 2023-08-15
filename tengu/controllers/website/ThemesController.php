@@ -159,7 +159,7 @@ class ThemesController extends ControllerBase
             $url = '';
             if (empty($this->current_theme)) {
                 $splits = explode('.', $asset);
-                $url = 'no-deafult-theme.' . $splits[length($splits) - 1];
+                $url = 'no-deafult-theme.' . $splits[count($splits) - 1];
             }
 
             if (empty($url)) {
@@ -198,7 +198,7 @@ class ThemesController extends ControllerBase
                         )
                     ) {
                         $splits = explode('.', $asset);
-                        $asset = 'resource-not-found.' . $splits[length($splits) - 1];
+                        $asset = 'resource-not-found.' . $splits[count($splits) - 1];
                     }
 
                     $url = $this->theme_url . trim($this->current_theme->folder, '/') . '/assets/' . $asset;
