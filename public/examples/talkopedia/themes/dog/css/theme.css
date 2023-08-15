@@ -1,29 +1,5 @@
 @import "../../talkopedia/css/theme.css";
 
-@font-face {
-    font-family: 'Archivo';
-    src: url("../fonts/GoodBoy-ZVJrl.ttf") format("truetype");
-}
-
-@font-face {
-    font-family: 'Dog';
-    src: url("../fonts/DoggyDogWorld-K7BaA.ttf") format("truetype");
-}
-
-@font-face {
-    font-family: 'Oswald';
-    src: url("../fonts/GoodBoy-ZVJrl.ttf") format("truetype");
-}
-
-h1 {
-    font-family: 'Dog', sans-serif !important;
-    font-size: 2em;
-}
-
-.nav-link {
-    font-size: 20pt;
-}
-
-.breadcrumb {
-    font-size: 16pt;
+#home .page-content {
+    padding-bottom: 450px;
 }

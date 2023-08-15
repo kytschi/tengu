@@ -391,6 +391,9 @@ main {
 #home .page-content {
     padding-bottom: 550px;
 }
+.page-not-found {
+    min-height: 500px;
+}
 
 .page-full {
     padding: 0px 60px 90px 60px;
