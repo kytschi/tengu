@@ -23,7 +23,11 @@ if ($trending = $this->tengu->findTrendingSearch(10)) {
                                 <?php
                                 foreach ($trending as $item) {
                                     ?>
-                                    <a href="/search?search=<?= urlencode($item->query); ?>">&#35;<?= htmlentities($item->query); ?></a>
+                                    <a
+                                        href="/search?search=<?= urlencode($item->query); ?>"
+                                        title="Trending talk query, <?= $item->query; ?>">
+                                        &#35;<?= htmlentities($item->query); ?>
+                                    </a>
                                     <?php
                                 }
                                 ?>

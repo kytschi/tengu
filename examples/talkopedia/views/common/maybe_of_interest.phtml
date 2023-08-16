@@ -32,6 +32,7 @@ if ($random_posts = $this->tengu->findRandomPages(6, $exclude)) {
                             <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
                                 <img 
                                     src="<?= !empty($item->cover_image) ? $item->cover_image->thumb_url : $this->tengu->theme->getAsset('imgs/placeholder.jpg'); ?>"
+                                    title="This talk maybe of interest, <?= $item->name; ?>"
                                     alt="<?= $item->name; ?>">
                             </a>
                         </div>
@@ -40,7 +41,9 @@ if ($random_posts = $this->tengu->findRandomPages(6, $exclude)) {
                             if ($category = $item->getPrimaryCategory()) {
                                 ?>
                                 <div class="category-name">
-                                    <a href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>">
+                                    <a 
+                                        href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>"
+                                        title="This talk category maybe of interest, <?= $category->name; ?>">
                                         &#35;<?= $category->name; ?>
                                     </a>
                                 </div>
@@ -65,7 +68,9 @@ if ($random_posts = $this->tengu->findRandomPages(6, $exclude)) {
                                 </ul>
                             </div>
                             <h4>
-                                <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
+                                <a
+                                    href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>"
+                                    title="This talk maybe of interest, <?= $item->name; ?>">
                                     <?= $item->name; ?>
                                 </a>
                             </h4>

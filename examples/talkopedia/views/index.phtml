@@ -78,7 +78,8 @@ $footer_menu = MenuController::get('footer');
                                 <a
                                     href="<?= $link; ?>"
                                     class="nav-link<?= (UrlHelper::matches($link)) ? ' active' : '';?>"
-                                    <?= !empty($item->new_window) ? 'target="_blank"' : ''; ?>>
+                                    <?= !empty($item->new_window) ? 'target="_blank"' : ''; ?>
+                                    title="Click to view the page, <?= $item->name; ?>">
                                     <?= $item->name; ?>
                                 </a>
                             </li>

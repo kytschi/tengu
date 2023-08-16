@@ -19,6 +19,7 @@ $menu = $this->tengu->findMenu(['slug' => 'header menu']);
                         href="<?= $item->link; ?>"
                         class="nav-link<?= (UrlHelper::matches($item->link)) ? ' active' : '';?>"
                         <?= !empty($item->new_window) ? 'target="_blank"' : ''; ?>
+                        title="Click to view the talk topic, <?= $item->name; ?>"
                     >
                         <?= $item->name; ?>
                     </a>
@@ -42,6 +43,7 @@ $menu = $this->tengu->findMenu(['slug' => 'header menu']);
                             href="<?= $item->link; ?>"
                             class="nav-link<?= (UrlHelper::matches($item->link)) ? ' active' : '';?>"
                             <?= !empty($item->new_window) ? 'target="_blank"' : ''; ?>
+                            title="Click to view the talk topic, <?= $item->name; ?>"
                         >
                             <?= $item->name; ?>
                         </a>

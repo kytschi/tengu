@@ -25,6 +25,7 @@ if ($latest_posts = $this->tengu->findFeaturedPages(6, null, false, true)) {
                             <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
                                 <img 
                                     src="<?= !empty($item->cover_image) ? $item->cover_image->thumb_url : $this->tengu->theme->getAsset('imgs/placeholder.jpg'); ?>"
+                                    title="#Featured, <?= $item->name; ?>"
                                     alt="<?= $item->name; ?>">
                             </a>
                         </div>
@@ -58,7 +59,9 @@ if ($latest_posts = $this->tengu->findFeaturedPages(6, null, false, true)) {
                                 </ul>
                             </div>
                             <h4>
-                                <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
+                                <a 
+                                    href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>"
+                                    title="Click to view the featured talk, <?= $item->name; ?>">
                                     <?= $item->name; ?>
                                 </a>
                             </h4>

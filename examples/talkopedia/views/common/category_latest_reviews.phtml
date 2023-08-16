@@ -37,12 +37,15 @@ if ($category_items->count()) {
                             <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
                                 <img 
                                     src="<?= !empty($item->cover_image) ? $item->cover_image->thumb_url : $this->tengu->theme->getAsset('imgs/placeholder.jpg'); ?>"
+                                    title="Click to view the sub talk, <?= $item->name; ?>"
                                     alt="<?= $item->name; ?>">
                             </a>
                         </div>
                         <div class="category-content">
                             <h4>
-                                <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
+                                <a
+                                    href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>"
+                                    title="Click to view the sub talk, <?= $item->name; ?>">
                                     <?= $item->name; ?>
                                 </a>
                             </h4>  
@@ -74,15 +77,11 @@ if ($category_items->count()) {
                             <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
                                 <img 
                                     src="<?= !empty($item->cover_image) ? $item->cover_image->thumb_url : $this->tengu->theme->getAsset('imgs/placeholder.jpg'); ?>"
+                                    title="Click to view the talk, <?= $item->name; ?>"
                                     alt="<?= $item->name; ?>">
                             </a>
                         </div>
-                        <div class="category-content">     
-                            <!--<div class="category-name">
-                                <a href="<?= !empty($page->canonical_url) ? $page->canonical_url : $page->url; ?>">
-                                    &#35;<?= $page->name; ?>
-                                </a>
-                            </div>-->
+                        <div class="category-content">
                             <div class="category-info">
                                 <ul>
                                     <li>
@@ -101,7 +100,9 @@ if ($category_items->count()) {
                                 </ul>
                             </div>
                             <h4>
-                                <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
+                                <a
+                                    href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>"
+                                    title="Click to view the talk, <?= $item->name; ?>">
                                     <?= $item->name; ?>
                                 </a>
                             </h4>  

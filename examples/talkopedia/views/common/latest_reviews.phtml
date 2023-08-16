@@ -32,6 +32,7 @@ if ($latest_posts = $this->tengu->findSimilarPages(33)) {
                             <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
                                 <img 
                                     src="<?= !empty($item->cover_image) ? $item->cover_image->thumb_url : $this->tengu->theme->getAsset('imgs/placeholder.jpg'); ?>"
+                                    title="The talk, <?= $item->name; ?>"
                                     alt="<?= $item->name; ?>">
                             </a>
                         </div>
@@ -40,7 +41,9 @@ if ($latest_posts = $this->tengu->findSimilarPages(33)) {
                             if ($category = $item->getPrimaryCategory()) {
                                 ?>
                                 <div class="category-name">
-                                    <a href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>">
+                                    <a 
+                                        href="<?= !empty($category->canonical_url) ? $category->canonical_url : $category->url; ?>"
+                                        title="Click to view the category, <?= $category->name; ?>">
                                         &#35;<?= $category->name; ?>
                                     </a>
                                 </div>
@@ -65,7 +68,9 @@ if ($latest_posts = $this->tengu->findSimilarPages(33)) {
                                 </ul>
                             </div>
                             <h4>
-                                <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
+                                <a 
+                                    href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>"
+                                    title="Click to view the talk, <?= $item->name; ?>">
                                     <?= $item->name; ?>
                                 </a>
                             </h4>

@@ -20,11 +20,17 @@
                     <?php
                     if ($this->tengu->theme->getSlug() != "talkopedia") {
                         ?>
-                        <img src="<?= $this->tengu->theme->getAsset('imgs/background.jpg'); ?>" alt="<?= $page->name; ?>">
+                        <img 
+                            src="<?= $this->tengu->theme->getAsset('imgs/background.jpg'); ?>" 
+                            title="<?= $page->name; ?>"
+                            alt="<?= $page->name; ?>">
                         <?php
                     } else {
                         ?>
-                        <img src="<?= $page->banner_image->url; ?>" alt="<?= $page->banner_image->label; ?>">
+                        <img 
+                            src="<?= $page->banner_image->url; ?>"
+                            title="<?= $page->banner_image->label; ?>"
+                            alt="<?= $page->banner_image->label; ?>">
                         <?php
                     }
                     ?>
