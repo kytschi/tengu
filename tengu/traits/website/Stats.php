@@ -160,7 +160,8 @@ trait Stats
         'FeedBurner' => 'http://www.FeedBurner.com',
         'SeznamBot' => 'http://napoveda.seznam.cz',
         'anthropic-ai' => 'anthropic-ai',
-        'Barkrowler' => 'https://babbar.tech/crawler'
+        'Barkrowler' => 'https://babbar.tech/crawler',
+        'BLEXBot' => 'http://webmeup-crawler.com'
     ];
 
     public function addSearchStat($search_query, $type = 'internal')
