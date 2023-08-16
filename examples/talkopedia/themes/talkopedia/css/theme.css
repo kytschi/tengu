@@ -406,6 +406,12 @@ main {
     background-color: var(--bg-black-darker);
 }
 
+.page-body h6 {
+    color: var(--font-yellow);
+    font-family: 'Capture', sans-serif !important;
+    font-size: 1.5rem;
+}
+
 .category-pages {
     padding: 20px 60px 0px 60px;
     z-index: 101;
