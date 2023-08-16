@@ -159,7 +159,8 @@ trait Stats
         'YandexBot' => 'http://yandex.com/bots',
         'FeedBurner' => 'http://www.FeedBurner.com',
         'SeznamBot' => 'http://napoveda.seznam.cz',
-        'anthropic-ai' => 'anthropic-ai'
+        'anthropic-ai' => 'anthropic-ai',
+        'Barkrowler' => 'https://babbar.tech/crawler'
     ];
 
     public function addSearchStat($search_query, $type = 'internal')

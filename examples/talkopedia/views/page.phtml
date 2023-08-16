@@ -16,13 +16,7 @@ $latest_posts = (new BlogPostsController())->get(3, $page->id, true);
                             <?php
                             $key = 1;
                             foreach ($crumbs as $name => $url) {
-                                if ($key == count($crumbs)) {
-                                    ?>
-                                    <li class="breadcrumb-item active">
-                                        <a href="<?= $page->url; ?>"><h2><?= $page->name; ?></h2></a>
-                                    </li>
-                                    <?php
-                                } else {
+                                if ($key != count($crumbs)) {
                                     ?>
                                     <li class="breadcrumb-item">
                                         <a href="<?= $url; ?>"><?= ucwords($name); ?></a>
@@ -34,7 +28,8 @@ $latest_posts = (new BlogPostsController())->get(3, $page->id, true);
                             ?>
                         </ol>
                     </nav>
-                    <div class="page-body">
+                    <h2 class="page-title m-0"><?= $page->name; ?></h2>
+                    <div class="page-body mt-0">
                         <?php
                         if (!empty($page->cover_image)) {
                             ?>

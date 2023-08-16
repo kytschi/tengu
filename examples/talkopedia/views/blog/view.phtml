@@ -14,19 +14,12 @@ $category = $page->categories->getFirst();
                     <div class="page-body">
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="page-title"><?= $page->name; ?></h2>
                                 <nav class="page-crumbs-no-bg" aria-label="breadcrumb">
                                     <ol class="breadcrumb">
                                         <?php
                                         $key = 1;
                                         foreach ($crumbs as $name => $url) {
-                                            if ($key == count($crumbs)) {
-                                                ?>
-                                                <li class="breadcrumb-item active">
-                                                    <a href="<?= $page->url; ?>"><?= $page->name; ?></a>
-                                                </li>
-                                                <?php
-                                            } else {
+                                            if ($key != count($crumbs)) {
                                                 ?>
                                                 <li class="breadcrumb-item">
                                                     <a href="<?= $url; ?>"><?= ucwords($name); ?></a>
@@ -38,6 +31,7 @@ $category = $page->categories->getFirst();
                                         ?>
                                     </ol>
                                 </nav>
+                                <h2 class="page-title"><?= $page->name; ?></h2>
                             </div>
                             <div class="card-body">
                                 <?php
