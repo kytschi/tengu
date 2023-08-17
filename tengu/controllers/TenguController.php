@@ -107,6 +107,8 @@ class TenguController
             'TENGU_CURRENCY',
             !empty($this->settings->finance) ? $this->settings->finance->currency : 'GBP'
         );
+
+        define('TENGU_VERSION', $this->version);
     }
 
     public function canonicalUrl()

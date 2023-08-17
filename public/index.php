@@ -166,6 +166,19 @@ try {
 
     include BASE_PATH . '/tengu/views/generic/errors/customer.phtml';
     die();
+} catch (Kytschi\Tengu\Exceptions\TemplateException $err) {
+    try {
+        $controller = new Kytschi\Tengu\Controllers\Core\FormController();
+        $controller->addLog(
+            'system',
+            '',
+            'error',
+            $err->getMessage(),
+            json_encode($err)
+        );
+    } catch (\Exception $err) {
+    }
+    echo $err;
 } catch (\Exception $err) {
     if (TENGU_API) {
         (new Kytschi\Tengu\Controllers\IndexController())->apiError($err);
