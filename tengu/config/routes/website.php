@@ -67,6 +67,16 @@ $router->add(
 );
 
 $router->add(
+    UrlHelper::backend($config->urls->cms . '/blog-posts/categories/recover/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'BlogPostCategories',
+        'action'     => 'recover',
+        'id' => 1
+    ]
+);
+
+$router->add(
     UrlHelper::backend($config->urls->cms . '/blog-posts/categories/save'),
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
@@ -419,6 +429,16 @@ $router->add(
 );
 
 $router->add(
+    UrlHelper::backend($config->urls->cms . '/pages/categories/recover/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PageCategories',
+        'action'     => 'recover',
+        'id' => 1
+    ]
+);
+
+$router->add(
     UrlHelper::backend($config->urls->cms . '/pages/categories/save'),
     [
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
@@ -544,6 +564,16 @@ $router->add(
         'namespace'  => 'Kytschi\Tengu\Controllers\Website',
         'controller' => 'PortfolioCategories',
         'action'     => 'edit',
+        'id' => 1
+    ]
+);
+
+$router->add(
+    UrlHelper::backend($config->urls->cms . '/portfolio/categories/recover/{id}'),
+    [
+        'namespace'  => 'Kytschi\Tengu\Controllers\Website',
+        'controller' => 'PortfolioCategories',
+        'action'     => 'recover',
         'id' => 1
     ]
 );
