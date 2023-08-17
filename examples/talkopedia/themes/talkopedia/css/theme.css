@@ -617,6 +617,7 @@ ol li {
 .review-author h6 {
     margin: 0;
     color: var(--font-white);
+    font-family: 'Archivo', sans-serif !important;
 }
 
 .review-author span {
