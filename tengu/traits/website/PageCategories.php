@@ -29,6 +29,7 @@ namespace Kytschi\Tengu\Traits\Website;
 use Kytschi\Tengu\Controllers\Core\PostcodesController;
 use Kytschi\Tengu\Models\Website\Pages;
 use Kytschi\Tengu\Models\Website\PageCategories as Model;
+use Phalcon\Paginator\Adapter\QueryBuilder;
 
 trait PageCategories
 {
@@ -67,7 +68,16 @@ trait PageCategories
         $cats_table = (new Model())->getSource();
 
         $selects = "$pages_table.*";
+
         $wheres = '';
+        if (!empty($data['where'])) {
+            $wheres = ' AND ' . $data['where'];
+        }
+
+        if (!empty($data['data'])) {
+            $binds = array_merge($binds, $data['data']);
+        }
+
         $order = "$cats_table.sort ASC, $cats_table.created_at DESC";
         if (!empty($data['order'])) {
             $order = $data['order'];
@@ -99,6 +109,41 @@ trait PageCategories
                     $wheres = rtrim($wheres, ' OR ') . ')';
                 }
             }
+        }
+
+        if (!empty($data['pagination'])) {
+            $limit = 30;
+            if (!empty($data['pagination']['limit'])) {
+                $limit = intval($data['pagination']['limit']);
+            }
+
+            $page = 1;
+            if (!empty($data['pagination']['page'])) {
+                $page = intval($data['pagination']['page']);
+            }
+
+            // Just need a controller for the modelsManager
+            $builder = (new PostcodesController())
+                ->modelsManager
+                ->createBuilder()
+                ->columns($selects)
+                ->addFrom(Model::class, 'cats')
+                ->join(Pages::class, 'pages.id=cats.page_id AND pages.deleted_at IS NULL', 'pages')
+                ->where("cats.category_id = :category_id: AND cats.deleted_at IS NULL AND pages.id IS NOT NULL")
+                ->andWhere(ltrim($wheres, ' AND '))
+                ->orderBy($order);
+
+            $builder->setBindParams($binds);
+
+            $paginator = new QueryBuilder(
+                [
+                    "builder" => $builder,
+                    "limit" => !empty($limit) ? $limit : 30,
+                    "page" => !empty($page) ? $page : 1,
+                ]
+            );
+
+            return $paginator->paginate();
         }
 
         $query = "SELECT

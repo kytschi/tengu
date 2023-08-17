@@ -7,18 +7,6 @@ $crumbs = UrlHelper::breadcrumbs();
     <div class="container-fluid">
         <div class="container">
             <section>
-                <!--<div class="page-content">
-                    
-                    <?php
-                    if ($page->content && empty($page->summary)) {
-                        ?>
-                        <div class="page-body">
-                            <?= $page->content; ?>
-                        </div>
-                        <?php
-                    }
-                    ?>
-                </div>-->
                 <?php            
                 if (!empty($page->banner_image)) {
                     ?>
@@ -66,7 +54,146 @@ $crumbs = UrlHelper::breadcrumbs();
             ?>
         </div>
         <div class="category-pages col-12">
-            <?= $this->partial('common/category_latest_reviews'); ?>            
+<?php
+$page_num = 1;
+if (!empty($_GET['page'])) {
+    $page_num = intval($_GET['page']);
+}
+$category_items = $this->tengu->findCategoryItems([
+    'where' => 'pages.type="blog-post" AND pages.status="active"',
+    'category_id' => $page->id,
+    'pagination' => [
+        'page' => $page_num,
+        'limit' => 30
+    ],
+    'order' => 'pages.created_at DESC'
+]);
+if ($category_items->total_items) {
+    ?>
+    <div class="row">
+        <div class="col-12">
+            <span class="sub-heading-yellow">
+                The latest
+            </span>
+        </div>
+    </div>
+    <div id="latest-reviews" class="row">
+        <?php
+        foreach ($category_items->getItems() as $item) {
+            ?>
+            <div class="col-lg-4 col-md-12">
+                <div class="category-page">
+                    <div class="category-image-thumb">
+                        <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
+                            <img 
+                                src="<?= !empty($item->cover_image) ? $item->cover_image->thumb_url : $this->tengu->theme->getAsset('imgs/placeholder.jpg'); ?>"
+                                title="Click to view the talk, <?= $item->name; ?>"
+                                alt="<?= $item->name; ?>">
+                        </a>
+                    </div>
+                    <div class="category-content">
+                        <div class="category-info">
+                            <ul>
+                                <li>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
+                                        <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                    </svg>
+                                    <span class="post-date"><?= DateHelper::prettyFull($item->created_at, false); ?></span>
+                                </li>
+                                <li>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                    </svg>
+                                    <span>By <?= !empty($item->persona) ? $item->persona->full_name : $item->created->full_name; ?></span>
+                                </li>
+                            </ul>
+                        </div>
+                        <h4>
+                            <a
+                                href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>"
+                                title="Click to view the talk, <?= $item->name; ?>">
+                                <?= $item->name; ?>
+                            </a>
+                        </h4>  
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <?php
+                echo $this->partial(
+                    'common/pagination',
+                    [
+                        'data' => $category_items,
+                        'url' => $page->url
+                    ]
+                );
+            ?>
+            </div>
+    </div>
+    <?php
+} else {
+    ?>
+    <div class="row">
+        <div class="col-12">
+            <span class="sub-heading-yellow">
+                Nothing posted yet
+            </span>
+        </div>
+    </div>
+    <?php
+}
+$category_subs = $this->tengu->findCategoryItems([
+    'where' => 'pages.type="blog-post-category" AND pages.status="active"',
+    'category_id' => $page->id,
+    'order' => 'pages.created_at DESC'
+]);
+if ($category_subs->count()) {
+    ?>
+    <div class="row mt-5">
+        <div class="col-12">
+            <span class="sub-heading-yellow">
+                <?= $page->name; ?> sub talks
+            </span>
+        </div>
+    </div>
+    <div id="sub-categories" class="row">
+        <?php
+        foreach ($category_subs as $item) {
+            ?>
+            <div class="col-lg-4 col-md-12">
+                <div class="category-page">
+                    <div class="category-image-thumb">
+                        <a href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>">
+                            <img 
+                                src="<?= !empty($item->cover_image) ? $item->cover_image->thumb_url : $this->tengu->theme->getAsset('imgs/placeholder.jpg'); ?>"
+                                title="Click to view the sub talk, <?= $item->name; ?>"
+                                alt="<?= $item->name; ?>">
+                        </a>
+                    </div>
+                    <div class="category-content">
+                        <h4>
+                            <a
+                                href="<?= !empty($item->canonical_url) ? $item->canonical_url : $item->url; ?>"
+                                title="Click to view the sub talk, <?= $item->name; ?>">
+                                <?= $item->name; ?>
+                            </a>
+                        </h4>  
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
+    </div>
+    <?php
+}
+?>
         </div>
     </div>
 </div>
