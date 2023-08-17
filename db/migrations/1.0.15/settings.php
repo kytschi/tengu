@@ -19,6 +19,11 @@ class SettingsMigration_115 extends Migration
      */
     public function morph(): void
     {
+        try {
+            self::$connection->query('ALTER TABLE settings DROP PRIMARY KEY');
+        } catch (\Exception $err) {
+        }
+
         $this->morphTable('settings', [
             'columns' => [
                 new Column(
@@ -26,7 +31,7 @@ class SettingsMigration_115 extends Migration
                     [
                         'type' => Column::TYPE_INTEGER,
                         'notNull' => true,
-                        'autoIncrement' => true,
+                        //'autoIncrement' => true,
                         'size' => 11,
                         'first' => true
                     ]
@@ -130,12 +135,12 @@ class SettingsMigration_115 extends Migration
                 ),
             ],
             'indexes' => [
-                new Index('PRIMARY', ['id'], 'PRIMARY'),
+                new Index('PRIMARY', ['id'], 'PRIMARY KEY'),
                 new Index('settings_name_IDX', ['name'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',
-                'AUTO_INCREMENT' => '2',
+                'AUTO_INCREMENT' => '1',
                 'ENGINE' => 'InnoDB',
                 'TABLE_COLLATION' => 'utf8mb4_general_ci',
             ],
