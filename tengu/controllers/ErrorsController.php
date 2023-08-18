@@ -4,12 +4,24 @@
  * Errors controller.
  *
  * @package     Kytschi\Tengu\Controllers\ErrorsController
- * @copyright   2023 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
- * Copyright Kytschi - All Rights Reserved.
- * Unauthorised copying of this file, via any medium is strictly prohibited.
- * Proprietary and confidential.
+ * Copyright 2023 Mike Welsh
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301, USA.
  */
 
 declare(strict_types=1);
@@ -17,9 +29,9 @@ declare(strict_types=1);
 namespace Kytschi\Tengu\Controllers;
 
 use Kytschi\Tengu\Controllers\ControllerBase;
+use Kytschi\Tengu\Exceptions\GenericException;
 use Kytschi\Tengu\Traits\Core\Logs;
 use Kytschi\Tengu\Traits\Core\Tags;
-use Phalcon\Tag;
 
 class ErrorsController extends ControllerBase
 {
@@ -42,7 +54,7 @@ class ErrorsController extends ControllerBase
     {
         $this->setPageTitle('Serious error');
         $this->setDefaults();
-        
+
         $return = $this->getReturn();
 
         $this->view->setVar('message', $return['message']);
@@ -57,7 +69,8 @@ class ErrorsController extends ControllerBase
 
     public function display($message)
     {
-        echo $message;
+        $err = new GenericException($message);
+        echo $err;
         die();
     }
 
@@ -102,14 +115,15 @@ class ErrorsController extends ControllerBase
 
     private function setDefaults()
     {
-        Tag::setDefault('page_updated', date('Y-m-d H:i:s'));
-        Tag::setDefault('meta_description', $this->tengu->settings->meta_description);
-        Tag::setDefault('meta_keywords', $this->tagsToString($this->tengu->settings->tags));
-        Tag::setDefault(
-            'meta_author',
-            !empty($this->tengu->settings->meta_author) ?
-                $this->tengu->settings->meta_author :
-                $this->tengu->settings->name
-        );
+        $page = new \stdClass();
+        $page->name = 'Page not found';
+        $page->page_updated = date('Y-m-d H:i:s');
+        $page->meta_description = $this->tengu->settings->meta_description;
+        $page->meta_keywords = $this->tagsToString($this->tengu->settings->tags);
+        $page->meta_author = !empty($this->tengu->settings->meta_author) ?
+            $this->tengu->settings->meta_author :
+            $this->tengu->settings->name;
+
+        $this->view->setVar('page', $page);
     }
 }

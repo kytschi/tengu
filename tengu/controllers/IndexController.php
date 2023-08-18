@@ -135,10 +135,6 @@ class IndexController extends ControllerBase
         $this->setPageTags($page);
         $page->content = $this->parseShortcodes($page->content);
 
-        if (isset($_GET['search'])) {
-            return $this->frontSearch($page);
-        }
-
         if ($page->spinnable && !empty(($this->di->getConfig())->makabe)) {
             $page = $this->sortSpin($page);
         }
@@ -151,6 +147,10 @@ class IndexController extends ControllerBase
         }
 
         $this->view->setVar('page', $page);
+
+        if (isset($_GET['search'])) {
+            return $this->frontSearch($page);
+        }
 
         try {
             return $this->view->partial(
@@ -203,7 +203,6 @@ class IndexController extends ControllerBase
         return $this->view->partial(
             $page->template->file,
             [
-                'page' => $page,
                 'results' => $paginator->paginate()
             ]
         );

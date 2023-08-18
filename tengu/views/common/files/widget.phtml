@@ -191,7 +191,7 @@ if ($upload) {
 
 			$cover_id = null;
 			if ($data->cover_image) {
-				$cover_id = $data->cover_id->id;
+				$cover_id = $data->cover_image->id;
 			}
 			
 			if ($banner_id && $cover_id && $banner_id == $cover_id) {
