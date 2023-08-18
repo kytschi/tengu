@@ -184,8 +184,27 @@ if ($upload) {
 				</div>
 				<?php
 			}
-			if ($data->banner_image || $data->cover_image) {
-				if ($data->banner_image->id == $data->cover_image->id) {
+			$banner_id = null;
+			if ($data->banner_image) {
+				$banner_id = $data->banner_image->id;
+			}
+
+			$cover_id = null;
+			if ($data->cover_image) {
+				$cover_id = $data->cover_id->id;
+			}
+			
+			if ($banner_id && $cover_id && $banner_id == $cover_id) {
+				echo $this->partial(
+					'common/files/tile',
+					[
+						'delete' => $delete,
+						'selects' => $selects,
+						'image' => $data->banner_image
+					]
+				);
+			} else {
+				if ($banner_id) {
 					echo $this->partial(
 						'common/files/tile',
 						[
@@ -194,15 +213,8 @@ if ($upload) {
 							'image' => $data->banner_image
 						]
 					);
-				} else {
-					echo $this->partial(
-						'common/files/tile',
-						[
-							'delete' => $delete,
-							'selects' => $selects,
-							'image' => $data->banner_image
-						]
-					);
+				}
+				if ($cover_id) {
 					echo $this->partial(
 						'common/files/tile',
 						[
@@ -215,7 +227,7 @@ if ($upload) {
 			}
 			if ($images->total_items) {
 				foreach ($images->getItems() as $image) {
-					if ($data->banner_image->id != $image->id && $data->cover_image->id != $image->id) {
+					if ($banner_id != $image->id && $cover_id != $image->id) {
 						echo $this->partial('common/files/tile');
 					}
 				}

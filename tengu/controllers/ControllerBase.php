@@ -116,10 +116,9 @@ class ControllerBase extends Controller
 
     public function setPageTags($page)
     {
-        Tag::setDefault(
-            'meta_description',
-            !empty($page->meta_description) ? $page->meta_description : $this->tengu->settings->meta_description
-        );
+        if (empty($page->meta_description)) {
+            $page->meta_description = $this->tengu->settings->meta_description;
+        }
 
         if (!empty($page->meta_keywords)) {
             $keywords = $page->meta_keywords;
@@ -130,21 +129,15 @@ class ControllerBase extends Controller
         if (!empty($page->tags->count())) {
             $keywords .= ', ' . $this->tagsToString($page->tags);
         }
+        $page->meta_keywords = $keywords;
 
-        Tag::setDefault('page_updated', $page->updated_at);
-        Tag::setDefault('meta_keywords', $keywords);
-        Tag::setDefault('canonical_url', $page->canonical_url);
+        if (empty($page->meta_author)) {
+            $page->meta_author = !empty($this->tengu->settings->meta_author) ?
+                $this->tengu->settings->meta_author :
+                $this->tengu->settings->name;
+        }
 
-        Tag::setDefault(
-            'meta_author',
-            !empty($page->meta_author) ?
-                $page->meta_author :
-                (
-                    !empty($this->tengu->settings->meta_author) ?
-                        $this->tengu->settings->meta_author :
-                        $this->tengu->settings->name
-                )
-        );
+        $page->page_updated = $page->updated_at;
     }
 
     public function setPageTitle($title)

@@ -31,11 +31,13 @@ use GuzzleHttp\Exception\ClientException;
 use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Exceptions\AuthorisationException;
 use Kytschi\Tengu\Helpers\UrlHelper;
+use Kytschi\Tengu\Traits\Core\Logs;
 use Kytschi\Tengu\Traits\Core\Security;
 use Phalcon\Encryption\Crypt;
 
 trait User
 {
+    use Logs;
     use Security;
 
     public static function getUserIp()
@@ -76,6 +78,10 @@ trait User
         $object->latitude = null;
         $object->longitude = null;
 
+        if ($_ENV['APP_ENV'] == 'local') {
+            return $object;
+        }
+
         if (empty($_SERVER['REMOTE_ADDR'])) {
             return $object;
         }
@@ -87,12 +93,22 @@ trait User
             ]
         );
 
-        $res = $guzzle->request(
-            'GET',
-            '/json/' . $_SERVER['REMOTE_ADDR']
-        );
+        try {
+            $res = $guzzle->request(
+                'GET',
+                '/json/' . $_SERVER['REMOTE_ADDR']
+            );
 
-        $object = json_decode($res->getBody()->getContents());
+            $object = json_decode($res->getBody()->getContents());
+        } catch (ClientException $err) {
+            $this->addLog(
+                'user-geo-location',
+                null,
+                'error',
+                $err->getMessage()
+            );
+            return $object;
+        }
         return $object;
     }
 

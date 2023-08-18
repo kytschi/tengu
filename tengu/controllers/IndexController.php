@@ -48,7 +48,6 @@ use Kytschi\Tengu\Traits\Website\Shortcodes;
 use Kytschi\Tengu\Traits\Website\Stats;
 use Phalcon\Paginator\Adapter\NativeArray;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Tag;
 
 class IndexController extends ControllerBase
 {
@@ -96,7 +95,6 @@ class IndexController extends ControllerBase
             }
         }
 
-        Tag::setDefault('robots', $this->tengu->settings->robots);
         $page = Pages::findFirst(
             [
                 'conditions' => 'deleted_at IS NULL AND 
@@ -113,27 +111,27 @@ class IndexController extends ControllerBase
             if ($page = $this->checkOldUrl($url, true, true)) {
                 $this->redirect($page->url);
             } else {
-                $this->setPageTitle('Page not found');
+                $page = new \stdClass();
+                $page->name = 'Page not found';
+                $page->page_updated = date('Y-m-d H:i:s');
+                $page->meta_description = $this->tengu->settings->meta_description;
+                $page->meta_keywords = $this->tagsToString($this->tengu->settings->tags);
+                $page->meta_author = !empty($this->tengu->settings->meta_author) ?
+                    $this->tengu->settings->meta_author :
+                    $this->tengu->settings->name;
 
-                Tag::setDefault('page_updated', date('Y-m-d H:i:s'));
-                Tag::setDefault('meta_description', $this->tengu->settings->meta_description);
-                Tag::setDefault('meta_keywords', $this->tagsToString($this->tengu->settings->tags));
-                Tag::setDefault(
-                    'meta_author',
-                    !empty($this->tengu->settings->meta_author) ?
-                        $this->tengu->settings->meta_author :
-                        $this->tengu->settings->name
-                );
+                $this->view->setVar('page', $page);
 
                 return $this->notFound('Page not found');
             }
         }
 
+        $page->robots = $this->tengu->settings->robots;
+
         if (empty($page->template)) {
             throw new TemplateException('Template not found', null, 404);
         }
 
-        $this->setPageTitle($page->name);
         $this->setPageTags($page);
         $page->content = $this->parseShortcodes($page->content);
 
@@ -152,12 +150,11 @@ class IndexController extends ControllerBase
             );
         }
 
+        $this->view->setVar('page', $page);
+
         try {
             return $this->view->partial(
-                $page->template->file,
-                [
-                    'page' => $page
-                ]
+                $page->template->file
             );
         } catch (\Exception $err) {
             throw new TemplateException($err->getMessage());

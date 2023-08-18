@@ -179,7 +179,23 @@ try {
     } catch (\Exception $err) {
     }
     echo $err;
+} catch (Phalcon\Mvc\View\Exception $err) {
+    try {
+        $controller = new Kytschi\Tengu\Controllers\Core\FormController();
+        $controller->addLog(
+            'system',
+            '',
+            'error',
+            $err->getMessage(),
+            json_encode($err)
+        );
+    } catch (\Exception $err) {
+    }
+
+    $err = new Kytschi\Tengu\Exceptions\TemplateException($err->getMessage());
+    echo $err;
 } catch (\Exception $err) {
+    var_dump(get_class($err));
     if (TENGU_API) {
         (new Kytschi\Tengu\Controllers\IndexController())->apiError($err);
     }
@@ -220,12 +236,14 @@ try {
     } else {
         if (!empty($_ENV['APP_DEBUG'])) {
             if ($_ENV['APP_DEBUG'] == 'true') {
-                echo $err->getMessage();
                 $data = method_exists($err, 'getData') ? $err->getData() : null;
                 if ($data) {
+                    echo $err;
                     echo '<pre>';
                     var_dump($data);
                     echo '</pre>';
+                } else {
+                    echo $err->getMessage();
                 }
                 echo '<pre>';
                 var_dump($err->getTraceAsString());
@@ -234,7 +252,8 @@ try {
             }
         }
 
-        echo 'A fatal error has occurred';
+        $err = new Kytschi\Tengu\Exceptions\GenericException('A fatal error has occurred');
+        echo $err;
         die();
     }
 } /*finally {
