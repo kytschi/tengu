@@ -19,6 +19,11 @@ class PagesMigration_124 extends Migration
      */
     public function morph(): void
     {
+        try {
+            self::$connection->query('ALTER TABLE pages DROP INDEX pages_meta_keywords_IDX');
+        } catch (\Exception $err) {
+        }
+
         $this->morphTable('pages', [
             'columns' => [
                 new Column(
