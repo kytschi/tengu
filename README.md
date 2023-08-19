@@ -7,11 +7,20 @@ One stop shop system for content management, customer relations, marketing and S
 If you after a more lightweight CMS go with my other project https://github.com/kytschi/dumb-dog
 
 ## Requirements
-* PHP 8+
+* PHP 8.0 - PHP 8.1
 * Mysql/Maria DB or equivalent
-* Phalcon 5 
-* PHP-GD
+* php-phalcon5
+* php-gd
+* php-zip
+* php-curl
+* php-xml
+* php-json
+* php-mbstring
+* php-intl
+* php-mysql
+* php-psr
 * Redis (OPTIONAL but worth it for production server to cache)
+* php-redis (OPTIONAL)
 * geoiplookup (OPTIONAL, only if you want to lookup the country of origin for stats)
 
 ## Setup
@@ -25,6 +34,17 @@ If your on Linux you can do this by running the following command.
 
 ```bash
 ssh-keygen -f secure/tengu
+```
+
+### Create the .env
+Copy the ``.env.example`` to `.env` in the root folder and open it with your favourite editor.
+
+Set the various values to that of your install.
+
+#### Create an app key
+Run something like the command below and copy the key to the `APP_KEY` in the `.env`.
+```
+openssl rand -base64 64
 ```
 
 ### Dump folder

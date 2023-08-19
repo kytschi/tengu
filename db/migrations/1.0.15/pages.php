@@ -400,7 +400,6 @@ class PagesMigration_115 extends Migration
                 new Index('pages_rating_IDX', ['rating'], ''),
                 new Index('pages_campaign_id_IDX', ['campaign_id'], ''),
                 new Index('pages_event_on_IDX', ['event_on'], ''),
-                new Index('pages_event_location_IDX', ['event_location'], ''),
             ],
             'options' => [
                 'TABLE_TYPE' => 'BASE TABLE',
