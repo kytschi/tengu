@@ -368,7 +368,7 @@ class PagesMigration_108 extends Migration
                 new Index('pages_spin_content_id_IDX', ['spin_content_id'], ''),
                 new Index('pages_sort_IDX', ['sort'], ''),
                 new Index('pages_feature_IDX', ['feature'], ''),
-                new Index('pages_meta_keywords_IDX', ['meta_keywords'], ''),
+                
                 new Index('pages_meta_author_IDX', ['meta_author'], ''),
                 new Index('pages_canonical_url_IDX', ['canonical_url'], ''),
                 new Index('pages_type_IDX', ['type'], ''),
