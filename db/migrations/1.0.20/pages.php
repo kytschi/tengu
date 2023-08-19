@@ -438,7 +438,6 @@ class PagesMigration_120 extends Migration
                 new Index('pages_rating_IDX', ['rating'], ''),
                 new Index('pages_campaign_id_IDX', ['campaign_id'], ''),
                 new Index('pages_event_on_IDX', ['event_on'], ''),
-                new Index('pages_event_location_IDX', ['event_location'], ''),
                 new Index('pages_parent_id_IDX', ['parent_id'], ''),
                 new Index('pages_event_postcode_IDX', ['postcode'], ''),
                 new Index('pages_longitude_IDX', ['longitude'], ''),
