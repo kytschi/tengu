@@ -4,7 +4,7 @@
  * Settings model.
  *
  * @package     Kytschi\Phoenix\Models\Settings
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
  * Copyright Kytschi- All Rights Reserved.

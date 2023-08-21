@@ -49,81 +49,6 @@ trait Files
     use Tags;
     use User;
 
-    public function addCarouselImages($resource_id, $user_id)
-    {
-        $this
-            ->modelsManager
-            ->executeQuery(
-                'UPDATE ' .
-                PageFiles::class .
-                ' SET deleted_at=NOW(), deleted_by=:deleted_by: WHERE page_id = :page_id: AND resource="carousel"',
-                [
-                    'deleted_by' => $user_id,
-                    'page_id' => $resource_id
-                ]
-            );
-
-        if (empty($_POST['carousel_image'])) {
-            return;
-        }
-
-        foreach ($_POST['carousel_image'] as $file_id) {
-            $this->db->query(
-                'INSERT INTO
-                    page_files (id, page_id, file_id, resource, created_at, created_by, updated_at, updated_by)
-                    SELECT
-                        :id,
-                        :page_id,
-                        :file_id,
-                        :resource,
-                        :created_at,
-                        :created_by,
-                        :updated_at,
-                        :updated_by
-                    FROM DUAL
-                    WHERE NOT EXISTS
-                    (
-                        SELECT
-                            id,
-                            page_id,
-                            file_id,
-                            resource,
-                            created_at,
-                            created_by,
-                            updated_at,
-                            updated_by
-                        FROM page_files
-                        WHERE
-                            page_id=:page_id_2 AND file_id=:file_id_2
-                    )',
-                [
-                    ':id' => (new Random())->uuid(),
-                    ':page_id' => $resource_id,
-                    ':file_id' => $file_id,
-                    ':page_id_2' => $resource_id,
-                    ':file_id_2' => $file_id,
-                    ':resource' => 'carousel',
-                    ':created_at' => date('Y-m-d H:i:s'),
-                    ':created_by' => $user_id,
-                    ':updated_at' => date('Y-m-d H:i:s'),
-                    ':updated_by' => $user_id
-                ]
-            );
-
-            $this->db->query(
-                'UPDATE page_files 
-                SET 
-                    deleted_at=NULL, deleted_by=NULL 
-                WHERE 
-                    page_id=:page_id AND file_id=:file_id',
-                [
-                    ':page_id' => $resource_id,
-                    ':file_id' => $file_id
-                ]
-            );
-        }
-    }
-
     public function addFile(
         string $resource_id,
         $file,
@@ -210,7 +135,7 @@ trait Files
             $file_model->filename =
                 $file_model->id .
                 '-' .
-                strtolower(str_replace([' ', '/', '\\'], '-', $file_model->name));
+                strtolower(str_replace([' ', '/', '\\', '#'], '-', $file_model->name));
         }
 
         if ($file_model->update() === false) {

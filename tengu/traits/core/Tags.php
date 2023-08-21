@@ -58,67 +58,43 @@ trait Tags
 
         if ($tags = json_decode($_POST['meta_keywords'])) {
             foreach ($tags as $tag) {
-                $this->db->query(
-                    'INSERT INTO
-                        tags (
-                            id,
-                            `resource`,
-                            resource_id,
-                            tag,
-                            created_at,
-                            created_by,
-                            updated_at,
-                            updated_by, 
-                            `type`
-                        )
-                        SELECT
-                            :id,
-                            :resource,
-                            :resource_id,
-                            :tag,
-                            :created_at,
-                            :created_by,
-                            :updated_at,
-                            :updated_by,
-                            :type
-                        FROM DUAL
-                        WHERE NOT EXISTS
-                        (
-                            SELECT
-                                id,
-                                resource,
-                                resource_id,
-                                tag,
-                                created_at,
-                                created_by,
-                                updated_at,
-                                updated_by,
-                                type
-                            FROM tags
-                            WHERE
-                                resource_id=:resource_id AND tag=:tag AND `type`=:type
-                        );
-                    ',
-                    [
-                        ':resource' => $resource,
-                        ':resource_id' => $resource_id,
-                        ':tag' => $tag->value,
-                        ':id' => (new Random())->uuid(),
-                        ':created_at' => date('Y-m-d H:i:s'),
-                        ':created_by' => $user_id,
-                        ':updated_at' => date('Y-m-d H:i:s'),
-                        ':updated_by' => $user_id,
-                        ':type' => 'meta_keywords',
-                    ]);
-                $this->db->query('UPDATE tags 
-                        SET deleted_at=NULL, deleted_by=NULL 
-                        WHERE resource_id=:resource_id AND tag=:tag AND `type`=:type',
-                    [
-                        ':resource_id' => $resource_id,
-                        ':tag' => $tag->value,
-                        ':type' => 'meta_keywords',
+                if (empty($tag) || empty($tag->value)) {
+                    continue;
+                }
+                $model = Model::findFirst([
+                    'conditions' => 'resource_id=:resource_id: AND tag=:tag: AND `type`=:type:',
+                    'bind' => [
+                        'resource_id' => $resource_id,
+                        'tag' => $tag->value,
+                        'type' => 'meta_keywords'
                     ]
-                );
+                ]);
+
+                if (empty($model)) {
+                    $model = new Model([
+                        'resource' => $resource,
+                        'resource_id' => $resource_id,
+                        'tag' => $tag->value,
+                        'type' => 'meta_keywords'
+                    ]);
+
+                    if ($model->save() === false) {
+                        throw new SaveException(
+                            'Failed to add the tag',
+                            $model->getMessages()
+                        );
+                    }
+                } else {
+                    $model->deleted_at = null;
+                    $model->deleted_by = null;
+
+                    if ($model->update() === false) {
+                        throw new SaveException(
+                            'Failed to update the tag',
+                            $model->getMessages()
+                        );
+                    }
+                }
             }
         }
     }
@@ -186,56 +162,43 @@ trait Tags
                     ]
                 );
         }
-        
+
         foreach ($tags as $tag) {
-            $this->db->query(
-                'INSERT INTO
-                    tags (id, `resource`, resource_id, tag, created_at, created_by, updated_at, updated_by)
-                    SELECT
-                        :id,
-                        :resource,
-                        :resource_id,
-                        :tag,
-                        :created_at,
-                        :created_by,
-                        :updated_at,
-                        :updated_by
-                    FROM DUAL
-                    WHERE NOT EXISTS
-                    (
-                        SELECT
-                            id,
-                            `resource`,
-                            resource_id,
-                            tag,
-                            created_at,
-                            created_by,
-                            updated_at,
-                            updated_by
-                        FROM tags
-                        WHERE
-                            resource_id=:resource_id_2 AND tag=:tag_2 AND `type` IS NULL
-                    )',
-                    [
-                        ':resource' => $resource,
-                        ':resource_id' => $resource_id,
-                        ':resource_id_2' => $resource_id,
-                        ':tag' => $tag->value,
-                        ':tag_2' => $tag->value,
-                        ':id' => (new Random())->uuid(),
-                        ':created_at' => date('Y-m-d H:i:s'),
-                        ':created_by' => $user_id,
-                        ':updated_at' => date('Y-m-d H:i:s'),
-                        ':updated_by' => $user_id,
-                    ]);
-            $this->db->query('UPDATE tags 
-                    SET deleted_at=NULL, deleted_by=NULL 
-                    WHERE resource_id=:resource_id AND tag=:tag AND `type` IS NULL',
-                [
-                    ':resource_id' => $resource_id,
-                    ':tag' => $tag->value
+            if (empty($tag) || empty($tag->value)) {
+                continue;
+            }
+            $model = Model::findFirst([
+                'conditions' => 'resource_id=:resource_id: AND tag=:tag: AND type IS NULL',
+                'bind' => [
+                    'resource_id' => $resource_id,
+                    'tag' => $tag->value
                 ]
-            );
+            ]);
+
+            if (empty($model)) {
+                $model = new Model([
+                    'resource' => $resource,
+                    'resource_id' => $resource_id,
+                    'tag' => $tag->value
+                ]);
+
+                if ($model->save() === false) {
+                    throw new SaveException(
+                        'Failed to add the tag',
+                        $model->getMessages()
+                    );
+                }
+            } else {
+                $model->deleted_at = null;
+                $model->deleted_by = null;
+
+                if ($model->update() === false) {
+                    throw new SaveException(
+                        'Failed to update the tag',
+                        $model->getMessages()
+                    );
+                }
+            }
         }
     }
 

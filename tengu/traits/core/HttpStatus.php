@@ -4,7 +4,7 @@
  * Http status traits.
  *
  * @package     Kytschi\Tengu\Traits\Core\HttpStatus
- * @copyright   2022 Kytschi
+ * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
  * Copyright 2022 Kytschi - All Rights Reserved.

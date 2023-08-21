@@ -220,9 +220,7 @@ class Pages extends Model
                 'alias'    => 'tags',
                 'reusable' => true,
                 'params'   => [
-                    'conditions' => 'deleted_at IS NULL AND 
-                        (resource="page" OR resource="portfolio" OR resource="blog-post") AND 
-                        type IS NULL',
+                    'conditions' => 'deleted_at IS NULL AND type IS NULL',
                     'order' => 'tag'
                 ]
             ]

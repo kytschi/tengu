@@ -434,7 +434,6 @@ class PagesController extends ControllerBase
             }
 
             $this->addImage($model->id);
-            $this->addCarouselImages($model->id, self::getUserId());
             $this->addTagsFromRequest($model->id, true);
 
             (new PageCategoriesController())->addCategories($model->id, self::getUserId());
@@ -614,7 +613,6 @@ class PagesController extends ControllerBase
             }
 
             $this->addImage($model->id);
-            $this->addCarouselImages($model->id, self::getUserId());
             $this->addTagsFromRequest($model->id, true);
             $this->addNoteFromRequest($model->id);
             $this->addOldUrl($model->id);
