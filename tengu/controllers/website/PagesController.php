@@ -478,7 +478,7 @@ class PagesController extends ControllerBase
         $model->type = $this->resource;
 
         $model->url = empty($_POST['url']) ?
-            '/' . UrlHelper::clean($this->createSlug(strip_tags($_POST['name']))) :
+            ('/' . UrlHelper::clean($this->createSlug(strip_tags($_POST['name'])))) :
             UrlHelper::clean($_POST['url']);
         $model->canonical_url =
             !empty($_POST['canonical_url']) ?

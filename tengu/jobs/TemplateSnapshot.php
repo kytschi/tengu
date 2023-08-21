@@ -53,8 +53,8 @@ class TemplateSnapshot extends Controller
             $scan_width = 1600;
             $scan_height = 1400;
 
-            $save_width = 640;
-            $save_height = 480;
+            $save_width = 1024;
+            $save_height = 768;
 
             $url = ($this->di->getConfig())->application->appUrl .
                 $model->url .
@@ -73,7 +73,7 @@ class TemplateSnapshot extends Controller
                 'error',
                 'Template snapshot has failed'
             );
-            
+
             throw $err;
         }
     }

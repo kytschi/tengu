@@ -642,11 +642,14 @@ class UsersController extends ControllerBase
         $model->county = !empty($data['county']) ? $data['county'] : null;
         $model->country = !empty($data['country']) ? $data['country'] : null;
         $model->postcode = !empty($data['postcode']) ? $data['postcode'] : null;
-        $model->shareholder = !empty($data['shareholder']) ? floatval($data['shareholder']) : null;
         $model->utr = !empty($data['utr']) ? $data['utr'] : null;
         $model->employee_ref = !empty($data['employee_ref']) ? $data['employee_ref'] : null;
         $model->national_insurance = !empty($data['national_insurance']) ? $data['national_insurance'] : null;
         $model->dob = !empty($data['dob']) ? DateHelper::sql($data['dob'], false) : null;
+
+        if (($this->di->getConfig())->apps->wako) {
+            $model->shareholder = !empty($data['shareholder']) ? floatval($data['shareholder']) : null;
+        }
 
         if ($model->status != 'deleted') {
             $model->deleted_at = null;
@@ -742,6 +745,10 @@ class UsersController extends ControllerBase
                         $code->getMessages()
                     );
                 }
+            }
+
+            if (!empty($_FILES['upload_picture']['tmp_name'])) {
+                $this->addProfileImage($model);
             }
 
             $this->addLog(

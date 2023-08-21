@@ -126,7 +126,7 @@ class UrlHelper
         return str_replace(
             ['!', ',', '’', ''],
             '',
-            str_replace([' '], '-', strtolower(strip_tags($_POST['url'])))
+            str_replace([' '], '-', strtolower(strip_tags($url)))
         );
     }
 

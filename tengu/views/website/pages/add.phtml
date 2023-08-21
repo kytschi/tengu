@@ -398,10 +398,7 @@ echo $this->partial("common/form/messages");
                         role="tabpanel"
                         aria-labelledby="persona-tab">
                         <?= $this->partial(
-                            "makabe/personas/widget",
-                            [
-                                'url' => $url . '/edit/' . $data->id
-                            ]
+                            "makabe/personas/widget"
                         ); ?>
                     </div>
                     <div

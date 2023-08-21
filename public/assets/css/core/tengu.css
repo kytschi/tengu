@@ -827,6 +827,17 @@ iframe {
   border: none;
 }
 
+.profile-pic {
+  border:1px solid var(--border-grey-lighter);
+  overflow: hidden;
+  width: 180px;
+  display: block;
+}
+
+.profile-pic  img {
+  max-width: 100%;
+}
+
 .navbar .profile-image {
 	display: inline-block;
 	height: 30px;

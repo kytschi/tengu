@@ -57,7 +57,7 @@ class ControllerBase extends Controller
         return str_replace(
             [' '],
             '-',
-            str_replace([',', '=', '&', '?', '#', ':', ';', '/', '//', '\\', '\\\\'], '', strtolower($string))
+            str_replace([',', '=', '&', '?', '#', ':', ';', '/', '//', '\\', '\\\\', '’'], '', strtolower($string))
         );
     }
 

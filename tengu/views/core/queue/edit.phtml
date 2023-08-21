@@ -211,11 +211,15 @@ echo $this->partial("common/form/messages");
 							</th>	
 							<td>
 								<?php
-								$start_date = new \DateTime($data->started_at);
-								$end_date = new \DateTime($data->completed_at);
-					
-								$diff = $start_date->diff($end_date);
-								echo $diff->format("%I:%S");
+								if ($data->started_at && $data->completed_at) {
+									$start_date = new \DateTime($data->started_at);
+									$end_date = new \DateTime($data->completed_at);
+						
+									$diff = $start_date->diff($end_date);
+									echo $diff->format("%I:%S");
+								} else {
+									echo 'Unknown';
+								}
 								?>
 							</td>
 						</tr>

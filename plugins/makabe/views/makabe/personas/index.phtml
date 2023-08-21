@@ -19,18 +19,6 @@ $url = ($this->di->getConfig())->urls->mms . '/personas';
 $filter_status = $this->tengu->getFilters('status');
 echo $this->partial("common/form/messages");
 ?>
-<style>
-    .profile-pic {
-        border:1px solid var(--border-grey-lighter);
-        overflow: hidden;
-        width: 180px;
-        float: left;
-    }
-
-    .profile-pic  img {
-        max-width: 100%;
-    }
-</style>
 <div class="row mb-3">
 	<div class="col-3">
         <a href="<?= UrlHelper::backend($url . '?filters[status]=active'); ?>" class="card bg-primary">
@@ -159,7 +147,7 @@ echo $this->partial("common/form/messages");
 										?>
 										<a
 											href="<?= UrlHelper::backend($url . '/edit/' . $row->id); ?>"
-											class="profile-pic mr-3">
+											class="profile-pic mr-3 float-left">
 											<img src="<?= $row->profile_image->url; ?>" alt="<?= $row->full_name; ?>" />
 										</a>
 										<?php
