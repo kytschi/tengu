@@ -56,7 +56,6 @@ use Kytschi\Tengu\Models\Website\Templates;
 class Pages extends Model
 {
     public $template_id;
-    public $parent_id;
     public $name;
     public $url;
     public $summary;
