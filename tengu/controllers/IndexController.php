@@ -250,19 +250,19 @@ class IndexController extends ControllerBase
         echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         echo '<rss version="2.0">' . "\n";
         echo '<channel>' . "\n";
-        echo '<title>' . $this->tengu->settings->name . '</title>' . "\n";
-        echo '<link>' . $url . '</link>' . "\n";
-        echo '<description>' . $this->tengu->settings->meta_description . '</description>' . "\n";
+        echo '<title>' . htmlspecialchars($this->tengu->settings->name, ENT_XML1) . '</title>' . "\n";
+        echo '<link>' . htmlspecialchars($url, ENT_XML1) . '</link>' . "\n";
+        echo '<description>' . htmlspecialchars($this->tengu->settings->meta_description, ENT_XML1) . '</description>' . "\n";
         foreach ($pages as $page) {
             echo '<item>' . "\n";
             echo '<title>' . htmlspecialchars($page->name, ENT_XML1) . '</title>' . "\n";
-            echo '<link>' .  $url . $page->url . '</link>' . "\n";
-            echo '<guid>' .  $url . $page->url . '</guid>' . "\n";
+            echo '<link>' .   htmlspecialchars($url . $page->url, ENT_XML1) . '</link>' . "\n";
+            echo '<guid>' .   htmlspecialchars($url . $page->url, ENT_XML1) . '</guid>' . "\n";
             echo '<pubDate>' . (new \DateTime($page->created_at))->format(\DateTime::ATOM) . '</pubDate>' . "\n";
             if ($page->summary) {
-                echo '<description>' .  $page->summary . '</description>' . "\n";
+                echo '<description>' .  htmlspecialchars($page->summary, ENT_XML1) . '</description>' . "\n";
             } elseif ($page->meta_description) {
-                echo '<description>' .  $page->meta_description . '</description>' . "\n";
+                echo '<description>' .  htmlspecialchars($page->meta_description, ENT_XML1) . '</description>' . "\n";
             }
             echo '</item>' . "\n";
         }
