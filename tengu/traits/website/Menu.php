@@ -59,7 +59,8 @@ trait Menu
 
         return Model::findFirst([
             'conditions' => $query,
-            'bind' => $binds
+            'bind' => $binds,
+            'order' => 'sort ASC'
         ]);
     }
 }

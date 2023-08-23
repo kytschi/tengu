@@ -408,7 +408,6 @@ main {
 
 .page-body h6 {
     color: var(--font-yellow);
-    font-family: 'Capture', sans-serif !important;
     font-size: 1.5rem;
 }
 

@@ -1,15 +1,7 @@
 <?php
-use Kytschi\Tengu\Controllers\Core\EmailController;
 use Kytschi\Tengu\Controllers\Core\FormController;
-use Kytschi\Tengu\Controllers\Website\MenuController;
 use Kytschi\Tengu\Helpers\DateHelper;
 use Kytschi\Tengu\Helpers\UrlHelper;
-use Phalcon\Tag;
-
-$title = Tag::getTitle();
-$search = !empty($_GET['search']) ? $_GET['search'] : '';
-
-$footer_menu = MenuController::get('footer');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,13 +9,13 @@ $footer_menu = MenuController::get('footer');
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="referrer" content="origin">
-		<meta name="robots" content="<?= $this->tengu->settings->robots; ?>">
-        <meta name="description" content="<?= Tag::getValue('meta_description'); ?>">
-        <meta name="keywords" content="<?= Tag::getValue('meta_keywords'); ?>">
-        <meta name="author" content="<?= Tag::getValue('meta_author'); ?>">
-		<meta name="revised" content="<?= DateHelper::meta(Tag::getValue('page_updated')); ?>">
+		<meta name="robots" content="<?= $page->robots; ?>">
+        <meta name="description" content="<?= $page->meta_description; ?>">
+        <meta name="keywords" content="<?= $page->meta_keywords; ?>">
+        <meta name="author" content="<?= $page->meta_author; ?>">
+		<meta name="revised" content="<?= DateHelper::meta($page->page_updated); ?>">
 
-        <title><?= (!empty($title) ? $title . ' - ' : '')  . $this->tengu->settings->name;?></title>
+        <title><?= (!empty($page->name) ? $page->name . ' - ' : '')  . $this->tengu->settings->name;?></title>
 
         <link rel="stylesheet" href="<?= $this->tengu->theme->getCSS('bootstrap.min.css'); ?>">
         <link rel="stylesheet" href="<?= $this->tengu->theme->getCSS('theme.css'); ?>">
@@ -70,20 +62,21 @@ $footer_menu = MenuController::get('footer');
                 <div class="col-lg-4 col-md-6">
                     <ul>
                         <?php
-                        $footer_menu = $this->tengu->findMenu(['slug' => 'footer menu']);
-                        foreach ($footer_menu->category_items as $item) {
-                            $link = $item->link;
-                            ?>
-                            <li class="nav-item">
-                                <a
-                                    href="<?= $link; ?>"
-                                    class="nav-link<?= (UrlHelper::matches($link)) ? ' active' : '';?>"
-                                    <?= !empty($item->new_window) ? 'target="_blank"' : ''; ?>
-                                    title="Click to view the page, <?= $item->name; ?>">
-                                    <?= $item->name; ?>
-                                </a>
-                            </li>
-                            <?php
+                        if ($footer_menu = $this->tengu->findMenu(['slug' => 'footer menu'])) {
+                            foreach ($footer_menu->category_items as $item) {
+                                $link = $item->link;
+                                ?>
+                                <li class="nav-item">
+                                    <a
+                                        href="<?= $link; ?>"
+                                        class="nav-link<?= (UrlHelper::matches($link)) ? ' active' : '';?>"
+                                        <?= !empty($item->new_window) ? 'target="_blank"' : ''; ?>
+                                        title="Click to view the page, <?= $item->name; ?>">
+                                        <?= $item->name; ?>
+                                    </a>
+                                </li>
+                                <?php
+                            }
                         }
                         ?>
                     </ul>
