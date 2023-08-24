@@ -35,6 +35,7 @@ use Kytschi\Tengu\Controllers\Website\PageCategoriesController;
 use Kytschi\Tengu\Exceptions\RequestException;
 use Kytschi\Tengu\Exceptions\SaveException;
 use Kytschi\Tengu\Exceptions\ValidationException;
+use Kytschi\Tengu\Helpers\DateHelper;
 use Kytschi\Tengu\Helpers\StringHelper;
 use Kytschi\Tengu\Helpers\UrlHelper;
 use Kytschi\Tengu\Models\Core\Files as ModelFile;
@@ -496,6 +497,13 @@ class PagesController extends ControllerBase
         $model->feature = !empty($_POST['feature']) ? true : false;
         $model->sitemap = !empty($_POST['sitemap']) ? true : false;
         $model->rating = !empty($_POST['rating']) ? intval($_POST['rating']) : 0;
+
+        if ($model->created_at) {
+            $model->created_at = DateHelper::sql($_POST['created_at'], false) .
+                ' ' . DateHelper::timeOnly($model->created_at, true);
+        } else {
+            $model->created_at = DateHelper::sql($_POST['created_at'], false) . date(' H:i:s');
+        }
 
         $keywords = '';
         if ($tags = json_decode($_POST['meta_keywords'])) {

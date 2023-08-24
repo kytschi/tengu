@@ -20,6 +20,11 @@ $(function () {
         $(".datepicker").datepicker({
             dateFormat: "dd/mm/yy"
         });
+        $(".datepicker-nofuture").datepicker({
+            dateFormat: "dd/mm/yy",
+            endDate: "currentDate",
+            maxDate: new Date()
+        });
 
         $(".datetimepicker").datetimepicker({
             dateFormat: "dd/mm/yy"

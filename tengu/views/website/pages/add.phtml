@@ -171,6 +171,25 @@ echo $this->partial("common/form/messages");
                                     rows="4"
                                     aria-describedby="summary"><?= FormController::getFormData('summary'); ?></textarea>
                             </div>
+                            <div class="form-group mb-4">
+                                <label for="created_at">
+									Publication date
+								</label>
+                                <input
+                                    id="created_at"
+                                    name="created_at"
+                                    type="text"
+                                    class="form-control datepicker-nofuture mt-2"
+                                    value="<?= DateHelper::pretty(
+                                        FormController::getFormData('created_at'),
+                                        false,
+                                        false,
+                                        date('d/m/Y'),
+                                        false
+                                    ); ?>"
+                                    placeholder="Enter the publication date"/>
+                                <small>Note, this is not a go live date</small>
+                            </div>
                         </div>
                     </div>
                     <ul class="nav p-0 m-0">
