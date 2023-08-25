@@ -394,6 +394,10 @@ class DateHelper
     public static function sql($datetime, $time = true)
     {
         try {
+            if (empty($datetime)) {
+                return null;
+            }
+
             if (strtolower($datetime) == 'unknown') {
                 return null;
             }
