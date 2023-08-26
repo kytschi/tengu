@@ -96,6 +96,7 @@ trait User
             $object->latitude = $record->location->latitude;
             $object->longitude = $record->location->longitude;
             $object->country_name = $record->country->name;
+            return $object;
         } catch (\Exception $err) {
             (new self())->addLog(
                 'user-geo-location',
@@ -105,7 +106,6 @@ trait User
             );
             return $object;
         }
-        return $object;
     }
 
     public static function getUser($var = '')

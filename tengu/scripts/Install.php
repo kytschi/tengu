@@ -113,3 +113,14 @@ foreach ($gateways as $name => $description) {
         die();
     }
 }
+
+if (!file_exists(__DIR__ . '/../../plugins/geolite2/GeoLite2-City.mmdb')) {
+    $unzip = new \ZipArchive();
+    $file = $unzip->open(__DIR__ . '/../../plugins/geolite2/GeoLite2-City.zip');
+    if ($file === true) {
+        $unzip->extractTo(__DIR__ . '/../../plugins/geolite2/');
+        $unzip->close();
+    } else {
+        echo 'Failed to extract the GeoLite2 DB from the zip';
+    }
+}

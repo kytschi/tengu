@@ -54,3 +54,4 @@ public/website
 tengu.pub
 .tmp/mpdf
 secure/*
+GeoLite2-City.mmdb
