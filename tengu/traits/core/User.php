@@ -85,6 +85,7 @@ trait User
         if (empty($_SERVER['REMOTE_ADDR'])) {
             return $object;
         }
+        return $object;
 
         $guzzle = new Guzzle(
             [
