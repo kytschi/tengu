@@ -88,7 +88,7 @@ trait User
 
         $guzzle = new Guzzle(
             [
-                'base_uri' => 'https://freegeoip.app',
+                'base_uri' => 'https://freegeoip.io',
                 'verify' => false
             ]
         );
