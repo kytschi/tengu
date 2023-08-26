@@ -101,7 +101,7 @@ trait User
 
             $object = json_decode($res->getBody()->getContents());
         } catch (ClientException $err) {
-            self::addLog(
+            (new self())->addLog(
                 'user-geo-location',
                 null,
                 'error',
