@@ -139,12 +139,12 @@ class IndexController extends ControllerBase
             $page = $this->sortSpin($page);
         }
 
-        if ($this->add_stat && $_ENV['APP_ENV'] != 'local') {
+        /*if ($this->add_stat && $_ENV['APP_ENV'] != 'local') {*/
             $this->addStat(
                 $page->id,
                 'page'
             );
-        }
+        //}
 
         $this->view->setVar('page', $page);
 

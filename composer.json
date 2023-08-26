@@ -20,7 +20,8 @@
         "chrome-php/chrome": "^1.6",
         "tgalopin/html-sanitizer": "^1.5",
         "mpdf/mpdf": "^8.1",
-        "sabre/dav": "~3.2.0"
+        "sabre/dav": "~3.2.0",
+        "geoip2/geoip2": "~2.0"
     },
     "config": {
         "platform": {

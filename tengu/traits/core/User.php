@@ -26,14 +26,13 @@
 
 namespace Kytschi\Tengu\Traits\Core;
 
-use GuzzleHttp\Client as Guzzle;
-use GuzzleHttp\Exception\ClientException;
 use Kytschi\Tengu\Controllers\ControllerBase;
 use Kytschi\Tengu\Exceptions\AuthorisationException;
 use Kytschi\Tengu\Helpers\UrlHelper;
 use Kytschi\Tengu\Traits\Core\Logs;
 use Kytschi\Tengu\Traits\Core\Security;
 use Phalcon\Encryption\Crypt;
+use GeoIp2\Database\Reader;
 
 trait User
 {
@@ -85,23 +84,19 @@ trait User
         if (empty($_SERVER['REMOTE_ADDR'])) {
             return $object;
         }
-        return $object;
-
-        $guzzle = new Guzzle(
-            [
-                'base_uri' => 'https://freegeoip.io',
-                'verify' => false
-            ]
-        );
-
         try {
-            $res = $guzzle->request(
-                'GET',
-                '/json/' . $_SERVER['REMOTE_ADDR']
-            );
+            $controller = new ControllerBase();
+            $db = ($controller->di->getConfig())->application->pluginsDir . 'geolite2/GeoLite2-City.mmdb';
+            if (!file_exists($db)) {
+                return $object;
+            }
 
-            $object = json_decode($res->getBody()->getContents());
-        } catch (ClientException $err) {
+            $reader = new Reader($db);
+            $record = $reader->city($_SERVER['REMOTE_ADDR']);
+            $object->latitude = $record->location->latitude;
+            $object->longitude = $record->location->longitude;
+            $object->country_name = $record->country->name;
+        } catch (\Exception $err) {
             (new self())->addLog(
                 'user-geo-location',
                 null,
