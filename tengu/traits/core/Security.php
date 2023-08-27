@@ -45,7 +45,6 @@ trait Security
         }
 
         $sanitizer = Sanitizer::create($ext);
-
         $string = $sanitizer->sanitize($string);
 
         return $string;

@@ -117,6 +117,6 @@ trait Pagination
 
         $this->perPage = !empty($_GET['limit']) ? intval($_GET['limit']) : 30;
         $this->page = !empty($_GET['page']) ? intval($_GET['page']) : 1;
-        $this->search = !empty($_GET['search']) ? $_GET['search'] : '';
+        $this->search = !empty($_GET['search']) ? urldecode($_GET['search']) : '';
     }
 }
