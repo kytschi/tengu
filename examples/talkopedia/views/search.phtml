@@ -28,9 +28,11 @@ $latest_posts = (new BlogPostsController())->get(3, $page->id, true);
                         value="<?= !empty($_GET['search']) ? BlogPostsController::cleanString($_GET['search']) : ''; ?>">
                 </div>
                 <div class="col-12">
-                    <div id="sitemap">
                     <?php
                     if ($count) {
+                        ?>
+                        <div id="sitemap">
+                        <?php
                         foreach ($results->getItems() as $item) {
                             $category = null;
                             if (!empty($item->categories)) {
@@ -87,15 +89,19 @@ $latest_posts = (new BlogPostsController())->get(3, $page->id, true);
                             </div>
                             <?php
                         }
+                        ?>
+                        </div>
+                        <?php
                     } else {
                         if (isset($_GET['search'])) {
                             ?>
-                            Sorry but nothing was found for that search query
+                            <div class="slogan p-0">
+                                <p>Sorry but nothing was found for that search query</p>
+                            </div>
                             <?php
                         }
                     }
                     ?>
-                    </div>
                 </div>
                 <div class="col-12">
                 <?php
