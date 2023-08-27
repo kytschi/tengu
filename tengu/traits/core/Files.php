@@ -246,16 +246,10 @@ trait Files
         }
 
         $path = pathinfo(basename($_FILES['image']['name']));
-        $label = $path['filename'];
-        if (!empty($_POST['image_label'])) {
-            $label = $_POST['image_label'];
-        }
-
         $file = $this->addFile(
             $resource_id,
             $_FILES['image'],
-            'image',
-            $label
+            'image'
         );
 
         $this->createThumb($file, $_FILES['image']);
