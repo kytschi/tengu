@@ -162,5 +162,12 @@ $router->add(
         'action'     => 'sitemap'
     ]
 );
+$router->add(
+    '/sitemaps.xml',
+    [
+        'controller' => 'Index',
+        'action'     => 'sitemap'
+    ]
+);
 
 $router->handle($_SERVER['REQUEST_URI']);
