@@ -161,7 +161,9 @@ trait Stats
         'SeznamBot' => 'http://napoveda.seznam.cz',
         'anthropic-ai' => 'anthropic-ai',
         'Barkrowler' => 'https://babbar.tech/crawler',
-        'BLEXBot' => 'http://webmeup-crawler.com'
+        'BLEXBot' => 'http://webmeup-crawler.com',
+        'DataForSeoBot' => 'https://dataforseo.com/dataforseo-bot',
+        'Pinterestbot' => 'http://www.pinterest.com/bot.html'
     ];
 
     public function addSearchStat($search_query, $type = 'internal')
