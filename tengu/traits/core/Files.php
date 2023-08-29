@@ -155,10 +155,10 @@ trait Files
                 try {
                     switch ($mime_type) {
                         case 'image/jpeg':
-                            shell_exec('jpegoptim -m 60 ' . $dir . $file_model->filename);
+                            @shell_exec('jpegoptim -m 60 ' . $dir . $file_model->filename);
                             break;
                         case 'image/png':
-                            shell_exec('optipng ' . $dir . $file_model->filename);
+                            @shell_exec('optipng ' . $dir . $file_model->filename);
                             break;
                     }
                 } catch (\Exception $err) {
@@ -326,11 +326,31 @@ trait Files
         $desired_width = 400;
 
         switch ($file['type']) {
+            case 'image/avif':
+                $upload = imagecreatefromavif($file['tmp_name']);
+                break;
+            case 'image/bmp':
+                $upload = imagecreatefrombmp($file['tmp_name']);
+                break;
+            case 'image/gif':
+                $upload = imagecreatefromgif($file['tmp_name']);
+                break;
+            case 'image/jpe':
+            case 'image/jpg':
             case 'image/jpeg':
                 $upload = imagecreatefromjpeg($file['tmp_name']);
                 break;
             case 'image/png':
                 $upload = imagecreatefrompng($file['tmp_name']);
+                break;
+            case 'image/vnd.wap.wbmp':
+                $upload = imagecreatefromwbmp($file['tmp_name']);
+                break;
+            case 'image/webp':
+                $upload = imagecreatefromwebp($file['tmp_name']);
+                break;
+            default:
+                return;
                 break;
         }
 
@@ -342,13 +362,30 @@ trait Files
         imagecopyresampled($save, $upload, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
         try {
             switch ($file['type']) {
+                case 'image/avif':
+                    @imageavif($save, $dir . $filename);
+                    break;
+                case 'image/bmp':
+                    @imagebmp($save, $dir . $filename);
+                    break;
+                case 'image/gif':
+                    @imagegif($save, $dir . $filename);
+                    break;
+                case 'image/jpe':
+                case 'image/jpg':
                 case 'image/jpeg':
                     @imagejpeg($save, $dir . $filename, 60);
-                    shell_exec('jpegoptim -m 60 ' . $dir . $filename);
+                    @shell_exec('jpegoptim -m 60 ' . $dir . $filename);
                     break;
                 case 'image/png':
                     @imagepng($save, $dir . $filename, 6);
-                    shell_exec('optipng ' . $dir . $filename);
+                    @shell_exec('optipng ' . $dir . $filename);
+                    break;
+                case 'image/vnd.wap.wbmp':
+                    @imagewbmp($save, $dir . $filename);
+                    break;
+                case 'image/webp':
+                    @imagewebp($save, $dir . $filename);
                     break;
             }
         } catch (\Exception $err) {
@@ -378,7 +415,18 @@ trait Files
     public function getImages($page = 1, $limit = 30)
     {
         $query = 'deleted_at IS NULL AND
-        mime_type IN ("image/png", "image/jpeg", "image/jpg") AND
+        mime_type IN 
+        (
+            "image/png",
+            "image/jpe",
+            "image/jpeg",
+            "image/jpg",
+            "image/avif",
+            "image/gif",
+            "image/bmp",
+            "image/vnd.wap.wbmp",
+            "image/webp"
+        ) AND
         resource NOT IN ("profile-image")';
 
         $builder = $this
