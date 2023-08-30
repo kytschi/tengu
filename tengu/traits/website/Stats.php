@@ -163,7 +163,10 @@ trait Stats
         'Barkrowler' => 'https://babbar.tech/crawler',
         'BLEXBot' => 'http://webmeup-crawler.com',
         'DataForSeoBot' => 'https://dataforseo.com/dataforseo-bot',
-        'Pinterestbot' => 'http://www.pinterest.com/bot.html'
+        'Pinterestbot' => 'http://www.pinterest.com/bot.html',
+        'SEOkicks' => 'https://www.seokicks.de/robot.html',
+        'DotBot' => 'https://opensiteexplorer.org/dotbot',
+        'VelenPublicWebCrawler' => 'https://velen.io'
     ];
 
     public function addSearchStat($search_query, $type = 'internal')
