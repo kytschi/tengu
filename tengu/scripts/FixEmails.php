@@ -24,7 +24,7 @@ foreach ($users as $user) {
     if (strpos($user->email, '@') !== false) {
         echo StringHelper::encrypt($user->email);
         if ($user->update() === false) {
-            'Failed to update the user, ' . $user->getMessages();
+            echo 'Failed to update the user, ' . $user->getMessages();
         }
     }
 }

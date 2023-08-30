@@ -297,6 +297,11 @@ class DateHelper
         }
     }
 
+    public static function iso($datetime)
+    {
+        return (new \DateTime($datetime))->format(\DateTime::ATOM);
+    }
+
     public static function meta($datetime)
     {
         try {
