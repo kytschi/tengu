@@ -98,11 +98,18 @@ class IndexController extends ControllerBase
         $page = Pages::findFirst(
             [
                 'conditions' => 'deleted_at IS NULL AND 
-                    (url = :url: OR canonical_url = :canonical_url:) AND 
+                    (
+                        url = :url: OR
+                        canonical_url = :canonical_url: OR
+                        url = :trim_url: OR
+                        canonical_url = :trim_canonical_url:
+                    ) AND 
                     status = "active"',
                 'bind' => [
                     'url' => $url,
-                    'canonical_url' => $url
+                    'trim_url' => rtrim($url, '/'),
+                    'canonical_url' => $url,
+                    'trim_canonical_url' => rtrim($url, '/'),
                 ]
             ]
         );
