@@ -121,54 +121,49 @@ $router->add(
  * Categories
  */
 $router->add(
-    UrlHelper::backend($url . '/{type}/categories'),
+    UrlHelper::backend($url . '/products/categories'),
     [
         'namespace'  => 'Kytschi\Phoenix\Controllers',
         'controller' => 'ProductCategories',
-        'action'     => 'index',
-        'type' => 1
+        'action'     => 'index'
     ]
 );
 
 $router->add(
-    UrlHelper::backend($url . '/{type}/categories/add'),
+    UrlHelper::backend($url . '/products/categories/add'),
     [
         'namespace'  => 'Kytschi\Phoenix\Controllers',
         'controller' => 'ProductCategories',
-        'action'     => 'add',
-        'type' => 1
+        'action'     => 'add'
     ]
 );
 
 $router->add(
-    UrlHelper::backend($url . '/{type}/categories/edit/{id}'),
+    UrlHelper::backend($url . '/products/categories/edit/{id}'),
     [
         'namespace'  => 'Kytschi\Phoenix\Controllers',
         'controller' => 'ProductCategories',
         'action'     => 'edit',
-        'type' => 1,
-        'id' => 2
+        'id' => 1
     ]
 );
 
 $router->add(
-    UrlHelper::backend($url . '/{type}/categories/save'),
+    UrlHelper::backend($url . '/products/categories/save'),
     [
         'namespace'  => 'Kytschi\Phoenix\Controllers',
         'controller' => 'ProductCategories',
-        'action'     => 'save',
-        'type' => 1
+        'action'     => 'save'
     ]
 );
 
 $router->add(
-    UrlHelper::backend($url . '/{type}/categories/update/{id}'),
+    UrlHelper::backend($url . '/products/categories/update/{id}'),
     [
         'namespace'  => 'Kytschi\Phoenix\Controllers',
         'controller' => 'ProductCategories',
         'action'     => 'update',
-        'type' => 1,
-        'id' => 2
+        'id' => 1
     ]
 );
 
