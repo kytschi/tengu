@@ -125,7 +125,6 @@ if ($_ENV['APP_ENV'] != 'local' && $_ENV['REDIS'] == 'true' && !TENGU_BACKEND) {
         $serializerFactory = new SerializerFactory();
         $adapterFactory    = new CacheAdapter($serializerFactory);
         $options = [
-            'defaultSerializer' => 'Json',
             'host'  => $config->redis->host,
             'port'  => $config->redis->port,
             'index'    => 1,
@@ -148,7 +147,6 @@ $di->setShared('session', function () {
     $factory = new AdapterFactory($serializerFactory);
     if ($_ENV['APP_ENV'] != 'local' && $_ENV['REDIS'] == 'true' && !TENGU_BACKEND) {
         $options = [
-            'defaultSerializer' => 'Json',
             'host'  => $config->redis->host,
             'port'  => $config->redis->port,
             'index' => '1',
