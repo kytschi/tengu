@@ -118,13 +118,14 @@ $di->setShared('db', function () {
 /*
  * If the configuration specify the use of metadata adapter use it or use memory otherwise
  */
-if ($_ENV['APP_ENV'] != 'local' && $_ENV['REDIS'] == 'true') {
+if ($_ENV['APP_ENV'] != 'local' && $_ENV['REDIS'] == 'true' && !TENGU_BACKEND) {
     $di->setShared('modelsMetadata', function () {
         $config = $this->getConfig();
 
         $serializerFactory = new SerializerFactory();
         $adapterFactory    = new CacheAdapter($serializerFactory);
         $options = [
+            'defaultSerializer' => 'Json',
             'host'  => $config->redis->host,
             'port'  => $config->redis->port,
             'index'    => 1,
@@ -145,8 +146,9 @@ $di->setShared('session', function () {
     $session = new SessionManager();
     $serializerFactory = new SerializerFactory();
     $factory = new AdapterFactory($serializerFactory);
-    if ($_ENV['APP_ENV'] != 'local' && $_ENV['REDIS'] == 'true') {
+    if ($_ENV['APP_ENV'] != 'local' && $_ENV['REDIS'] == 'true' && !TENGU_BACKEND) {
         $options = [
+            'defaultSerializer' => 'Json',
             'host'  => $config->redis->host,
             'port'  => $config->redis->port,
             'index' => '1',
