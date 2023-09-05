@@ -166,7 +166,9 @@ trait Stats
         'Pinterestbot' => 'http://www.pinterest.com/bot.html',
         'SEOkicks' => 'https://www.seokicks.de/robot.html',
         'DotBot' => 'https://opensiteexplorer.org/dotbot',
-        'VelenPublicWebCrawler' => 'https://velen.io'
+        'VelenPublicWebCrawler' => 'https://velen.io',
+        'Bytespider' => 'spider-feedback@bytedance.com',
+        'MegaIndex' => 'http://megaindex.com/crawler'
     ];
 
     public function addSearchStat($search_query, $type = 'internal')
