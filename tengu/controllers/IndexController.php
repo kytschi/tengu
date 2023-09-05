@@ -76,7 +76,7 @@ class IndexController extends ControllerBase
 
         $path = parse_url($_SERVER['REQUEST_URI']);
         if (!empty($path['path'])) {
-            $url = rtrim($path['path'], '/');
+            $url = $path['path'];
         } else {
             $url = '/';
         }
