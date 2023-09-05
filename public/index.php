@@ -195,7 +195,6 @@ try {
     $err = new Kytschi\Tengu\Exceptions\TemplateException($err->getMessage());
     echo $err;
 } catch (\Exception $err) {
-    var_dump(get_class($err));
     if (TENGU_API) {
         (new Kytschi\Tengu\Controllers\IndexController())->apiError($err);
     }
