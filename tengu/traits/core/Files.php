@@ -414,6 +414,17 @@ trait Files
 
     public function getImages($page = 1, $limit = 30)
     {
+        $page = intval($page);
+        if (empty($page)) {
+            $page = 1;
+        }
+
+        $limit = intval($limit);
+        if (empty($limit)) {
+            $limit = 30;
+        } elseif ($limit > 250) {
+            $limit = 250;
+        }
         $query = 'deleted_at IS NULL AND
         mime_type IN 
         (
@@ -428,7 +439,7 @@ trait Files
             "image/webp"
         ) AND
         resource NOT IN ("profile-image")';
-
+        
         $builder = $this
             ->modelsManager
             ->createBuilder()
@@ -443,7 +454,7 @@ trait Files
                 "page" => $page,
             ]
         );
-
+        
         return $paginator->paginate();
     }
 

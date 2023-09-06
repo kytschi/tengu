@@ -37,6 +37,7 @@ use Kytschi\Tengu\Models\Core\Files as Model;
 use Kytschi\Tengu\Traits\Core\Files;
 use Kytschi\Tengu\Traits\Core\Form;
 use Kytschi\Tengu\Traits\Core\Logs;
+use Kytschi\Tengu\Traits\Core\Tags;
 
 class FilesController extends ControllerBase
 {
@@ -44,6 +45,7 @@ class FilesController extends ControllerBase
     use Files;
     use Form;
     use Logs;
+    use Tags;
 
     public $access = [];
     public $global_url = '/files';
@@ -56,7 +58,25 @@ class FilesController extends ControllerBase
     public function apiImagesAction(string $page, string $limit)
     {
         $this->apiSecure();
-        $this->apiResponse('images', $this->getImages($page, $limit));
+
+        $results = $this->getImages($page, $limit);
+        $return = new \stdClass();
+        $return->items = [];
+
+        foreach ($results->getItems() as $key => $item) {            
+            $return->items[$key] = $item->transform();
+            $return->items[$key]->tags = $item->tags;
+            $return->items[$key]->tags_string = $this->tagsToString($item->tags);
+        }
+
+        $return->total_items = $results->total_items;
+        $return->limit = $results->limit;
+        $return->first = $results->first;
+        $return->previous = $results->previous;
+        $return->next = $results->next;
+        $return->last = $results->last;
+
+        $this->apiResponse('images', $return);
     }
 
     public function deleteAction()

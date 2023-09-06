@@ -41,6 +41,24 @@ class Files extends Model
     public $filename;
     public $status;
     public $compress = false;
+    public $url = '';
+    public $output_url = '';
+    public $thumb_url = '';
+    public $download_url = '';
+    public $location = '';
+
+    protected $transform_map = [
+        'id',
+        'mime_type',
+        'name',
+        'label',
+        'filename',
+        'url',
+        'output_url',
+        'thumb_url',
+        'download_url',
+        'tags'
+    ];
 
     public function initialize()
     {
@@ -99,28 +117,17 @@ class Files extends Model
         );
     }
 
-    public function getDownloadUrl()
+    public function afterFetch()
     {
-        return ($this->getConfig())->application->downloadFileUri . '/' . urlencode(self::encrypt($this->id));
-    }
-
-    public function getLocation()
-    {
-        return ($this->getConfig())->application->dumpDir . $this->filename;
-    }
-
-    public function getUrl()
-    {
-        return ($this->getConfig())->application->dumpUri . $this->filename;
-    }
-
-    public function getOutputUrl()
-    {
-        return ($this->getConfig())->application->outputFileUri . '/' . urlencode(self::encrypt($this->id));
-    }
-
-    public function getThumbUrl()
-    {
-        return ($this->getConfig())->application->dumpUri . 'thumb-' . $this->filename;
+        parent::afterFetch();
+        $this->url = ($this->getConfig())->application->dumpUri . $this->filename;
+        $this->output_url  = ($this->getConfig())->application->outputFileUri .
+            '/' .
+            urlencode(self::encrypt($this->id));
+        $this->thumb_url = ($this->getConfig())->application->dumpUri . 'thumb-' . $this->filename;
+        $this->location = ($this->getConfig())->application->dumpDir . $this->filename;
+        $this->download_url = ($this->getConfig())->application->downloadFileUri .
+            '/' .
+            urlencode(self::encrypt($this->id));
     }
 }

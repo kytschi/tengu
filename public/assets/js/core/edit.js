@@ -82,6 +82,8 @@ function formSave(event) {
     event.preventDefault();
     form_submitable = true;
     $('#processing').on('shown.bs.modal', function () {
-        $("#" + form).submit();
+        if (form_submitable) {
+            $("#" + form).submit();
+        }
     });
 }

@@ -50,6 +50,7 @@ class Model extends PhalconModel
     protected $system_uuid = '00000000-0000-0000-0000-000000000000';
 
     protected $encrypted = [];
+    protected $transform_map = [];
 
     public function afterFetch()
     {
@@ -170,5 +171,22 @@ class Model extends PhalconModel
         $this->deleted_at = date('Y-m-d H:i:s');
         $this->deleted_by = self::getUserId();
         $this->save();
+    }
+
+    public function transform()
+    {
+        $new = new \stdClass();
+        foreach ($this->transform_map as $from => $to) {
+            if (is_numeric($from)) {
+                if (property_exists($this, $to)) {
+                    $new->{$to} = $this->$to;
+                }
+            } else {
+                if (property_exists($this, $from)) {
+                    $new->{$to} = $this->$from;
+                }
+            }
+        }
+        return $new;
     }
 }

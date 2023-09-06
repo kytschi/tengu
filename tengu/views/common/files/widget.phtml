@@ -39,29 +39,10 @@ if (!isset($delete)) {
 	$delete = true;
 }
 
-$limits = [30,100,250];
-$limit = !empty($images->limit) ? intval($images->limit) : 30;
-if (!empty($_GET['limit']) && in_array(intval($_GET['limit']), $limits)) {
-    $limit = intval($_GET['limit']);
-}
-
-$start = intval($images->current / 5) * 5;
-if ($start <= 0) {
-    $start = 1;
-}
-
-$result_start = (($start - 1) * $limit) + 1;
-
-$end = $start + 4;
-$result_end = (($end - 1) * $limit) + 1;
-
-if ($end > $images->last) {
-    $end = $images->last;
-    $result_end = $images->total_items;
-}
-
-if ($result_end == 0) {
-	$result_start = 0;
+$start = 1;
+$end = intval($images->total_items / 30);
+if ($images->total_items % 30) {
+	$end++;
 }
 
 if ($upload) {
@@ -111,7 +92,11 @@ if ($upload) {
 ?>
 <div class="row">
 	<div class="col-12 mt-4 mb-4">
-		<div id="tiles">
+		<div class="template">';
+    		<span id="template-banner-id"><?= $data->banner_image_id; ?></span>
+    		<span id="template-cover-id"><?= $data->cover_image_id; ?></span>
+		</div>
+		<div id="media-widget" class="tiles">
 			<?php
 			if ($selects) {
 				?>
@@ -183,28 +168,29 @@ if ($upload) {
 					</div>
 				</div>
 				<?php
-			}
-			$banner_id = null;
-			if ($data->banner_image) {
-				$banner_id = $data->banner_image->id;
-			}
-
-			$cover_id = null;
-			if ($data->cover_image) {
-				$cover_id = $data->cover_image->id;
-			}
-			
-			if ($banner_id && $cover_id && $banner_id == $cover_id) {
 				echo $this->partial(
 					'common/files/tile',
 					[
 						'delete' => $delete,
 						'selects' => $selects,
-						'image' => $data->banner_image
+						'image' => null
 					]
 				);
-			} else {
-				if ($banner_id) {
+			}
+			?>
+			<div id="media-tiles-available">
+				<?php
+				$banner_id = null;
+				if ($data->banner_image) {
+					$banner_id = $data->banner_image->id;
+				}
+
+				$cover_id = null;
+				if ($data->cover_image) {
+					$cover_id = $data->cover_image->id;
+				}
+				
+				if ($banner_id && $cover_id && $banner_id == $cover_id) {
 					echo $this->partial(
 						'common/files/tile',
 						[
@@ -213,39 +199,50 @@ if ($upload) {
 							'image' => $data->banner_image
 						]
 					);
-				}
-				if ($cover_id) {
-					echo $this->partial(
-						'common/files/tile',
-						[
-							'delete' => $delete,
-							'selects' => $selects,
-							'image' => $data->cover_image
-						]
-					);
-				}
-			}
-			if ($images->total_items) {
-				foreach ($images->getItems() as $image) {
-					if ($banner_id != $image->id && $cover_id != $image->id) {
-						echo $this->partial('common/files/tile');
+				} else {
+					if ($banner_id) {
+						echo $this->partial(
+							'common/files/tile',
+							[
+								'delete' => $delete,
+								'selects' => $selects,
+								'image' => $data->banner_image
+							]
+						);
+					}
+					if ($cover_id) {
+						echo $this->partial(
+							'common/files/tile',
+							[
+								'delete' => $delete,
+								'selects' => $selects,
+								'image' => $data->cover_image
+							]
+						);
 					}
 				}
-			} else {
-				?>
-				<div class="card">
-					<div class="card-body p-3 pt-0">
-						<strong class="h5">No results</strong>
+				if ($images->total_items) {
+					foreach ($images->getItems() as $image) {
+						if ($banner_id != $image->id && $cover_id != $image->id) {
+							echo $this->partial('common/files/tile');
+						}
+					}
+				} else {
+					?>
+					<div class="card">
+						<div class="card-body p-3 pt-0">
+							<strong class="h5">No results</strong>
+						</div>
 					</div>
-				</div>
-				<?php
-			}
-			?>
+					<?php
+				}
+				?>
+			</div>
 		</div>
 	</div>
 </div>
 <?php
-if ($result_start) {
+if ($start) {
     ?>
     <div class="row">
         <div class="col-12">
@@ -255,63 +252,24 @@ if ($result_start) {
                         <div class="col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start">
                             &nbsp;
                         </div>
-                        <?php
-                        if ($result_start) {
-                            ?>
-                            <div class="col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end">
-                                <div class="d-flex mr-2">
-                                    <select id="media-page-limit" name="per_page" class="form-control form-control-solid">
-                                    <?php
-                                    foreach ($limits as $value) {
-                                        ?>
-                                        <option value="<?= $value; ?>" <?= $limit == $value ? 'selected' :''; ?>>
-                                            <?= $value; ?>
-                                        </option>
-                                        <?php
-                                    }
-                                    ?>
-                                    </select>
-                                </div>
-                                <div class="d-flex">
-                                    <ul class="pagination">
-                                        <li 
-                                            class="media-page-item previous <?= $images->current == $images->first ? ' disabled' : ''; ?>"
-                                            data-id="<?= $data->id; ?>"
-                                            data-page="<?= $images->current - 1 > $images->first ? $images->current - 1 : $images->first; ?>">
-                                            <span class="page-link">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                                                    <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
-                                                </svg>
-                                            </span>
-                                        </li>
-                                        <?php
-                                        for ($iLoop = $start; $iLoop <= $end; $iLoop++) {
-                                            ?>
-                                            <li
-                                                class="media-page-item <?= $images->current == $iLoop ? 'active' :''; ?><?= $start == $end ? ' disabled text-muted' : ''; ?>"
-                                                data-id="<?= $data->id; ?>"
-                                                data-page="<?= $iLoop; ?>">
-                                                <span class="page-link"><?= $iLoop; ?></span>
-                                            </li>
-                                            <?php
-                                        }
-                                        ?>
-                                        <li 
-                                            class="media-page-item next <?= $images->current == $images->last ? ' disabled text-muted' : ''; ?>"
-                                            data-id="<?= $data->id; ?>"
-                                            data-page="<?= $images->current + 1 < $images->last ? $images->current + 1 : $images->last; ?>">
-                                            <span class="page-link">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                                                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-                                                </svg>
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <?php
-                        }
-                        ?>
+						<div class="col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end">
+							<div class="d-flex">
+								<ul id="media-pagination" class="pagination">
+									<?php
+									for ($iLoop = $start; $iLoop <= $end; $iLoop++) {
+										?>
+										<li
+											class="media-page-item <?= $images->current == $iLoop ? 'active' :''; ?><?= $start == $end ? ' disabled text-muted' : ''; ?>"
+											data-id="<?= $data->id; ?>"
+											data-page="<?= $iLoop; ?>">
+											<span class="page-link"><?= $iLoop; ?></span>
+										</li>
+										<?php
+									}
+									?>
+								</ul>
+							</div>
+						</div>
                     </div>
                 </div>
             </div>
