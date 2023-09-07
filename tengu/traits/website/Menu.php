@@ -55,7 +55,7 @@ trait Menu
             return null;
         }
 
-        $query .= ' AND deleted_at IS NULL';
+        $query .= ' AND status="active" AND deleted_at IS NULL';
 
         return Model::findFirst([
             'conditions' => $query,
