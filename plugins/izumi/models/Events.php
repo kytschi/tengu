@@ -42,6 +42,7 @@ class Events extends Model
     public $price;
     public $pricing_type;
     public $fee;
+    public $ical_url='';
 
     public function initialize()
     {
@@ -86,5 +87,11 @@ class Events extends Model
                 'reusable' => true
             ]
         );
+    }
+
+    public function afterFetch()
+    {
+        parent::afterFetch();
+        $this->ical_url = ($this->getConfig())->application->dumpUri . $this->id . '-event.ics';
     }
 }

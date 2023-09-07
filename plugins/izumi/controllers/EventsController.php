@@ -137,6 +137,46 @@ class EventsController extends PagesController
             );
         }
 
+        $ical = "BEGIN:VCALENDAR\n";
+        $ical .= "VERSION:2.0\n";
+        $ical .= "PRODID:-//hacksw/handcal//NONSGML v1.0//EN\n";
+        $ical .= "CALSCALE:GREGORIAN\n";
+        $ical .= "BEGIN:VEVENT\n";
+        if ($event->event_end) {
+            $ical .= "DTEND:". DateHelper::ical($event->event_end) . "\n";
+        }
+        $ical .= "UID:" . $event->id . "\n";
+        $ical .= "DTSTAMP:". DateHelper::ical(date("Y-m-d H:i:s")) . "\n";
+        if ($event->location) {
+            $ical .= "LOCATION:" . str_replace(["\n", "\r\n", "\r"], " ", $event->location);
+            if ($model->postcode) {
+                $ical .= " " . $model->postcode;
+            }
+            $ical .= "\n";
+        }
+        if ($model->longitude && $model->latitude) {
+            $ical .= "GEO:" . $model->latitude . ";" . $model->longitude . "\n";
+        }
+        $settings = $this->getSettings();
+        if ($settings->contact_email) {
+            $ical .= "ORGANIZER;CN=" . $settings->name;
+            $ical .= ":MAILTO:" . $settings->contact_email;
+        }
+        $ical .= "\n";
+        $ical .= "DESCRIPTION:" . $model->name . "\n";
+        //$ical .= "URL;VALUE=URI:\n";
+        if ($model->summary) {
+            $ical .= "SUMMARY:" . str_replace(["\n", "\r\n", "\r"], " ", $model->summary). "\n";
+        }
+        $ical .= "DTSTART:". DateHelper::ical($event->event_on) . "\n";
+        $ical .= "END:VEVENT\n";
+        $ical .= "END:VCALENDAR\n";
+
+        file_put_contents(
+            ($this->di->getConfig())->application->dumpDir . $event->id . '-event.ics',
+            $ical
+        );
+
         return $model;
     }
 

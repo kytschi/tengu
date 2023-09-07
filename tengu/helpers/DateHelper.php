@@ -296,6 +296,10 @@ class DateHelper
             return $date;
         }
     }
+    public static function ical($datetime)
+    {
+        return (new \DateTime($datetime))->format('Ymd\THis\Z');
+    }
 
     public static function iso($datetime)
     {
