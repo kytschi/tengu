@@ -26,6 +26,7 @@
 
 namespace Kytschi\Tengu\Traits\Website;
 
+use Kytschi\Izumi\Models\Events;
 use Kytschi\Tengu\Controllers\Core\PostcodesController;
 use Kytschi\Tengu\Models\Website\Pages;
 use Kytschi\Tengu\Models\Website\PageCategories as Model;
@@ -66,6 +67,7 @@ trait PageCategories
         $model = new Pages();
         $pages_table = $model->getSource();
         $cats_table = (new Model())->getSource();
+        $events_table = (new Events())->getSource();
 
         $selects = "$pages_table.*";
 
@@ -100,14 +102,30 @@ trait PageCategories
 
                     $order = ' HAVING distance < ' . $data['radius'] . ' ORDER BY distance ASC';
                 } else {
-                    $wheres = ' AND (';
+                    $wheres = ' AND (name LIKE :name OR location LIKE :location OR ';
+                    $binds['name'] = '%' . $data['search'] . '%';
+                    $binds['location'] = '%' . $data['search'] . '%';
                     foreach ($postcodes as $key => $postcode) {
-                        $wheres .= 'postcode = :postcode_' . $key . '_1 OR postcode = :postcode_' . $key . '_2 OR ';
+                        $wheres .= "$pages_table.postcode = :postcode_' . $key . '_1 OR 
+                            $pages_table.postcode = :postcode_' . $key . '_2 OR
+                            $pages_table.postcode LIKE :postcode_' . $key . '_3 OR
+                            $pages_table.postcode LIKE :postcode_' . $key . '_4 OR ";
                         $binds['postcode_' . $key . '_1'] = $postcode;
                         $binds['postcode_' . $key . '_2'] = str_replace(' ', '', $postcode);
+                        $binds['postcode_' . $key . '_3'] = '%' . $postcode . '%';
+                        $binds['postcode_' . $key . '_4'] = '%' . str_replace(' ', '', $postcode) . '%';
+                        
                     }
-                    $wheres = rtrim($wheres, ' OR ') . ')';
+                    $wheres = rtrim($wheres, ' OR ') . ')';                    
                 }
+            } else {
+                $wheres = ' AND (name LIKE :name OR location LIKE :location OR ';
+                $wheres .= "$pages_table.postcode LIKE :postcode_1 OR $pages_table.postcode LIKE :postcode_2)";
+                $binds['postcode_1'] = '%' . $data['search'] . '%';
+                $binds['postcode_2'] = '%' . $data['search'] . '%';
+                $binds['name'] = '%' . $data['search'] . '%';
+                $binds['location'] = '%' . $data['search'] . '%';
+                $order = "ORDER BY " . $order;
             }
         }
 
@@ -131,7 +149,7 @@ trait PageCategories
                 ->join(Pages::class, 'pages.id=cats.page_id AND pages.deleted_at IS NULL', 'pages')
                 ->where("cats.category_id = :category_id: AND cats.deleted_at IS NULL AND pages.id IS NOT NULL")
                 ->andWhere(ltrim($wheres, ' AND '))
-                ->orderBy($order);
+                ->orderBy(ltrim($order, "ORDER BY"));
 
             $builder->setBindParams($binds);
 
@@ -146,13 +164,14 @@ trait PageCategories
             return $paginator->paginate();
         }
 
-        $query = "SELECT
-            $selects
-        FROM 
-            $cats_table 
+        $query = "SELECT $selects
+        FROM  $cats_table 
         LEFT JOIN $pages_table ON $pages_table.id = $cats_table.page_id AND $pages_table.deleted_at IS NULL
+        LEFT JOIN $events_table ON $events_table.id = $cats_table.page_id AND $events_table.deleted_at IS NULL
         WHERE 
-            category_id = :category_id AND $cats_table.deleted_at IS NULL AND $pages_table.id IS NOT NULL 
+            category_id = :category_id AND 
+            $cats_table.deleted_at IS NULL AND 
+            $pages_table.id IS NOT NULL 
             $wheres
         $order";
 
