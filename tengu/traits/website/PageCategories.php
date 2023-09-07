@@ -154,7 +154,7 @@ trait PageCategories
         WHERE 
             category_id = :category_id AND $cats_table.deleted_at IS NULL AND $pages_table.id IS NOT NULL 
             $wheres
-        ORDER BY $order";
+        $order";
 
         return (new \Phalcon\Mvc\Model\Resultset\Simple(
             null,
