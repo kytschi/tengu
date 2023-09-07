@@ -168,7 +168,8 @@ trait Stats
         'DotBot' => 'https://opensiteexplorer.org/dotbot',
         'VelenPublicWebCrawler' => 'https://velen.io',
         'Bytespider' => 'spider-feedback@bytedance.com',
-        'MegaIndex' => 'http://megaindex.com/crawler'
+        'MegaIndex' => 'http://megaindex.com/crawler',
+        'Amazonbot' => 'https://developer.amazon.com/support/amazonbot'
     ];
 
     public function addSearchStat($search_query, $type = 'internal')
