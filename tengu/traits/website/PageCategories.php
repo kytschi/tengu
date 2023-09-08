@@ -80,9 +80,9 @@ trait PageCategories
             $binds = array_merge($binds, $data['data']);
         }
 
-        $order = "$cats_table.sort ASC, $cats_table.created_at DESC";
+        $order = "categories.sort ASC, categories.created_at DESC";
         if (!empty($data['order'])) {
-            $order = $data['order'];
+            $order = 'ORDER BY ' . $data['order'];
         }
 
         if (!empty($data['search'])) {
@@ -102,7 +102,7 @@ trait PageCategories
 
                     $order = ' HAVING distance < ' . $data['radius'] . ' ORDER BY distance ASC';
                 } else {
-                    $wheres = ' AND (name LIKE :name OR location LIKE :location OR ';
+                    $wheres .= ' AND (name LIKE :name OR location LIKE :location OR ';
                     $binds['name'] = '%' . $data['search'] . '%';
                     $binds['location'] = '%' . $data['search'] . '%';
                     foreach ($postcodes as $key => $postcode) {
@@ -119,7 +119,7 @@ trait PageCategories
                     $wheres = rtrim($wheres, ' OR ') . ')';                    
                 }
             } else {
-                $wheres = ' AND (name LIKE :name OR location LIKE :location OR ';
+                $wheres .= ' AND (name LIKE :name OR location LIKE :location OR ';
                 $wheres .= "$pages_table.postcode LIKE :postcode_1 OR $pages_table.postcode LIKE :postcode_2)";
                 $binds['postcode_1'] = '%' . $data['search'] . '%';
                 $binds['postcode_2'] = '%' . $data['search'] . '%';
@@ -140,16 +140,34 @@ trait PageCategories
                 $page = intval($data['pagination']['page']);
             }
 
+            /*if ($wheres) {
+                $wheres = str_replace('pages.', Pages::class . '.', $wheres);
+                $wheres = str_replace('categogies.', Model::class . '.', $wheres);
+                $wheres = str_replace('events.', Events::class . '.', $wheres);
+            }
+
+            if ($selects) {
+                $selects = str_replace('pages.', Pages::class . '.', $selects);
+                $selects = str_replace('categogies.', Model::class . '.', $selects);
+                $selects = str_replace('events.', Events::class . '.', $selects);
+            }*/
+
+            /*if ($order) {
+                $order = str_replace('pages.', '[' . Pages::class . '].', $order);
+                $order = str_replace('categogies.', '[' . Model::class . '].', $order);
+                $order = str_replace('events.', '[' . Events::class . '].', $order);
+            }*/
+
             // Just need a controller for the modelsManager
             $builder = (new PostcodesController())
                 ->modelsManager
                 ->createBuilder()
                 ->columns($selects)
-                ->addFrom(Model::class, 'cats')
-                ->join(Pages::class, 'pages.id=cats.page_id AND pages.deleted_at IS NULL', 'pages')
-                ->where("cats.category_id = :category_id: AND cats.deleted_at IS NULL AND pages.id IS NOT NULL")
+                ->addFrom(Model::class, 'categories')
+                ->join(Pages::class, 'pages.id=categories.page_id AND pages.deleted_at IS NULL', 'pages')
+                ->where("categories.category_id = :category_id: AND categories.deleted_at IS NULL AND pages.id IS NOT NULL")
                 ->andWhere(ltrim($wheres, ' AND '))
-                ->orderBy(ltrim($order, "ORDER BY"));
+                ->orderBy(ltrim($order, "ORDER BY "));
 
             $builder->setBindParams($binds);
 
@@ -165,12 +183,12 @@ trait PageCategories
         }
 
         $query = "SELECT $selects
-        FROM  $cats_table 
-        LEFT JOIN $pages_table ON $pages_table.id = $cats_table.page_id AND $pages_table.deleted_at IS NULL
-        LEFT JOIN $events_table ON $events_table.id = $cats_table.page_id AND $events_table.deleted_at IS NULL
+        FROM  $cats_table AS categories
+        LEFT JOIN $pages_table ON $pages_table.id = categories.page_id AND $pages_table.deleted_at IS NULL
+        LEFT JOIN $events_table ON $events_table.id = categories.page_id AND $events_table.deleted_at IS NULL
         WHERE 
             category_id = :category_id AND 
-            $cats_table.deleted_at IS NULL AND 
+            categories.deleted_at IS NULL AND 
             $pages_table.id IS NOT NULL 
             $wheres
         $order";

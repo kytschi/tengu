@@ -166,13 +166,13 @@ a:hover, .nav-link:hover {
 .category-page ul, .card-footer ul, .sitemap-info ul {
     margin: 0px;
     padding: 0px;
-    float: left;
     width: 100%;
 }
 
 .category-page ul li, .card-footer ul li, .sitemap-info ul li {
     display: inline-block;
     margin-right: 10px;
+    line-height: 18pt;
 }
 
 .category-content, .sitemap-content {

@@ -60,7 +60,7 @@ if (!empty($_GET['page'])) {
     $page_num = intval($_GET['page']);
 }
 $category_items = $this->tengu->findCategoryItems([
-    'where' => 'pages.type="blog-post" AND pages.status="active"',
+    'where' => 'type="blog-post" AND status="active"',
     'category_id' => $page->id,
     'pagination' => [
         'page' => $page_num,
@@ -99,7 +99,9 @@ if ($category_items->total_items) {
                                         <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
                                         <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
                                     </svg>
-                                    <time class="post-date" datetime="<?= DateHelper::iso($item->created_at); ?>"><?= DateHelper::prettyFull($item->created_at, false); ?></time>
+                                    <span>
+                                        <time class="post-date" datetime="<?= DateHelper::iso($item->created_at); ?>"><?= DateHelper::prettyFull($item->created_at, false); ?></time>
+                                    </span>
                                 </li>
                                 <li>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
@@ -149,7 +151,7 @@ if ($category_items->total_items) {
     <?php
 }
 $category_subs = $this->tengu->findCategoryItems([
-    'where' => 'pages.type="blog-post-category" AND pages.status="active"',
+    'where' => 'type="blog-post-category" AND status="active"',
     'category_id' => $page->id,
     'order' => 'pages.created_at DESC'
 ]);
