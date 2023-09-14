@@ -105,6 +105,17 @@ include $config->application->pluginsDir . 'phoenix/config/website_routes.php';
 include $config->application->pluginsDir . 'makabe/config/website_routes.php';
 
 /*
+ * Ads text
+ */
+$router->add(
+    '/ads.txt',
+    [
+        'controller' => 'Index',
+        'action'     => 'ads',
+    ]
+);
+
+/*
  * Humans text
  */
 $router->add(
@@ -114,7 +125,6 @@ $router->add(
         'action'     => 'humans',
     ]
 );
-
 
 /*
  * Robots text
@@ -164,6 +174,20 @@ $router->add(
 );
 $router->add(
     '/sitemaps.xml',
+    [
+        'controller' => 'Index',
+        'action'     => 'sitemap'
+    ]
+);
+$router->add(
+    '/post-sitemap.xml',
+    [
+        'controller' => 'Index',
+        'action'     => 'sitemap'
+    ]
+);
+$router->add(
+    '/wlwmanifest.xml',
     [
         'controller' => 'Index',
         'action'     => 'sitemap'

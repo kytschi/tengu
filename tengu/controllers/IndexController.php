@@ -62,6 +62,12 @@ class IndexController extends ControllerBase
 
     private $add_stat = true;
 
+    public function adsAction()
+    {
+        header("Content-Type: text/plain");
+        die();
+    }
+
     public function fallbackAction()
     {
         if (TENGU_API) {
