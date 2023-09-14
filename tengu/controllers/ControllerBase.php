@@ -38,7 +38,6 @@ use Kytschi\Tengu\Traits\Core\Security;
 use Kytschi\Tengu\Traits\Core\User;
 use Kytschi\Tengu\Traits\Core\Validation;
 use Phalcon\Mvc\Controller;
-use Phalcon\Tag;
 
 class ControllerBase extends Controller
 {
@@ -52,6 +51,7 @@ class ControllerBase extends Controller
     public $search = '';
     public $valid_order_bys = [];
     public $default_status = 'active';
+    public $page_obj = null;
     public $valid_status = [
         'active',
         'inactive',
@@ -63,6 +63,13 @@ class ControllerBase extends Controller
         'image/jpeg',
         'image/png'
     ];
+
+    public function createPageObj()
+    {
+        $this->page_obj = new \stdClass();
+        $this->page_obj->name = '';
+        $this->page_obj->sub_title = '';
+    }
 
     public function createSlug($string)
     {
@@ -154,11 +161,19 @@ class ControllerBase extends Controller
 
     public function setPageTitle($title)
     {
-        Tag::setTitle($title);
+        if (empty($this->page_obj)) {
+            $this->createPageObj();
+        }
+        $this->page_obj->name = $title;
+        $this->view->setVar('page', $this->page_obj);
     }
 
     public function setPageSubTitle($title)
     {
-        Tag::setDefault('sub_title', $title);
+        if (empty($this->page_obj)) {
+            $this->createPageObj();
+        }
+        $this->page_obj->sub_title = $title;
+        $this->view->setVar('page', $this->page_obj);
     }
 }

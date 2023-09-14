@@ -24,9 +24,6 @@
 
 use Kytschi\Tengu\Controllers\Core\LoginController;
 use Kytschi\Tengu\Helpers\UrlHelper;
-use Phalcon\Tag;
-
-$title = Tag::getTitle();
 ?>
 <!doctype html>
 <html lang="en">
@@ -34,7 +31,7 @@ $title = Tag::getTitle();
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title><?= $title . ' - ' . $_ENV['APP_NAME'];?></title>
+        <title><?= $page->name . ' - ' . $_ENV['APP_NAME'];?></title>
 
         <link href="<?= $this->tengu->theme->getAsset('imgs/tengu_favicon.ico'); ?>" rel="icon" />
         <link href="<?= $this->tengu->theme->getAsset('imgs/tengu_favicon.png'); ?>" rel="icon" sizes="32x32" />
@@ -87,7 +84,7 @@ $title = Tag::getTitle();
                 <div class="content"<?= !LoginController::isLoggedIn() ? ' style="padding-left:0;"' : ''; ?>>
                     <div class="row">
                         <?php
-                        if ($sub_title = Tag::getValue('sub_title')) {
+                        if ($sub_title = $page->sub_title) {
                             ?>
                             <div id="page-sub-title" class="col-12">
                                 <?= $sub_title; ?>

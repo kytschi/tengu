@@ -80,21 +80,16 @@ class IndexController extends ControllerBase
         } else {
             $url = '/';
         }
-        if (!$url) {
+        if (empty($url)) {
             $url = '/';
         }
 
         if (TENGU_BACKEND) {
-            $app_url = rtrim($_ENV['APP_TENGU_URL'], '/');
-            if (!$app_url) {
-                $app_url = '/';
-            }
-
-            if ($url == $app_url) {
+            if ($url == $_ENV['APP_TENGU_URL'] || $url == $_ENV['APP_TENGU_URL'] . '/') {
                 return (new DashboardsController())->homeAction();
             }
         }
-
+        
         $page = Pages::findFirst(
             [
                 'conditions' => 'deleted_at IS NULL AND 
@@ -123,6 +118,7 @@ class IndexController extends ControllerBase
                 $page->page_updated = date('Y-m-d H:i:s');
                 $page->meta_description = $this->tengu->settings->meta_description;
                 $page->meta_keywords = $this->tagsToString($this->tengu->settings->tags);
+                $page->sub_title = '';
                 $page->meta_author = !empty($this->tengu->settings->meta_author) ?
                     $this->tengu->settings->meta_author :
                     $this->tengu->settings->name;

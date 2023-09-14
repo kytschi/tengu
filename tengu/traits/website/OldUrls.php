@@ -75,62 +75,44 @@ trait OldUrls
                 if (empty($url)) {
                     continue;
                 }
-
-                $this->db->query(
-                    'INSERT INTO
-                    old_urls 
-                        (id, resource, resource_id, url, created_at, created_by, updated_at, updated_by)
-                    SELECT
-                        :id,
-                        :resource,
-                        :resource_id,
-                        :url,
-                        :created_at,
-                        :created_by,
-                        :updated_at,
-                        :updated_by
-                    FROM DUAL
-                    WHERE NOT EXISTS
-                    (
-                        SELECT
-                            id,
-                            resource,
-                            resource_id,
-                            url,
-                            created_at,
-                            created_by,
-                            updated_at,
-                            updated_by
-                        FROM old_urls
-                        WHERE
-                            resource_id=:resource_id_2 AND url=:url_2
-                    )',
-                    [
-                        ':resource' => $this->resource,
-                        ':resource_id' => $resource_id,
-                        ':resource_id_2' => $resource_id,
-                        ':url' => $url,
-                        ':url_2' => $url,
-                        ':id' => (new Random())->uuid(),
-                        ':created_at' => date('Y-m-d H:i:s'),
-                        ':created_by' => self::getUserId(),
-                        ':updated_at' => date('Y-m-d H:i:s'),
-                        ':updated_by' => self::getUserId()
+                $model = Model::findFirst([
+                    'conditions' => 'resource_id=:resource_id AND url=:url',
+                    'bind' => [
+                        'resource_id' => $resource_id,
+                        'url' => $url
                     ]
-                );
+                ]);
 
-                $this->db->query(
-                    'UPDATE old_urls 
-                        SET deleted_at=NULL, deleted_by=NULL, status=:status
-                        WHERE resource_id=:resource_id AND url=:url',
-                    [
-                        ':resource_id' => $resource_id,
-                        ':url' => $url,
-                        ':status' => !empty($_POST['old_urls_status'][$key]) ?
+                if (empty($model)) {
+                    $model = new Model([
+                        'resource_id' => $resource_id,
+                        'resource' => $resource,
+                        'url' => $url,
+                        'status' => !empty($_POST['old_urls_status'][$key]) ?
                             'active' :
                             'inactive'
-                    ]
-                );
+                    ]);
+
+                    if ($model->save() === false) {
+                        throw new SaveException(
+                            'Failed to attach the old URL to the item',
+                            $model->getMessages()
+                        );
+                    }
+                } else {
+                    $model->deleted_at = null;
+                    $model->deleted_by = null;
+                    $model->status = !empty($_POST['old_urls_status'][$key]) ?
+                        'active' :
+                        'inactive';
+                    
+                    if ($model->update() === false) {
+                        throw new SaveException(
+                            'Failed to attach the old URL to the item',
+                            $model->getMessages()
+                        );
+                    }
+                }
             }
         }
     }
@@ -138,10 +120,13 @@ trait OldUrls
     public function checkOldUrl($url)
     {
         $found = Model::findFirst([
-            'conditions' => 'deleted_at IS NULL AND (url = :url: OR url = :url_slash:) AND status = "active"',
+            'conditions' => '
+                deleted_at IS NULL AND 
+                (url = :url: OR url = :trim_url:) 
+                AND status = "active"',
             'bind' => [
                 'url' => $url,
-                'url_slash' => rtrim($url, '/') . '/'
+                'trim_url' => rtrim($url, '/')
             ]
         ]);
 
