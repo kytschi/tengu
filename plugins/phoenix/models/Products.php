@@ -33,6 +33,8 @@ use Kytschi\Tengu\Models\Website\Pages;
 class Products extends Model
 {
     public $page_id;
+    public $type;
+    public $code;
     public $price;
     public $stock;
     public $low_stock;

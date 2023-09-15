@@ -97,10 +97,6 @@ class PagesController extends ControllerBase
             [
                 'campaigns' => Campaigns::find(['conditions' => 'deleted_at IS NULL AND type="seo"']),
                 'categories' => PageCategoriesController::all(),
-                'parents' => Pages::find([
-                    'conditions' => 'type=:type:',
-                    'bind' => ['type' => $this->resource]
-                ]),
                 'statuses' => $this->defaultStatuses(),
                 'templates' => self::getTemplates(),
                 'url' => $this->global_url,
@@ -213,13 +209,6 @@ class PagesController extends ControllerBase
                 'campaigns' => Campaigns::find(['conditions' => 'deleted_at IS NULL AND type="seo"']),
                 'categories' => PageCategoriesController::all(null, $model->id),
                 'data' => $model,
-                'parents' => Pages::find([
-                    'conditions' => 'type=:type: AND id!=:id:',
-                    'bind' => [
-                        'type' => $this->resource,
-                        'id' => $model->id
-                    ]
-                ]),
                 'statuses' => $this->defaultStatuses(),
                 'templates' => self::getTemplates(),
                 'url' => $this->global_url,

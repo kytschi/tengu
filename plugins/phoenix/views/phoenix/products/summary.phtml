@@ -34,7 +34,7 @@
             data-toggle="tooltip"
             data-dismiss="hover"
             data-placement="top"
-            title="Whats in stock">
+            title="The product code">
             <div class="card-body">
                 <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 4.5a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-7zm3 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7z"/>
@@ -44,6 +44,26 @@
                 </div>
                 <div class="text-white">
                     Code
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div
+            class="card bg-info"
+            data-toggle="tooltip"
+            data-dismiss="hover"
+            data-placement="top"
+            title="The type of the product">
+            <div class="card-body">
+                <svg width="40" height="40" viewBox="0 0 16 16" class="svg-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg">                
+                    <path d="M2.95.4a1 1 0 0 1 .8-.4h8.5a1 1 0 0 1 .8.4l2.85 3.8a.5.5 0 0 1 .1.3V15a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4.5a.5.5 0 0 1 .1-.3L2.95.4ZM7.5 1H3.75L1.5 4h6V1Zm1 0v3h6l-2.25-3H8.5ZM15 5H1v10h14V5Z"/>
+                </svg>
+                <div class="h3 text-white mt-2 mb-2">
+                    <strong><?= ucwords(str_replace('-', ' ', $data->product->type)); ?></strong> 
+                </div>
+                <div class="text-white">
+                    Type
                 </div>
             </div>
         </div>

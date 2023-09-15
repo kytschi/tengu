@@ -116,6 +116,7 @@ class ProductsController extends PagesController
             'price' => floatval($_POST['price']),
             'stock' => intval($_POST['stock']),
             'code' => $_POST['code'],
+            'type' => in_array($_POST['type'], ['physical', 'digital-download']) ? $_POST['type'] : 'physical',
             'vat' => !empty($_POST['vat']) ? floatval($_POST['vat']) : 0,
             'low_stock' => !empty($_POST['low_stock']) ? intval($_POST['low_stock']) : 1,
             'requires_shipping' => !empty($_POST['requires_shipping']) ? 1 : 0,
@@ -137,6 +138,7 @@ class ProductsController extends PagesController
         $model->product->stock = intval($_POST['stock']);
         $model->product->vat = !empty($_POST['vat']) ? floatval($_POST['vat']) : 0;
         $model->product->code = $_POST['code'];
+        $model->product->type = in_array($_POST['type'], ['physical', 'digital-download']) ? $_POST['type'] : 'physical';
         $model->product->low_stock = !empty($_POST['low_stock']) ? intval($_POST['low_stock']) : 1;
         $model->product->requires_shipping = !empty($_POST['requires_shipping']) ? 1 : 0;
 
@@ -181,6 +183,15 @@ class ProductsController extends PagesController
             new PresenceOf(
                 [
                     'message' => 'The code is required',
+                ]
+            )
+        );
+
+        $validation->add(
+            'type',
+            new PresenceOf(
+                [
+                    'message' => 'The type is required',
                 ]
             )
         );

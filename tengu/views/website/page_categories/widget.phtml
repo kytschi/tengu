@@ -37,11 +37,26 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                             <select id="widget-categories" class="form-control">
                                 <?php
                                 if ($categories->count()) {
+                                    $cats = [];
                                     foreach ($categories as $category) {
+                                        if (empty($cats[$category->type])) {
+                                            $cats[$category->type] = [];
+                                        }
+                                        $cats[$category->type][] = $category;
+                                    }
+                                    foreach ($cats as $group => $categories) {
                                         ?>
-                                        <option value="<?= $category->id; ?>">
-                                            <?= $category->name . ' (' . str_replace('-', ' ', $category->type) . ')'; ?>
-                                        </option>
+                                        <optgroup label="<?= ucwords(str_replace('-', ' ', $group)); ?>">
+                                        <?php
+                                        foreach ($categories as $category) {
+                                            ?>
+                                            <option value="<?= $category->id; ?>">
+                                                <?= $category->name; ?>
+                                            </option>
+                                            <?php
+                                        }
+                                        ?>
+                                        </optgroup>
                                         <?php
                                     }
                                 } else {
@@ -192,7 +207,9 @@ use Kytschi\Tengu\Helpers\UrlHelper;
                         'page-category',
                         'blog-post-category',
                         'portfolio-category',
-                        'menu-category'
+                        'menu-category',
+                        'product-category',
+                        'product'
                     ]
                 )
             ) {

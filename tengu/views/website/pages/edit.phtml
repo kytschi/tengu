@@ -377,6 +377,15 @@ if (!empty($_GET['back-url'])) {
                                     Product <span class="required">*</span>
                                 </a>
                             </li>
+                            <li class="nav-item mt-2">
+                                <a
+                                    class="nav-link <?= UrlHelper::activeTab('orders-tab', 'content-tab'); ?>"
+                                    data-toggle="tab"
+                                    role="tab"
+                                    href="#orders-tab">
+                                    Orders
+                                </a>
+                            </li>
                             <?php
                         }
                         ?>
@@ -731,6 +740,13 @@ if (!empty($_GET['back-url'])) {
                         role="tabpanel"
                         aria-labelledby="product-tab">
                         <?= $this->partial("phoenix/products/widget"); ?>
+                    </div>
+                    <div
+                        class="tab-pane <?= UrlHelper::activeTab('orders-tab', 'content-tab'); ?>"
+                        id="orders-tab"
+                        role="tabpanel"
+                        aria-labelledby="orders-tab">
+                        <?= $this->partial("phoenix/orders/widget"); ?>
                     </div>
                     <?php
                 }

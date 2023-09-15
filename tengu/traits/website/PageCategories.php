@@ -71,7 +71,7 @@ trait PageCategories
 
         $selects = "$pages_table.*";
 
-        $wheres = '';
+        $wheres = "$pages_table.status='active'";
         if (!empty($data['where'])) {
             $wheres = ' AND ' . $data['where'];
         }
