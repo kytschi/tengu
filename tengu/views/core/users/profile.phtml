@@ -6,20 +6,7 @@
  * @version     0.0.1
  *
  * Copyright 2023 Mike Welsh
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
- * Boston, MA  02110-1301, USA.
+
  */
 
 use Kytschi\Tengu\Controllers\Core\FormController;
@@ -223,6 +210,17 @@ echo $this->partial("common/form/messages");
                                     <span class="card-title">Profile picture</span>
                                 </div>
                                 <div class="card-body p-3 pt-0">
+                                    <?php
+                                    if ($data->profile_image) {
+                                        ?>
+                                        <div class="form-group float-left mr-2">
+                                            <span class="profile-pic">
+                                                <img src="<?= $data->profile_image->url; ?>">
+                                            </span>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
                                     <div class="form-group mb-4">
                                         <label for="upload_picture">
                                             Upload picture

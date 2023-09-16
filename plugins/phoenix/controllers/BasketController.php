@@ -8,20 +8,7 @@
  * @version     0.0.1
  *
  * Copyright 2023 Mike Welsh
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
- * Boston, MA  02110-1301, USA.
+
  */
 
 declare(strict_types=1);
@@ -49,7 +36,6 @@ use Kytschi\Tengu\Traits\Core\Notes;
 use Kytschi\Tengu\Traits\Core\Security;
 use Kytschi\Tengu\Traits\Core\Tags;
 use Phalcon\Encryption\Security\Random;
-use Phalcon\Tag;
 use Phalcon\Filter\Validation;
 use Phalcon\Filter\Validation\Validator\PresenceOf;
 
@@ -229,22 +215,14 @@ class BasketController extends ControllerBase
 
     public function checkoutAction()
     {
-        $page = null;
+        $this->createPageObj('Checkout');
+
         if (TENGU_BACKEND) {
             $this->secure();
             $template = 'phoenix/basket/checkout/address';
             $url = UrlHelper::backend($this->global_url);
         } else {
             $template = 'basket/checkout/address';
-            Tag::setDefault('page_updated', date('Y-m-d H:i:s'));
-            Tag::setDefault('meta_description', $this->tengu->settings->meta_description);
-            Tag::setDefault('meta_keywords', $this->tagsToString($this->tengu->settings->tags));
-            Tag::setDefault(
-                'meta_author',
-                !empty($this->tengu->settings->meta_author) ?
-                    $this->tengu->settings->meta_author :
-                    $this->tengu->settings->name
-            );
             $url = '/basket';
         }
 
@@ -258,7 +236,7 @@ class BasketController extends ControllerBase
             $template,
             [
                 'basket' => $basket,
-                'page' => $page
+                'page' => $this->page_obj
             ]
         );
     }
@@ -417,26 +395,22 @@ class BasketController extends ControllerBase
 
     public function completeAction()
     {
+        $this->createPageObj('Complete');
+        
         if (TENGU_BACKEND) {
             $this->secure();
             $template = 'phoenix/basket/checkout/complete';
         } else {
             $template = 'basket/checkout/complete';
-            Tag::setDefault('page_updated', date('Y-m-d H:i:s'));
-            Tag::setDefault('meta_description', $this->tengu->settings->meta_description);
-            Tag::setDefault('meta_keywords', $this->tagsToString($this->tengu->settings->tags));
-            Tag::setDefault(
-                'meta_author',
-                !empty($this->tengu->settings->meta_author) ?
-                    $this->tengu->settings->meta_author :
-                    $this->tengu->settings->name
-            );
         }
 
         $this->setPageTitle('Complete');
 
         return $this->view->partial(
-            $template
+            $template,
+            [
+                'page' => $this->page_obj
+            ]
         );
     }
 
@@ -472,11 +446,13 @@ class BasketController extends ControllerBase
         $this->setPageTitle('Basket');
 
         $this->clearFormData();
+        
 
         if (TENGU_BACKEND) {
             $this->secure();
             $template = 'phoenix/basket/index';
-            $page = null;
+            $this->createPageObj('Basket');
+            $page = $this->page_obj;
         } else {
             $template = 'basket/index';
 
@@ -497,19 +473,11 @@ class BasketController extends ControllerBase
                 ->getFirst();
 
             if (empty($page)) {
-                $page = new Pages([
-                    'name' => 'Basket',
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'meta_description' => $this->tengu->settings->meta_description,
-                    'meta_keywords' => $this->tagsToString($this->tengu->settings->tags),
-                    'meta_author' =>
-                        !empty($this->tengu->settings->meta_author) ?
-                            $this->tengu->settings->meta_author :
-                            $this->tengu->settings->name
-                ]);
+                $this->createPageObj('Basket');
+                $page = $this->page_obj;
             }
 
-            $this->setPageTags($page);
+            $page = $this->setPageTags($page);
         }
 
         return $this->view->partial(

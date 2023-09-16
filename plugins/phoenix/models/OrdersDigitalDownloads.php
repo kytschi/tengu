@@ -1,36 +1,34 @@
 <?php
 
 /**
- * Products model.
+ * Orders Digital Downloads model.
  *
- * @package     Kytschi\Phoenix\Models\Products
+ * @package     Kytschi\Phoenix\Models\OrdersDigitalDownloads
  * @copyright   2023 Mike Welsh <mike@kytschi.com>
  * @version     0.0.1
  *
  * Copyright 2023 Mike Welsh
-
  */
 
 namespace Kytschi\Phoenix\Models;
 
+use Kytschi\Phoenix\Models\Orders;
+use Kytschi\Tengu\Models\Core\Logs;
+use Kytschi\Tengu\Models\Core\Notes;
+use Kytschi\Tengu\Models\Core\Tags;
 use Kytschi\Tengu\Models\Core\Users;
 use Kytschi\Tengu\Models\Model;
-use Kytschi\Tengu\Models\Website\Pages;
 
-class Products extends Model
+class OrdersDigitalDownloads extends Model
 {
-    public $page_id;
-    public $type;
-    public $code;
-    public $price;
-    public $stock;
-    public $low_stock;
-    public $vat;
-    public $requires_shipping = 1;
+    public $order_id;
+    public $download_url;
+    public $downloads = 0;
+    public $download_limit = 0;
 
     public function initialize()
     {
-        $this->setSource('phoenix_products');
+        $this->setSource('phoenix_orders_digital_downloads');
 
         $this->hasOne(
             'updated_by',
@@ -63,18 +61,16 @@ class Products extends Model
         );
 
         $this->hasOne(
-            'page_id',
-            Pages::class,
+            'order_id',
+            Orders::class,
             'id',
             [
-                'alias'    => 'page',
-                'reusable' => true
+                'alias'    => 'order',
+                'reusable' => true,
+                'params'   => [
+                    'conditions' => 'deleted_at IS NULL'
+                ]
             ]
         );
-    }
-
-    public function getName()
-    {
-        return !empty($this->page) ? $this->page->name : '';
     }
 }

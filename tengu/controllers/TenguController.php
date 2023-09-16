@@ -8,20 +8,7 @@
  * @version     0.0.2
  *
  * Copyright 2023 Mike Welsh
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
- * Boston, MA  02110-1301, USA.
+
  */
 
 declare(strict_types=1);
@@ -55,7 +42,6 @@ use Kytschi\Tengu\Traits\Website\Pages;
 use Kytschi\Tengu\Traits\Website\Reviews;
 use Kytschi\Tengu\Traits\Website\Search;
 use Phalcon\Encryption\Security\Random;
-use Phalcon\Tag;
 
 class TenguController
 {
@@ -111,11 +97,13 @@ class TenguController
         define('TENGU_VERSION', $this->version);
     }
 
-    public function canonicalUrl()
+    public function canonicalUrl($page = null)
     {
         try {
-            if ($url = Tag::getValue('canonical_url')) {
-                return $this->siteUrl() . $url;
+            if (!empty($page)) {
+                if ($url = $page->canonical_url) {
+                    return $this->siteUrl() . $url;
+                }
             }
 
             $path = parse_url($_SERVER['REQUEST_URI']);

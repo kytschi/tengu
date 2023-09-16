@@ -21,7 +21,7 @@ use Kytschi\Tengu\Helpers\UrlHelper;
         <link rel="stylesheet" href="<?= $this->tengu->theme->getCSS('theme.css'); ?>">
         <link rel="icon" href="<?= $this->tengu->theme->getAsset('imgs/favicon.ico'); ?>" sizes="64x64">
 
-        <link rel="canonical" href="<?= $this->tengu->canonicalUrl(); ?>">
+        <link rel="canonical" href="<?= $this->tengu->canonicalUrl($page); ?>">
         <link rel="author" href="/humans.txt">
 
         <script src="<?= $this->tengu->theme->getAsset('js/plugins/jquery.min.js');?>"></script>
