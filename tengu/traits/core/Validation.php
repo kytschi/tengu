@@ -87,12 +87,11 @@ trait Validation
         if (!file_exists(($this->di->getConfig())->application->siteViewsDir . '/errors/not_found.phtml')) {
             (new ErrorsController())->display($message);
         }
-
+        $this->view->setVar('page', $page);
         return (new ControllerBase())->view->partial(
             'errors/not_found',
             [
-                'message' => $message,
-                'page' => $page
+                'message' => $message
             ]
         );
     }
