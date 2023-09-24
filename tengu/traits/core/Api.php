@@ -36,7 +36,7 @@ trait Api
 
         $this->apiResponse($err, null, $code);
     }
-    
+
     public function apiResponse($message, $data = null, $code = 200, $query = '')
     {
         $output = new \stdClass();

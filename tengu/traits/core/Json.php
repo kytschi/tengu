@@ -18,7 +18,7 @@ use Kytschi\Tengu\Traits\Core\HttpStatus;
 trait Json
 {
     use HttpStatus;
-    
+
     public function jsonError($err)
     {
         $obj = new \stdClass();

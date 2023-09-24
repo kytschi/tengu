@@ -180,5 +180,12 @@ $router->add(
         'action'     => 'sitemap'
     ]
 );
+$router->add(
+    '/author-sitemap.xml',
+    [
+        'controller' => 'Index',
+        'action'     => 'sitemap'
+    ]
+);
 
 $router->handle($_SERVER['REQUEST_URI']);

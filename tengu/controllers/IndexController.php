@@ -81,7 +81,7 @@ class IndexController extends ControllerBase
                 return (new DashboardsController())->homeAction();
             }
         }
-        
+
         $page = Pages::findFirst(
             [
                 'conditions' => 'deleted_at IS NULL AND 

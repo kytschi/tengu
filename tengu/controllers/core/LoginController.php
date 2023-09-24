@@ -104,7 +104,7 @@ class LoginController extends ControllerBase
                     );
                 }
 
-                if (!$this->security->checkHash($_POST['password'], $model->password)) {
+                if (!$this->security->checkHash($post->password, $model->password)) {
                     throw new AuthorisationException(
                         'Failed to login',
                         'Invalid password'
