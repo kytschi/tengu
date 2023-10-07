@@ -325,6 +325,21 @@ class UsersController extends ControllerBase
 
         $params = [];
 
+        if (!empty($this->search)) {
+            $params = [
+                'email' => '%' . $this->search . '%',
+                'first_name' => '%' . $this->search . '%',
+                'last_name' => '%' . $this->search . '%'
+            ];
+
+            $builder
+                ->andWhere(
+                    'email LIKE :email: OR
+                    first_name LIKE :first_name: OR
+                    last_name LIKE :last_name:'
+                );
+        }
+
         $group_exclude = true;
         if ($group) {
             $builder->andWhere('group_id = :group_id:');
@@ -334,17 +349,6 @@ class UsersController extends ControllerBase
             $group = (new GroupsController())->getGroup('Customer')[0];
             $builder->andWhere('group_id != :group_id:');
             $params['group_id'] = $group;
-        }
-
-        if (!empty($this->search)) {
-            $params = [
-                'email' => '%' . $this->search . '%',
-                'first_name' => '%' . $this->search . '%',
-                'last_name' => '%' . $this->search . '%'
-            ];
-
-            $builder
-                ->andWhere('email LIKE :email: OR first_name LIKE :first_name: OR last_name LIKE :last_name:');
         }
 
         if (!empty($this->filters)) {
