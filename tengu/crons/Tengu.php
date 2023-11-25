@@ -7,7 +7,6 @@
  * @version     0.0.1
  *
  * Copyright 2023 Mike Welsh
-
  */
 
 include 'Cron.php';

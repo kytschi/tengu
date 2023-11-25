@@ -101,9 +101,8 @@ trait PageCategories
                         $binds['postcode_' . $key . '_2'] = str_replace(' ', '', $postcode);
                         $binds['postcode_' . $key . '_3'] = '%' . $postcode . '%';
                         $binds['postcode_' . $key . '_4'] = '%' . str_replace(' ', '', $postcode) . '%';
-                        
                     }
-                    $wheres = rtrim($wheres, ' OR ') . ')';                    
+                    $wheres = rtrim($wheres, ' OR ') . ')';
                 }
             } else {
                 $wheres .= ' AND (name LIKE :name OR location LIKE :location OR ';
@@ -152,12 +151,13 @@ trait PageCategories
                 ->columns($selects)
                 ->addFrom(Model::class, 'categories')
                 ->join(Pages::class, 'pages.id=categories.page_id AND pages.deleted_at IS NULL', 'pages')
-                ->where("categories.category_id = :category_id: AND categories.deleted_at IS NULL AND pages.id IS NOT NULL")
+                ->where("categories.category_id = :category_id: AND 
+                    categories.deleted_at IS NULL AND
+                    pages.id IS NOT NULL")
                 ->andWhere(ltrim($wheres, ' AND '))
                 ->orderBy(ltrim($order, "ORDER BY "));
 
             $builder->setBindParams($binds);
-
             $paginator = new QueryBuilder(
                 [
                     "builder" => $builder,
@@ -176,7 +176,7 @@ trait PageCategories
         WHERE 
             category_id = :category_id AND 
             categories.deleted_at IS NULL AND 
-            $pages_table.id IS NOT NULL 
+            $pages_table.id IS NOT NULL AND 
             $wheres
         $order";
 

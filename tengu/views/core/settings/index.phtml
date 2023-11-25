@@ -6,7 +6,6 @@
  * @version     0.0.1
  *
  * Copyright 2023 Mike Welsh
-
  */
 
 use Kytschi\Tengu\Controllers\Core\FormController;
@@ -55,24 +54,11 @@ echo $this->partial("common/form/messages");
 								data-toggle="tooltip"
 								data-trigger="hover"
 								data-dismiss="click"
-                                    data-placement="bottom">
+                                data-placement="bottom">
                                 <div class="position-relative border">
-                                    <?php
-                                    if ($data->status == 'offline') {
-                                        $label = "I'm offline";
-                                        $bg_colour = 'bg-danger';
-                                    } else {
-                                        $label = "I'm live!";
-                                        $bg_colour = 'bg-success';
-                                    }
-                                    ?>
                                     <img 
                                         src="<?= $this->tengu->theme->getAsset('imgs/edit-item.png'); ?>" 
                                         alt="<?= $label; ?>">
-                                    <div
-                                        title="<?= $label; ?>"
-                                        class="position-absolute circle <?= $bg_colour; ?>"
-                                        style="width: 10px;height: 10px;margin-top: -5px;"></div>
                                 </div>
                             </div>
                         </div>
