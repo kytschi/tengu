@@ -426,7 +426,7 @@ trait Files
             "image/webp"
         ) AND
         resource NOT IN ("profile-image")';
-        
+
         $builder = $this
             ->modelsManager
             ->createBuilder()

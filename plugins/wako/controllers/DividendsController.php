@@ -78,9 +78,7 @@ class DividendsController extends ControllerBase
 
         return $this->view->partial(
             'wako/dividends/add',
-            [
-                
-            ]
+            []
         );
     }
 
@@ -140,7 +138,7 @@ class DividendsController extends ControllerBase
             return $this->notFound();
         }
         $this->setPageTitle('Editing the dividend');
-        
+
         return $this->view->partial(
             'wako/dividends/edit',
             [
@@ -162,7 +160,7 @@ class DividendsController extends ControllerBase
         $view->finish();
 
         $filename = $file = ($this->di->getConfig())->application->tmpDir . (new Random())->uuid();
-        
+
         $pdf = new mPDF([
             'tempDir' => ($this->di->getConfig())->application->tmpDir,
             'format' => 'A4',
@@ -201,7 +199,7 @@ class DividendsController extends ControllerBase
                 self::encrypt(file_get_contents($filename))
             );
         }
-        
+
         shell_exec('rm ' . $filename);
     }
 
@@ -256,7 +254,7 @@ class DividendsController extends ControllerBase
             DateHelper::pretty($tax_year->tax_year_start, false) . '</strong>&nbsp;to&nbsp;<strong>' .
             DateHelper::pretty($tax_year->tax_year_end, false) . '</strong>'
         );
-                
+
         if (!empty($this->filters)) {
             $iLoop = 1;
             foreach ($this->filters as $filter => $value) {
@@ -287,7 +285,7 @@ class DividendsController extends ControllerBase
                 "page" => $this->page,
             ]
         );
-    
+
         return $this->view->partial(
             'wako/dividends/index',
             [
@@ -396,7 +394,7 @@ class DividendsController extends ControllerBase
         $model->shareholder_id = $_POST['shareholder_id'];
         $model->issued_on = !empty($_POST['issued_on']) ? DateHelper::sql($_POST['issued_on'], false) : null;
         $model->paid_on = !empty($_POST['paid_on']) ? DateHelper::sql($_POST['paid_on'], false) : null;
-        
+
         if (!empty($model->issued_on)) {
             $model->tax_year_id = $this->getTaxYearId($model->issued_on);
         }
