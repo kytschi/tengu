@@ -34,6 +34,7 @@ trait Reviews
         }
 
         return Pages::find([
+            'columns' => 'distinct(id), content, name',
             'conditions' => 'type="review"',
             'bind' => $binds,
             'order' => $order

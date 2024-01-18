@@ -82,10 +82,10 @@ trait PageCategories
                     $longitude = $coords['longitude'];
                     $selects .= ", 69.0 *
                         DEGREES(ACOS(LEAST(1.0, COS(RADIANS($latitude))
-                                * COS(RADIANS(latitude))
-                                * COS(RADIANS($longitude - longitude))
+                                * COS(RADIANS($pages_table.latitude))
+                                * COS(RADIANS($longitude - $pages_table.longitude))
                                 + SIN(RADIANS($latitude))
-                                * SIN(RADIANS(latitude))))) AS distance ";
+                                * SIN(RADIANS($pages_table.latitude))))) AS distance ";
 
                     $order = ' HAVING distance < ' . $data['radius'] . ' ORDER BY distance ASC';
                 } else {
@@ -106,7 +106,8 @@ trait PageCategories
                 }
             } else {
                 $wheres .= ' AND (name LIKE :name OR location LIKE :location OR ';
-                $wheres .= "$pages_table.postcode LIKE :postcode_1 OR $pages_table.postcode LIKE :postcode_2)";
+                $wheres .= "$pages_table.postcode LIKE :postcode_1 OR 
+                    $pages_table.postcode LIKE :postcode_2)";
                 $binds['postcode_1'] = '%' . $data['search'] . '%';
                 $binds['postcode_2'] = '%' . $data['search'] . '%';
                 $binds['name'] = '%' . $data['search'] . '%';
