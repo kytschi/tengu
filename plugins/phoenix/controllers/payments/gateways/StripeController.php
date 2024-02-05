@@ -45,12 +45,13 @@ class StripeController
             $checkout_session = $stripe->checkout->sessions->create([
                 'ui_mode' => 'embedded',
                 'line_items' => $items,
+                'client_reference_id' => $basket->customer_id,
                 'customer_email' => $basket->customer->email,
                 'mode' => 'payment',
                 'return_url' => ($_ENV['APP_HTTPS'] ? 'https' : 'http') .
                     '://' .
                     $_ENV['APP_SITE_DOMAIN'] .
-                    '/basket/checkout/complete?session_id={CHECKOUT_SESSION_ID}',
+                    '/basket/checkout/complete',
             ]);
 
             header('Content-Type: application/json');

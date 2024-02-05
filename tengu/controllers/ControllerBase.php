@@ -163,7 +163,7 @@ class ControllerBase extends Controller
                 $this->tengu->settings->name;
         }
 
-        $page->page_updated = $page->updated_at;
+        $page->page_updated = $page->updated_at ? $page->updated_at : '';
         return $page;
     }
 

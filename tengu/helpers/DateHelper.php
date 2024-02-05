@@ -296,6 +296,9 @@ class DateHelper
     public static function meta($datetime)
     {
         try {
+            if (empty($datetime)) {
+                return '';
+            }
             return date('l, F d, H:i a', strtotime($datetime));
         } catch (\Exception $err) {
             return 'Failed to render the date';

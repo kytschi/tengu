@@ -132,6 +132,10 @@ $di->setShared('session', function () {
     $session = new SessionManager();
     $serializerFactory = new SerializerFactory();
     $factory = new AdapterFactory($serializerFactory);
+    $id = 'tengu';
+    if (TENGU_BACKEND) {
+        $id = 'tengub';
+    }
     if ($_ENV['APP_ENV'] != 'local' && $_ENV['REDIS'] == 'true' && !TENGU_BACKEND) {
         $options = [
             'host'  => $config->redis->host,
@@ -141,20 +145,26 @@ $di->setShared('session', function () {
         $redis = new Redis($factory, $options);
         $session
             ->setAdapter($redis)
+            ->setId($id)
+            ->setName('tengu')
             ->start();
     } else {
         $files = new Stream(
             [
-                'savePath' => '/tmp',
+                'savePath' => '/tmp'
             ]
         );
-        $id = 'tengu';
-        if (TENGU_BACKEND) {
-            $id = 'tengub';
-        }
+        
+        session_set_cookie_params([
+            'domain' => $_ENV['APP_SITE_DOMAIN'],
+            'secure' => true,
+            'samesite' => 'none'
+        ]);
+
         $session
             ->setAdapter($files)
             ->setId($id)
+            ->setName('tengu')
             ->start();
     }
     return $session;
