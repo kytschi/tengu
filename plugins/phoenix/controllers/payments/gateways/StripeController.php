@@ -17,6 +17,8 @@ namespace Kytschi\Phoenix\Controllers\Payments\Gateways;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\ClientException;
 use Kytschi\Tengu\Exceptions\SaveException;
+use Kytschi\Tengu\Helpers\StringHelper;
+use Kytschi\Tengu\Traits\Core\Security;
 use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
@@ -24,6 +26,8 @@ use Stripe\StripeClient;
 
 class StripeController
 {
+    use Security;
+
     public function createCheckout($basket)
     {
         try {
@@ -51,7 +55,11 @@ class StripeController
                 'return_url' => ($_ENV['APP_HTTPS'] ? 'https' : 'http') .
                     '://' .
                     $_ENV['APP_SITE_DOMAIN'] .
-                    '/basket/checkout/complete',
+                    '/basket/checkout/complete?' .
+                    StringHelper::random(
+                        rand(5, 20),
+                        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                    ) . '=' . urlencode(self::encrypt($basket->id)),
             ]);
 
             header('Content-Type: application/json');

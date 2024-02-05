@@ -368,8 +368,13 @@ class BasketController extends ControllerBase
 
         $basket = $this->get();
         if (empty($basket)) {
-            throw new SaveException('Failed due to empty basket');
+            $this->redirect('/basket');
         }
+
+        if ($basket->id != self::decrypt(reset($_GET))) {
+            throw new AuthorisationException('Invalid basket');
+        }
+
         $basket->status = 'dispatch';
         if ($basket->update() === false) {
             throw new SaveException(
@@ -377,6 +382,8 @@ class BasketController extends ControllerBase
                 $basket->getMessages()
             );
         }
+
+        $this->session->remove('basket');
 
         return $this->view->partial(
             $template,
