@@ -42,11 +42,29 @@ $router->add(
 );
 
 $router->add(
+    '/basket/checkout/create',
+    [
+        'namespace'  => 'Kytschi\Phoenix\Controllers',
+        'controller' => 'Basket',
+        'action'     => 'createCheckout'
+    ]
+);
+
+$router->add(
     '/basket/checkout/complete',
     [
         'namespace'  => 'Kytschi\Phoenix\Controllers',
         'controller' => 'Basket',
         'action'     => 'complete'
+    ]
+);
+
+$router->add(
+    '/basket/checkout/payment',
+    [
+        'namespace'  => 'Kytschi\Phoenix\Controllers',
+        'controller' => 'Basket',
+        'action'     => 'takePayment'
     ]
 );
 

@@ -29,7 +29,7 @@ class OrderShipping extends Model
     public $label;
     public $tracking_code;
     public $shipping_charge = 0.00;
-    
+
     public function initialize()
     {
         $this->setSource('phoenix_order_shipping');
@@ -53,7 +53,7 @@ class OrderShipping extends Model
                 'reusable' => true
             ]
         );
-        
+
         $this->hasOne(
             'deleted_by',
             Users::class,

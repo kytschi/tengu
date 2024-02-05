@@ -22,10 +22,12 @@ use Kytschi\Tengu\Exceptions\SaveException;
 use Kytschi\Tengu\Exceptions\ValidationException;
 use Kytschi\Tengu\Helpers\StringHelper;
 use Kytschi\Tengu\Models\Core\Users;
-use Phalcon\Security;
+use Kytschi\Tengu\Traits\Core\Security;
 
 class CustomersController extends UsersController
 {
+    use Security;
+
     public $access = [
         'super-user'
     ];
@@ -42,9 +44,9 @@ class CustomersController extends UsersController
     {
         if (!($user = $this->check($data['email']))) {
             $data['group_id'] = (new GroupsController())->getGroup('Customer')[0];
-  
+
             $user = $this->setData(new Users(), $data);
-            $user->password = (new Security())->hash(StringHelper::random(14));
+            $user->password = self::hash(StringHelper::random(14));
             $user->temp_password = 1;
 
             if ($user->save() === false) {
@@ -67,7 +69,7 @@ class CustomersController extends UsersController
     public function editAction($id, $template = 'phoenix/customers/edit', $group = null)
     {
         $this->setPageTitle('Customer view');
-        
+
         parent::editAction(
             $id,
             $template,
@@ -78,7 +80,7 @@ class CustomersController extends UsersController
     public function indexAction($template = 'phoenix/customers/index', $group = null)
     {
         $this->setPageTitle('Customers');
-        
+
         parent::indexAction(
             $template,
             (new GroupsController())->getGroup('Customer')[0]

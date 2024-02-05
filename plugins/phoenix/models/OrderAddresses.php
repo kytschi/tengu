@@ -45,7 +45,7 @@ class OrderAddresses extends Model
         'country',
         'postcode'
     ];
-    
+
     public function initialize()
     {
         $this->setSource('phoenix_order_addresses');
@@ -69,7 +69,7 @@ class OrderAddresses extends Model
                 'reusable' => true
             ]
         );
-        
+
         $this->hasOne(
             'deleted_by',
             Users::class,
@@ -80,7 +80,7 @@ class OrderAddresses extends Model
             ]
         );
     }
-    
+
     public function getFull()
     {
         $return = '';
@@ -99,6 +99,11 @@ class OrderAddresses extends Model
         $return .= $this->country;
 
         return rtrim($return, ', ');
+    }
+
+    public function getFullName()
+    {
+        return $this->first_name . ' ' . $this->last_name;
     }
 
     public function getSummary()

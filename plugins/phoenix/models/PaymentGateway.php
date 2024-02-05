@@ -8,7 +8,6 @@
  * @version     0.0.1
  *
  * Copyright 2023 Mike Welsh
-
  */
 
 namespace Kytschi\Phoenix\Models;
@@ -19,7 +18,10 @@ use Kytschi\Tengu\Models\Model;
 class PaymentGateway extends Model
 {
     public $name;
+    public $slug;
+    public $description;
     public $status = 'active';
+    public $default = 0;
 
     public function initialize()
     {

@@ -24,7 +24,7 @@ class OrderItems extends Model
     public $quanity;
     public $fulfilled;
     public $price;
-    
+
     public function initialize()
     {
         $this->setSource('phoenix_order_items');
@@ -48,7 +48,7 @@ class OrderItems extends Model
                 'reusable' => true
             ]
         );
-        
+
         $this->hasOne(
             'deleted_by',
             Users::class,

@@ -16,12 +16,14 @@ declare(strict_types=1);
 namespace Kytschi\Phoenix\Controllers;
 
 use Kytschi\Phoenix\Controllers\CustomersController;
+use Kytschi\Phoenix\Controllers\Payments\Gateways\StripeController;
 use Kytschi\Phoenix\Controllers\OrdersController;
 use Kytschi\Phoenix\Controllers\ShippingCompaniesController;
 use Kytschi\Phoenix\Exceptions\StockException;
 use Kytschi\Phoenix\Models\OrderAddresses;
 use Kytschi\Phoenix\Models\OrderItems;
 use Kytschi\Phoenix\Models\Orders;
+use Kytschi\Phoenix\Models\PaymentGateway;
 use Kytschi\Phoenix\Models\Products;
 use Kytschi\Phoenix\Models\Settings;
 use Kytschi\Tengu\Controllers\ControllerBase;
@@ -342,6 +344,46 @@ class BasketController extends ControllerBase
         return $basket;
     }
 
+    public function createCheckoutAction()
+    {
+        $basket = $this->get();
+        if (empty($basket)) {
+            throw new SaveException('Failed due to empty basket');
+        }
+        (new StripeController())->createCheckout($basket);
+    }
+
+    public function completeAction()
+    {
+        $this->createPageObj('Complete');
+
+        if (TENGU_BACKEND) {
+            $this->secure();
+            $template = 'phoenix/basket/checkout/complete';
+        } else {
+            $template = 'basket/checkout/complete';
+        }
+
+        $this->setPageTitle('Complete');
+
+        $basket = $this->get();
+        if (empty($basket)) {
+            throw new SaveException('Failed due to empty basket');
+        }
+        $basket->status = 'dispatch';
+        if ($basket->update() === false) {
+            throw new SaveException(
+                'Failed to update the basket',
+                $basket->getMessages()
+            );
+        }
+
+        return $this->view->partial(
+            $template,
+            ['page' => $this->page_obj]
+        );
+    }
+
     public function deleteAction()
     {
         $this->clearFormData();
@@ -393,27 +435,6 @@ class BasketController extends ControllerBase
         }
     }
 
-    public function completeAction()
-    {
-        $this->createPageObj('Complete');
-        
-        if (TENGU_BACKEND) {
-            $this->secure();
-            $template = 'phoenix/basket/checkout/complete';
-        } else {
-            $template = 'basket/checkout/complete';
-        }
-
-        $this->setPageTitle('Complete');
-
-        return $this->view->partial(
-            $template,
-            [
-                'page' => $this->page_obj
-            ]
-        );
-    }
-
     public function get()
     {
         $user_id = self::getUserId();
@@ -430,7 +451,7 @@ class BasketController extends ControllerBase
             return null;
         }
 
-        $basket = (new Orders())->findFirst([
+        $basket = Orders::findFirst([
             'conditions' => 'created_by = :created_by: AND status="basket"',
             'bind' => [
                 'created_by' => $user_id
@@ -446,7 +467,6 @@ class BasketController extends ControllerBase
         $this->setPageTitle('Basket');
 
         $this->clearFormData();
-        
 
         if (TENGU_BACKEND) {
             $this->secure();
@@ -487,6 +507,29 @@ class BasketController extends ControllerBase
                 'page' => $page
             ]
         );
+    }
+
+    private function processPayment($basket)
+    {
+        $gateway = PaymentGateway::findFirst([
+            'condidtions' => 'id=:id',
+            'bind' => [
+                'id' => reset($_POST['payment_gateway'])
+            ]
+        ]);
+
+        if (empty($gateway)) {
+            throw new SaveException(
+                'Failed to process the order',
+                'Invalid gateway, ' . reset($_POST['payment_gateway'])
+            );
+        }
+
+        switch ($gateway) {
+            case 'stripe':
+                (new StripeController())->save($basket);
+                break;
+        }
     }
 
     public function saveAddresses($basket)
@@ -593,6 +636,34 @@ class BasketController extends ControllerBase
         }
     }
 
+    public function takePaymentAction()
+    {
+        $this->createPageObj('Checkout');
+
+        if (TENGU_BACKEND) {
+            $this->secure();
+            $template = 'phoenix/basket/checkout/payment';
+            $url = UrlHelper::backend($this->global_url);
+        } else {
+            $template = 'basket/checkout/payment';
+            $url = '/basket';
+        }
+
+        if (empty($basket = $this->get())) {
+            $this->redirect($url);
+        }
+
+        $this->setPageTitle('Processing payment');
+
+        return $this->view->partial(
+            $template,
+            [
+                'basket' => $basket,
+                'page' => $this->page_obj
+            ]
+        );
+    }
+
     public function updateAction()
     {
         if (TENGU_BACKEND) {
@@ -636,22 +707,20 @@ class BasketController extends ControllerBase
                 } else {
                     $url = '/basket/checkout';
                 }
-            } elseif (isset($_POST['shipping'])) {
+            } elseif (isset($_POST['payment_gateway'])) {
                 if (TENGU_BACKEND) {
-                    $url = $this->global_url . '/checkout/complete';
+                    $url = $this->global_url . '/checkout';
                 } else {
-                    $url = '/basket/checkout/complete';
+                    $url = '/basket/checkout';
                 }
 
                 $this->validateAddress();
                 $this->saveAddresses($basket);
 
-                $basket->status = 'dispatch';
-                if ($basket->update() === false) {
-                    throw new SaveException(
-                        'Failed to update the basket',
-                        $basket->getMessages()
-                    );
+                if (TENGU_BACKEND) {
+                    $url = $this->global_url . '/checkout/payment';
+                } else {
+                    $url = '/basket/checkout/payment';
                 }
             } else {
                 $this->saveFormUpdated('Basket has been updated');
@@ -757,7 +826,10 @@ class BasketController extends ControllerBase
 
         $messages = $validation->validate($_POST);
         if (count($messages)) {
-            throw new ValidationException('Validation failed', $messages);
+            throw new ValidationException(
+                'Validation failed',
+                $required
+            );
         }
     }
 }

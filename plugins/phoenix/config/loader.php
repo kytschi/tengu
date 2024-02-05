@@ -16,6 +16,8 @@ $phoenix_namespaces = [
     'Kytschi\Phoenix\Models' => $config->application->pluginsDir . 'phoenix/models',
     'Kytschi\Phoenix\Models\ShippingCompanies' => $config->application->pluginsDir .
                                                     'phoenix/models/shippingcompanies',
+    'Kytschi\Phoenix\Controllers\Payments\Gateways' => $config->application->pluginsDir .
+                                                    'phoenix/controllers/payments/gateways',
     'Kytschi\Phoenix\Traits' => $config->application->pluginsDir . 'phoenix/traits',
 ];
 

@@ -68,6 +68,16 @@ class Orders extends Model
         );
 
         $this->hasOne(
+            'customer_id',
+            Users::class,
+            'id',
+            [
+                'alias'    => 'customer',
+                'reusable' => true
+            ]
+        );
+
+        $this->hasOne(
             'id',
             OrdersDigitalDownloads::class,
             'order_id',

@@ -622,7 +622,9 @@ class UsersController extends ControllerBase
         $model->email = $data['email'];
         $model->first_name = $data['first_name'];
         $model->last_name = $data['last_name'];
-        $model->type = $data['type'];
+        if (!empty($data['type'])) {
+            $model->type = $data['type'];
+        }
         $model->group_id = $data['group_id'];
         $model->job_title = !empty($data['job_title']) ? $data['job_title'] : null;
         $model->phone = !empty($data['phone']) ? $data['phone'] : null;
