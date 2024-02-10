@@ -319,13 +319,6 @@ class BasketController extends ControllerBase
     {
         $user_id = self::getUserId();
 
-        if ($user_id == '00000000-0000-0000-0000-000000000000') {
-            if (empty($this->session->basket)) {
-                $this->session->set('basket', (new Random())->uuid());
-            }
-            $user_id = $this->session->basket;
-        }
-
         $basket = new Orders([
             'customer_id' => $customer_id,
             'number' => OrdersController::getNumber(),
@@ -340,6 +333,8 @@ class BasketController extends ControllerBase
                 $basket->getMessages()
             );
         }
+
+        $this->session->set('basket', $basket->id);
 
         return $basket;
     }
@@ -365,25 +360,6 @@ class BasketController extends ControllerBase
         }
 
         $this->setPageTitle('Complete');
-
-        $basket = $this->get();
-        if (empty($basket)) {
-            $this->redirect('/basket');
-        }
-
-        if ($basket->id != self::decrypt(reset($_GET))) {
-            throw new AuthorisationException('Invalid basket');
-        }
-
-        $basket->status = 'dispatch';
-        if ($basket->update() === false) {
-            throw new SaveException(
-                'Failed to update the basket',
-                $basket->getMessages()
-            );
-        }
-
-        $this->session->remove('basket');
 
         return $this->view->partial(
             $template,
@@ -444,26 +420,17 @@ class BasketController extends ControllerBase
 
     public function get()
     {
-        $user_id = self::getUserId();
+        $id = $this->session->basket;
 
-        if ($user_id == '00000000-0000-0000-0000-000000000000') {
-            if (!empty($this->session->basket)) {
-                $user_id = $this->session->basket;
-            } else {
-                $user_id = null;
-            }
-        }
-
-        if (empty($user_id)) {
+        if (empty($id)) {
             return null;
         }
 
         $basket = Orders::findFirst([
-            'conditions' => 'created_by = :created_by: AND status="basket"',
+            'conditions' => 'id = :id: AND status="basket"',
             'bind' => [
-                'created_by' => $user_id
-            ],
-            'order' => 'created_at DESC'
+                'id' => $this->session->basket
+            ]
         ]);
 
         return $basket;

@@ -154,7 +154,7 @@ $di->setShared('session', function () {
                 'savePath' => '/tmp'
             ]
         );
-        
+
         session_set_cookie_params([
             'domain' => $_ENV['APP_SITE_DOMAIN'],
             'secure' => true,

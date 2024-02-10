@@ -16,6 +16,9 @@ namespace Kytschi\Phoenix\Controllers\Payments\Gateways;
 
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\ClientException;
+use Kytschi\Phoenix\Controllers\BasketController;
+use Kytschi\Phoenix\Models\Orders;
+use Kytschi\Tengu\Exceptions\GenericException;
 use Kytschi\Tengu\Exceptions\SaveException;
 use Kytschi\Tengu\Helpers\StringHelper;
 use Kytschi\Tengu\Traits\Core\Security;
@@ -30,6 +33,8 @@ class StripeController
 
     public function createCheckout($basket)
     {
+        header('Content-Type: application/json');
+
         try {
             $stripe = new StripeClient($_ENV['STRIPE_PRIVATE_KEY']);
             $items = [];
@@ -49,27 +54,76 @@ class StripeController
             $checkout_session = $stripe->checkout->sessions->create([
                 'ui_mode' => 'embedded',
                 'line_items' => $items,
-                'client_reference_id' => $basket->customer_id,
+                'client_reference_id' => $basket->id,
                 'customer_email' => $basket->customer->email,
                 'mode' => 'payment',
                 'return_url' => ($_ENV['APP_HTTPS'] ? 'https' : 'http') .
                     '://' .
                     $_ENV['APP_SITE_DOMAIN'] .
-                    '/basket/checkout/complete?' .
-                    StringHelper::random(
-                        rand(5, 20),
-                        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                    ) . '=' . urlencode(self::encrypt($basket->id)),
+                    '/basket/checkout/complete?session_id={CHECKOUT_SESSION_ID}'
             ]);
 
-            header('Content-Type: application/json');
+            http_response_code(200);
             echo json_encode(array('clientSecret' => $checkout_session->client_secret));
             die();
         } catch (\Exception $err) {
-            throw new SaveException(
-                $err->getMessage(),
-                method_exists($err, 'getData') ? $err->getData() : null
-            );
+            http_response_code(500);
+            echo json_encode(["error" => $err->getMessage()]);
+            die();
+        }
+    }
+
+    public function statusAction()
+    {
+        header("Content-Type: application/json");
+
+        try {
+            $basket = (new BasketController())->get();
+            if (empty($basket)) {
+                throw new GenericException("Invalid basket");
+            }
+
+            $stripe = new StripeClient($_ENV['STRIPE_PRIVATE_KEY']);
+
+            $json = json_decode(file_get_contents("php://input"));
+            if (empty($json)) {
+                throw new GenericException("Invalid json");
+            }
+            $session = $stripe->checkout->sessions->retrieve($json->session_id);
+
+            if (empty($session)) {
+                throw new GenericException("Invalid session");
+            }
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => $session->status,
+                "client_reference_id" => $session->client_reference_id
+            ]);
+
+            if ($basket->id == $session->client_reference_id) {
+                (new BasketController())->db->query(
+                    'UPDATE ' . (new Orders())->getSource() . ' 
+                        SET 
+                            payment_id=:payment_id,
+                            status="dispatch"
+                        WHERE 
+                            id=:id',
+                    [
+                        "id" => $basket->id,
+                        "payment_id" => $session->payment_intent
+                    ]
+                );
+
+                (new BasketController())->session->remove('basket');
+            } else {
+                throw new GenericException("Invalid basket");
+            }
+            die();
+        } catch (\Exception $err) {
+            http_response_code(500);
+            echo json_encode(["error" => $err->getMessage()]);
+            die();
         }
     }
 }

@@ -68,6 +68,18 @@ $router->add(
     ]
 );
 
+/**
+ * Payment gateways
+ */
+$router->add(
+    '/basket/payment-gateway/status/stripe',
+    [
+        'namespace'  => 'Kytschi\Phoenix\Controllers\Payments\Gateways',
+        'controller' => 'Stripe',
+        'action'     => 'status'
+    ]
+);
+
 $router->add(
     '/basket/clear',
     [
